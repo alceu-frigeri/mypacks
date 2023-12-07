@@ -1,0 +1,59 @@
+%%
+%% \QA : Circuitos I
+%%         \QAA : 1a Área
+%%         \QAB : 2a Área
+%%         \QAC : outros exercícios
+%%
+%% \QB : Eletronica I
+%%         \QBA : 1a Área
+%%         \QBB : 2a Área
+%%
+%% \QC : Circuitos II
+%%         \QCA : 1a Área
+%%         \QCB : 2a Área
+%%         \QCC : outros exercícios
+%%
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{randomcircuits}%
+        [2016/10/15 MyCirc  drawing package version 0.1]
+
+\defQuestion{pss:Q1}{%
+	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vi] ++(0,2)   to [R,l=\Ra,v=\Va]  ++(2,0) \coord(A)  to [R,l=\Rb]  ++(2,0) \coord(B)
+  (A) to[R,l=\Rc] ++(0,-2)
+  (B) to[V,l=\Vy] ++(0,-2) \coord(nB)
+  (ref) -- (nB)
+  (B) -- ++(2.5,0)  node[ocirc]{} \coord(X)
+  (nB) -- ++(2.5,0)  node[ocirc]{} \coord(Y)
+  (X) to[open,v=\Vo] (Y)
+	;
+}
+
+\defQuestion{pss:Q2}{%
+  \draw (0,0)  	\coord(refA) to[V,invert,l=\Va] ++(0,1.5)  \coord(A)
+  (refA) -- ++(2.5,0) \coord(refB) to[V,invert,l=\Vb] ++(0,1.5)  \coord(B)
+  (refB) -- ++(2.5,0) \coord(refC) to[V,invert,l=\Vc] ++(0,1.5)  \coord(C)
+  (A) to [R,l=\Ra] ++(0,2) \coord(AA)
+  (B) to [R,l=\Rb] ++(0,2) \coord(BB)
+  (C) to [R,l=\Rc] ++(0,2) \coord(CC)
+  (AA) to [R,l=\Rab] (BB)
+  (BB) to [R,l=\Rbc] (CC) -- ++(0,1) \coord(Cx)
+  (AA) -- ++(0,1) to [R,l=\Rac,i=\Iac] (Cx)
+  ;
+}
+
+
+\defQuestion{pss:Q3}{%
+  \draw
+  (0,0) node(gnd)[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  -- ++(1,0) node[op amp,anchor=+](opampA){}
+  (opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
+  (opampA.out) node(nX){}
+  (opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
+  (opampA.out) -- ++(1,0) node[ocirc]{} \coord(X) node(nX){}
+  to[open,v=\Vo] ++(0,-2) node[ocirc]{} node[ground]{}
+
+  ;
+}
+
+
+\endinput

@@ -1,0 +1,86 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\def\mycircversion{0.1}
+
+\ProvidesPackage{mypacks}%
+        [2015/12/29 MyPacks  drawing package version \mycircversion]
+
+%% Version 2.0 of pgf/TikZ is required
+
+\RequirePackage{etoolbox}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+
+\RequirePackage[calcwidth]{titlesec}
+
+
+
+\oddsidemargin 10mm
+\hoffset -25.4mm
+\textwidth 190mm
+\voffset -25.4mm
+\topmargin 10mm
+\textheight 260mm
+\setlength{\columnsep}{5mm}
+
+
+\newcommand{\disc}{ENG10xxx - Nome Disciplina}
+\newcommand{\prova}{XX Verificação de Aproveitamento}
+\newcommand{\SEM}{20xx/y} %2011/I P1
+
+\newcommand{\aluno}{Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots }
+
+\newcommand{\cabz}[1][]{
+ \newpage
+ \begin{center}
+  {\sc\large Universidade Federal do Rio Grande do Sul\\
+    Escola de Engenharia / DELAE\\
+    \disc\\
+    \prova\  - \SEM\\[2mm]
+    }
+#1
+{\sc~\\[4mm] \aluno}
+ \end{center}
+}
+
+
+\newcommand{\cab}[1][]{
+\cabX[\studentline{#1}]
+}
+
+\makeatletter
+\newcommand{\cabX}[1][]{
+ \newpage
+ \begin{center}
+  {\sc\large Universidade Federal do Rio Grande do Sul\\
+    Escola de Engenharia / DELAE\\
+    \@ifundefined{disc}{}{\disc\\}
+    \prova\  - \SEM\\[2mm]
+    }
+	#1
+ \end{center}
+}
+\makeatother
+
+\newcommand{\studentline}[1]{
+#1
+{\sc~\\[4mm] \aluno}
+}
+
+
+\newcommand{\simplegrad}{
+  \fbox{
+	  \begin{minipage}{32em}
+      Assinalar um “X”, no tipo de correção que deve ser realizada.
+			  \begin{description}
+ 	        \item[( ) Simplificada]	Será atribuída uma nota igual a 3 – independente do que estiver escrito na prova.
+ 	        \item[( ) Completa]	Todas as questões serão corrigidas e a nota será dada pela soma dos pontos obtidos em cada questão. Neste caso, a nota estará no intervalo $[0;10]$.
+        \end{description}
+    \end{minipage}
+		}
+}
+
+
+\endinput
+

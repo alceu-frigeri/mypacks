@@ -1,0 +1,881 @@
+% BPMN Events Tikz LaTeX package.
+%
+% (c) 2013-2014 Jan Kubovy <jan@kubovy.eu>
+% Institute for Applied Knowledge Processing (FAW)
+% Johannes Kepler University in Linz
+% http://www.faw.jku.at
+%
+\ProvidesPackage{bpmn}
+  [2014/01/01 v2.0 BPMN Events Tikz LaTeX package]
+
+%\usepackage{ifthen}
+%\usepackage{xparse}
+
+\makeatletter
+
+%
+% switch-case !!!!
+%
+%
+\newcommand\mkswitch[2][]{%
+  \newcommand#2[1]{%
+	  \ifcsname\string#2@case@##1\endcsname\csname\string#2@case@##1\endcsname\else#1\fi%
+	}%
+}%
+\newcommand\addcase[3]{\expandafter\def\csname\string#1@case@#2\endcsname{#3}}%
+
+
+\newcommand{\bpmn@event@InheritFromCircle}{%
+  \inheritsavedanchors[from=circle]%
+  \inheritanchorborder[from=circle]%
+  \inheritanchor[from=circle]{center}%
+  \inheritanchor[from=circle]{north}%
+  \inheritanchor[from=circle]{north east}%
+  \inheritanchor[from=circle]{east}%
+  \inheritanchor[from=circle]{south east}%
+  \inheritanchor[from=circle]{south}%
+  \inheritanchor[from=circle]{south west}%
+  \inheritanchor[from=circle]{west}%
+  \inheritanchor[from=circle]{north west}%
+  % etc.
+  \inheritbackgroundpath[from=circle]%
+}
+
+\newcommand{\bpmn@event@NonInterrupting}{
+  \pgfsetdash{{4}{3}}{0}%
+}
+
+\newcommand{\bpmn@event@BasicCircle}[1][reset]{
+  \pgfutil@tempdima=\radius%
+  %\pgfsetlinewidth{1pt}%
+  %
+  \centerpoint%
+  \pgfpathcircle{0}{\pgfutil@tempdima}%
+  \pgfusepath{draw}%
+  \ifthenelse{\equal{#1}{reset}}{%
+    \pgfsetdash{}{0}%
+  }{}%
+}
+
+\newcommand{\bpmn@event@IntermediateCircle}{
+    \bpmn@event@BasicCircle[keep]%
+  %
+    \centerpoint%
+    \pgfpathcircle{0}{0.85\pgfutil@tempdima}%
+    \pgfusepath{draw}%
+    \pgfsetdash{}{0}%
+}
+
+\newcommand{\bpmn@event@EndCircle}{
+    \pgfutil@tempdima=\radius%
+  %
+    \centerpoint%
+    \pgfpathcircle{0}{\pgfutil@tempdima}%
+    \pgfusepath{fill}%
+  %
+    \centerpoint%
+    \pgfpathcircle{0}{0.85\pgfutil@tempdima}%
+    \color{white}%
+    \pgfusepath{fill}%
+    \color{black}%
+}
+
+\newcommand{\ContentBounds}{
+    \centerpoint%
+    \pgfpathcircle{0}{0.85\pgfutil@tempdima}%
+    \pgfusepath{}%
+}
+
+\pgfqkeys{/tikz}{
+  type/.initial=start,
+  trigger/.initial=none
+}
+
+%%%%%%%%%%%%%%%%%
+% M E S S A G E %
+%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@MessagePicture}{
+  \ContentBounds%
+  \centerpoint%
+  \pgf@xb=0.55\pgfutil@tempdima%
+  \pgf@yb=0.4\pgfutil@tempdima%
+  %\pgfsetlinewidth{1pt}%
+  \pgfpathmoveto{\pgfpoint{\pgf@xb}{\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xb}{-\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xb}{-\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xb}{\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xb}{-\pgf@yb}}%
+  %
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{}{%
+	  %\color{green}
+    \pgfusepath{fill,stroke}%
+    \color{white}%
+  }%
+  \pgf@xb=0.55\pgfutil@tempdima%
+  \pgf@yb=0.4\pgfutil@tempdima%
+  %
+  \pgfpathmoveto{\pgfpoint{\pgf@xb}{\pgf@yb}}%
+  \pgfpathlineto{\pgfpoint{0}{0}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xb}{\pgf@yb}}%
+  \pgfusepath{stroke}%
+}
+
+%%%%%%%%%%%%%
+% T I M E R %
+%%%%%%%%%%%%%
+\newcommand{\bpmn@event@TimerPicture}{
+  \ContentBounds%
+  %
+  % Timer
+  \centerpoint%
+  \pgfpathcircle{0}{0.6\pgfutil@tempdima}%
+  \pgfusepath{draw}%
+  %
+  \pgf@xc=0.6\pgfutil@tempdima%
+  \pgf@yc=0.6\pgfutil@tempdima%
+  \advance\pgf@xc by-0.4\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0}{\pgf@yc}}% 0/12
+  \pgfpathlineto{\pgfpoint{0}{\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{0.5\pgf@yc}{0.866025404\pgf@yc}}% 1
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{0.866025404\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{0.866025404\pgf@yc}{0.5\pgf@yc}}% 2
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@xc}{0.5\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{\pgf@yc}{0}}% 3
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{0}}%
+  \pgfpathmoveto{\pgfpoint{0.866025404\pgf@yc}{-0.5\pgf@yc}}% 4
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@xc}{-0.5\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{0.5\pgf@yc}{-0.866025404\pgf@yc}}% 5
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{-0.866025404\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{0}{-\pgf@yc}}% 6
+  \pgfpathlineto{\pgfpoint{0}{-\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{-0.866025404\pgf@yc}}% 7
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@xc}{-0.866025404\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{-0.866025404\pgf@yc}{-0.5\pgf@yc}}% 8
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@xc}{-0.5\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{-\pgf@yc}{0}}% 9
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{0}}%
+  \pgfpathmoveto{\pgfpoint{-0.866025404\pgf@yc}{0.5\pgf@yc}}% 10
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@xc}{0.5\pgf@xc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{0.866025404\pgf@yc}}% 11
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@xc}{0.866025404\pgf@xc}}%
+  %
+  \pgfpathmoveto{\pgfpoint{0.258819045\pgf@yc}{0.965925826\pgf@yc}}% min
+  \pgfpathlineto{\pgfpoint{0}{0}}%
+  \pgfpathmoveto{\pgfpoint{0.965925826\pgf@xc}{-0.258819045\pgf@xc}}% hour
+  \pgfpathlineto{\pgfpoint{0}{0}}%
+  \pgfusepath{stroke}%
+}
+
+%%%%%%%%%%%%%
+% E R R O R %
+%%%%%%%%%%%%%
+\newcommand{\bpmn@event@ErrorPicture}{
+  \ContentBounds%
+  %
+  \pgf@xc=0.6\pgfutil@tempdima%
+  \pgf@yc=0.6\pgfutil@tempdima%
+  \advance\pgf@xc by-0.9\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0.866025404\pgf@yc}{0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.258819045\pgf@yc}{-0.965925826\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-0.258819045\pgf@yc}{0.965925826\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.258819045\pgf@yc}{0.965925826\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{0.258819045\pgf@yc}{-0.965925826\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@yc}{0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.258819045\pgf@yc}{-0.965925826\pgf@xc}}%
+  %
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{draw}%
+  }{%
+    \pgfusepath{draw,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% E S C A L A T I O N %
+%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@EscalationPicture}{
+  \ContentBounds%
+  %
+  \color{black}%
+  \pgf@xc=0.6\pgfutil@tempdima%
+  \pgf@yc=0.6\pgfutil@tempdima%
+  \advance\pgf@xc by-0.8\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0}{\pgf@yc}}% 0/12
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@yc}{-0.866025404\pgf@yc}}% 5
+  \pgfpathlineto{\pgfpoint{0}{-\pgf@xc}} % 6x
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{-0.866025404\pgf@yc}}% 7
+  \pgfpathlineto{\pgfpoint{0}{\pgf@yc}}% 0/12
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@yc}{-0.866025404\pgf@yc}}% 5
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{draw}%
+  }{%
+    \pgfusepath{draw,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%
+% C A N C E L %
+%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@CancelPicture}{
+  \ContentBounds%
+  \pgf@xc=0.7\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \advance\pgf@xc by-0.65\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{-0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{-0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{0}}%
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@yc}{0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@yc}{0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@yc}{0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{0}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.5\pgf@yc}{-0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{-\pgf@xc}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{stroke}%
+  }{%
+    \pgfusepath{fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% C O M P E N S A T I O N %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@CompensationPicture}{%
+  \ContentBounds%
+  \pgf@yc=0.6\pgfutil@tempdima%
+  \pgfpathmoveto{\pgfpoint{0.732050808\pgf@yc}{0.866025404\pgf@yc}}% 1
+  \pgfpathlineto{\pgfpoint{0.732050808\pgf@yc}{-0.866025404\pgf@yc}}% 5
+  \pgfpathlineto{\pgfpoint{-0.133974596\pgf@yc}{0}}%
+  \pgfpathlineto{\pgfpoint{0.732050808\pgf@yc}{0.866025404\pgf@yc}}% 1
+  \pgfpathlineto{\pgfpoint{0.732050808\pgf@yc}{-0.866025404\pgf@yc}}% 5
+  \pgfpathmoveto{\pgfpoint{-0.133974596\pgf@yc}{0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.133974596\pgf@yc}{-0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@yc}{0}}% 9
+  \pgfpathlineto{\pgfpoint{-0.133974596\pgf@yc}{0.866025404\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.133974596\pgf@yc}{-0.866025404\pgf@yc}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{draw}%
+  }{%
+    \pgfusepath{draw,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% C O N D I T I O N A L %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@ConditionalPicture}{%
+  \ContentBounds%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \pgfpathmoveto{\pgfpoint{-0.707106781\pgf@yc}{-0.707106781\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.707106781\pgf@yc}{0.707106781\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.707106781\pgf@yc}{0.707106781\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.707106781\pgf@yc}{-0.707106781\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.707106781\pgf@yc}{-0.707106781\pgf@yc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{-0.42\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{-0.42\pgf@yc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{-0.14\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{-0.14\pgf@yc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{0.14\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{0.14\pgf@yc}}%
+  \pgfpathmoveto{\pgfpoint{-0.5\pgf@yc}{0.42\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@yc}{0.42\pgf@yc}}%
+  \pgfusepath{stroke}%
+}
+
+%%%%%%%%%%%
+% L I N K %
+%%%%%%%%%%%
+\newcommand{\bpmn@event@LinkPicture}{%
+  \ContentBounds%
+  \pgf@xc=0.7\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \advance\pgf@xc by-0.1\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0.5\pgf@xc}{-0.866025404\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{0}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{0.866025404\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{0.5\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@xc}{0.5\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@xc}{-0.5\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{-0.5\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{0.5\pgf@xc}{-0.866025404\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{0}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{stroke}%
+  }{%
+    \pgfusepath{stroke,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%
+% S I G N A L %
+%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@SignalPicture}{%
+  \ContentBounds%
+  \pgfsetlinewidth{1pt}%
+  \pgf@yc=0.6\pgfutil@tempdima%
+  \pgfpathmoveto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.866025404\pgf@yc}{-0.5\pgf@yc}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{stroke}%
+  }{%
+    \pgfusepath{stroke,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%
+% T E R M I N A T E %
+%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@TerminatePicture}{%
+  \ContentBounds%
+  \let\oldlinewidth\pgflinewidth
+  \pgfsetlinewidth{1pt}%
+  \centerpoint%
+  \pgfpathcircle{0}{0.6\pgfutil@tempdima}%
+  \pgfusepath{fill}%
+  \pgfsetlinewidth{\oldlinewidth}
+}
+
+%%%%%%%%%%%%%%%%%%%
+% M U L T I P L E %
+%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@MultiplePicture}{%
+  \ContentBounds%
+  \pgf@xc=0.7\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \advance\pgf@xc by-0.8\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.587785252\pgf@yc}{-0.809016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.587785252\pgf@yc}{-0.809016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{draw}%
+  }{%
+    \pgfusepath{draw,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% P A R A L E L   M U L T I P L E %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@event@ParallelMultiplePicture}{%
+  \ContentBounds%
+  \pgf@xc=0.15\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@yc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@yc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{-\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{-\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@yc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@yc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@xc}}%
+  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subkind}}{default}}{%
+    \pgfusepath{draw}%
+  }{%
+    \pgfusepath{draw,fill}%
+  }%
+}
+
+%%%%%%%%%%%%%
+% E V E N T %
+%%%%%%%%%%%%%
+\mkswitch[]\evtsubtype%
+\addcase\evtsubtype{non-interrupting}{\bpmn@event@NonInterrupting}%
+%
+\mkswitch[\bpmn@event@BasicCircle]\evtkind%
+\addcase\evtkind{start}{\bpmn@event@BasicCircle}%
+\addcase\evtkind{intermediate}{\bpmn@event@IntermediateCircle}%
+\addcase\evtkind{intermediate throw}{\bpmn@event@IntermediateCircle \edef\event@picParam{end}}%
+\addcase\evtkind{end}{\bpmn@event@EndCircle \edef\event@picParam{end}}%
+%
+\mkswitch[]\evttype%
+\addcase\evttype{message}{\bpmn@event@MessagePicture[\event@picParam]}%
+\addcase\evttype{timer}{\bpmn@event@TimerPicture[\event@picParam]}%
+\addcase\evttype{error}{\bpmn@event@ErrorPicture[\event@picParam]}%
+\addcase\evttype{escalation}{\bpmn@event@EscalationPicture[\event@picParam]}%
+\addcase\evttype{cancel}{\bpmn@event@CancelPicture[\event@picParam]}%
+\addcase\evttype{compensation}{\bpmn@event@CompensationPicture[\event@picParam]}%
+\addcase\evttype{conditional}{\bpmn@event@ConditionalPicture[\event@picParam]}%
+\addcase\evttype{link}{\bpmn@event@LinkPicture[\event@picParam]}%
+\addcase\evttype{signal}{\bpmn@event@SignalPicture[\event@picParam]}%
+\addcase\evttype{terminate}{\bpmn@event@TerminatePicture[\event@picParam]}%
+\addcase\evttype{multiple}{\bpmn@event@MultiplePicture[\event@picParam]}%
+\addcase\evttype{parallel multiple}{\bpmn@event@ParallelMultiplePicture[\event@picParam]}%
+\addcase\evttype{parallel-multiple}{\bpmn@event@ParallelMultiplePicture[\event@picParam]}%
+%
+\newcommand{\xevent}{%
+  \bpmn@event@InheritFromCircle%
+  \beforebackgroundpath{%
+    \edef\event@picParam{default}%
+		\evtsubtype{\pgfkeysvalueof{/tikz/subtype}}
+		\evtkind{\pgfkeysvalueof{/tikz/kind}}
+		\evttype{\pgfkeysvalueof{/tikz/type}}
+  }%
+}
+
+\NewDocumentCommand{\event}{mm}{
+  \bpmn@event@InheritFromCircle%
+  \beforebackgroundpath{%
+%    \edef\event@picParam{default}%
+    %
+    \ifthenelse{\equal{#2}{non-interrupting start}}{\bpmn@event@NonInterrupting \bpmn@event@BasicCircle}{%
+    \ifthenelse{\equal{#2}{intermediate}}{\bpmn@event@IntermediateCircle}{%
+    \ifthenelse{\equal{#2}{intermediate catch}}{\bpmn@event@IntermediateCircle}{%
+    \ifthenelse{\equal{#2}{intermediate throw}}{\bpmn@event@IntermediateCircle \pgfkeys{/tikz/subkind=end}}{%
+    \ifthenelse{\equal{#2}{non-interrupting intermediate}}{\bpmn@event@NonInterrupting \bpmn@event@IntermediateCircle}{%
+    \ifthenelse{\equal{#2}{non-interrupting intermediate catch}}{\bpmn@event@NonInterrupting \bpmn@event@IntermediateCircle}{%
+    \ifthenelse{\equal{#2}{end}}{\bpmn@event@EndCircle \pgfkeys{/tikz/subkind=end}}{\bpmn@event@BasicCircle}}}}}}}%
+    %
+    \ifthenelse{\equal{#1}{message}}{\bpmn@event@MessagePicture}{%
+    \ifthenelse{\equal{#1}{timer}}{\bpmn@event@TimerPicture}{%
+    \ifthenelse{\equal{#1}{error}}{\bpmn@event@ErrorPicture}{%
+    \ifthenelse{\equal{#1}{escalation}}{\bpmn@event@EscalationPicture}{%
+    \ifthenelse{\equal{#1}{cancel}}{\bpmn@event@CancelPicture}{%
+    \ifthenelse{\equal{#1}{compensation}}{\bpmn@event@CompensationPicture}{%
+    \ifthenelse{\equal{#1}{conditional}}{\bpmn@event@ConditionalPicture}{%
+    \ifthenelse{\equal{#1}{link}}{\bpmn@event@LinkPicture}{%
+    \ifthenelse{\equal{#1}{signal}}{\bpmn@event@SignalPicture}{%
+    \ifthenelse{\equal{#1}{terminate}}{\bpmn@event@TerminatePicture}{%
+    \ifthenelse{\equal{#1}{multiple}}{\bpmn@event@MultiplePicture}{%
+    \ifthenelse{\equal{#1}{parallel multiple}}{\bpmn@event@ParallelMultiplePicture}{%
+    \ifthenelse{\equal{#1}{parallel-multiple}}{\bpmn@event@ParallelMultiplePicture}{}}}}}}}}}}}}}%
+  }%
+}
+
+\pgfdeclareshape{Event}{\event{\pgfkeysvalueof{/tikz/trigger}}{\pgfkeysvalueof{/tikz/type}}}
+\pgfdeclareshape{StartEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{start}}
+\pgfdeclareshape{NonInterruptingStartEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{non-interrupting start}}
+\pgfdeclareshape{IntermediateEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{intermediate}}
+\pgfdeclareshape{IntermediateCatchEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{intermediate catch}}
+\pgfdeclareshape{NonInterruptingIntermediateEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{non-interrupting intermediate}}
+\pgfdeclareshape{NonInterruptingIntermediateCatchEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{non-interrupting intermediate catch}}
+\pgfdeclareshape{IntermediateThrowEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{intermediate throw}}
+\pgfdeclareshape{EndEvent}{\event{\pgfkeysvalueof{/tikz/trigger}}{end}}
+\pgfdeclareshape{MessageStartEvent}{\event{message}{start}}
+\pgfdeclareshape{MessageNonInterruptingStartEvent}{\event{message}{non-interrupting start}}
+\pgfdeclareshape{MessageIntermediateCatchEvent}{\event{message}{intermediate}}
+\pgfdeclareshape{MessageNonInterruptingIntermediateCatchEvent}{\event{message}{non-interrupting intermediate}}
+\pgfdeclareshape{MessageIntermediateThrowEvent}{\event{message}{intermediate throw}}
+\pgfdeclareshape{MessageEndEvent}{\event{message}{end}}
+\pgfdeclareshape{TimerStartEvent}{\event{timer}{start}}
+\pgfdeclareshape{TimerNonInterruptingStartEvent}{\event{timer}{non-interrupting start}}
+\pgfdeclareshape{TimerIntermediateCatchEvent}{\event{timer}{intermediate}}
+\pgfdeclareshape{TimerNonInterruptingIntermediateCatchEvent}{\event{timer}{non-interrupting intermediate}}
+\pgfdeclareshape{ErrorStartEvent}{\event{error}{start}}
+\pgfdeclareshape{ErrorIntermediateEvent}{\event{error}{intermediate}}
+\pgfdeclareshape{ErrorEndEvent}{\event{error}{end}}
+\pgfdeclareshape{EscalationStartEvent}{\event{escalation}{start}}
+\pgfdeclareshape{EscalationNonInterruptingStartEvent}{\event{escalation}{non-interrupting start}}
+\pgfdeclareshape{EscalationIntermediateCatchEvent}{\event{escalation}{intermediate}}
+\pgfdeclareshape{EscalationNonInterruptingIntermediateCatchEvent}{\event{escalation}{non-interrupting intermediate}}
+\pgfdeclareshape{EscalationIntermediateThrowEvent}{\event{escalation}{intermediate throw}}
+\pgfdeclareshape{EscalationEndEvent}{\event{escalation}{end}}
+\pgfdeclareshape{CancelIntermediateCatchEvent}{\event{cancel}{intermediate}}
+\pgfdeclareshape{CancelEndEvent}{\event{cancel}{end}}
+\pgfdeclareshape{CompensationStartEvent}{\event{compensation}{start}}
+\pgfdeclareshape{CompensationIntermediateCatchEvent}{\event{compensation}{intermediate}}
+\pgfdeclareshape{CompensationIntermediateThrowEvent}{\event{compensation}{intermediate throw}}
+\pgfdeclareshape{CompensationEndEvent}{\event{compensation}{end}}
+\pgfdeclareshape{ConditionalStartEvent}{\event{conditional}{start}}
+\pgfdeclareshape{ConditionalNonInterruptingStartEvent}{\event{conditional}{non-interrupting start}}
+\pgfdeclareshape{ConditionalIntermediateCatchEvent}{\event{conditional}{intermediate}}
+\pgfdeclareshape{ConditionalNonInterruptingIntermediateCatchEvent}{\event{conditional}{non-interrupting intermediate}}
+\pgfdeclareshape{LinkIntermediateCatchEvent}{\event{link}{intermediate}}
+\pgfdeclareshape{LinkIntermediateThrowEvent}{\event{link}{intermediate throw}}
+\pgfdeclareshape{SignalStartEvent}{\event{signal}{start}}
+\pgfdeclareshape{SignalNonInterruptingStartEvent}{\event{signal}{non-interrupting start}}
+\pgfdeclareshape{SignalIntermediateCatchEvent}{\event{signal}{intermediate}}
+\pgfdeclareshape{SignalNonInterruptingIntermediateCatchEvent}{\event{signal}{non-interrupting intermediate}}
+\pgfdeclareshape{SignalIntermediateThrowEvent}{\event{signal}{intermediate throw}}
+\pgfdeclareshape{SignalEndEvent}{\event{signal}{end}}
+\pgfdeclareshape{TerminateEndEvent}{\event{terminate}{end}}
+\pgfdeclareshape{MultipleStartEvent}{\event{multiple}{start}}
+\pgfdeclareshape{MultipleNonInterruptingStartEvent}{\event{multiple}{non-interrupting start}}
+\pgfdeclareshape{MultipleIntermediateCatchEvent}{\event{multiple}{intermediate}}
+\pgfdeclareshape{MultipleNonInterruptingIntermediateCatchEvent}{\event{multiple}{non-interrupting intermediate}}
+\pgfdeclareshape{MultipleIntermediateThrowEvent}{\event{multiple}{intermediate throw}}
+\pgfdeclareshape{MultipleEndEvent}{\event{multiple}{end}}
+\pgfdeclareshape{ParallelMultipleStartEvent}{\event{parallel-multiple}{start}}
+\pgfdeclareshape{ParallelMultipleNonInterruptingStartEvent}{\event{parallel-multiple}{non-interrupting start}}
+\pgfdeclareshape{ParallelMultipleIntermediateCatchEvent}{\event{parallel-multiple}{intermediate}}
+\pgfdeclareshape{ParallelMultipleNonInterruptingIntermediateCatchEvent}{\event{parallel-multiple}{non-interrupting intermediate}}
+
+\newcommand{\bpmn@gw@InheritFromDiamond}{%
+  \inheritsavedanchors[from=diamond]%
+  \inheritanchorborder[from=diamond]%
+  \inheritanchor[from=diamond]{center}%
+  \inheritanchor[from=diamond]{north}%
+  \inheritanchor[from=diamond]{north east}%
+  \inheritanchor[from=diamond]{east}%
+  \inheritanchor[from=diamond]{south east}%
+  \inheritanchor[from=diamond]{south}%
+  \inheritanchor[from=diamond]{south west}%
+  \inheritanchor[from=diamond]{west}%
+  \inheritanchor[from=diamond]{north west}%
+  % etc...
+  \inheritbackgroundpath[from=diamond]%
+}
+
+\newcommand{\bpmn@gw@BasicCircle}[1][reset]{
+  \pgfutil@tempdima=\pgf@xc%
+  \pgfutil@tempdima=0.6\pgfutil@tempdima%
+  \pgfpathcircle{\pgfpointorigin}{\pgfutil@tempdima}%
+  \pgfusepath{draw}%
+  \ifthenelse{\equal{#1}{reset}}{%
+    \pgfsetdash{}{0}%
+  }{}%
+}
+
+\newcommand{\bpmn@gw@IntermediateCircle}{
+  \bpmn@gw@BasicCircle[keep]%
+  %
+  \pgfutil@tempdima=0.8\pgfutil@tempdima%
+  \pgfpathcircle{\pgfpointorigin}{\pgfutil@tempdima}%
+  \pgfusepath{draw}%
+  \pgfsetdash{}{0}%
+}
+
+\newcommand{\bpmn@gw@Gateway}{%
+  \pgf@process{\outernortheast}%
+  \pgf@xc=\pgf@x%
+  \pgf@yc=\pgf@y%
+  \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/outer xsep}}%
+  \pgfmathsetlength{\pgf@ya}{\pgfkeysvalueof{/pgf/outer ysep}}%
+  \advance\pgf@xc by-1.414213\pgf@xa%
+  \advance\pgf@yc by-1.414213\pgf@ya%
+  \pgfpathmoveto{\pgfqpoint{\pgf@xc}{0pt}}%
+  \pgfpathlineto{\pgfqpoint{0pt}{\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{-\pgf@xc}{0pt}}%
+  \pgfpathlineto{\pgfqpoint{0pt}{-\pgf@yc}}%
+  \pgfpathclose%
+  \pgfusepath{draw}%
+	\pgfutil@tempdima=.75\pgf@xc
+}
+
+\newcommand{\bpmn@gw@GatewayJoin}{%
+  \pgfsetlinewidth{2pt}%
+  \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@ya}}%
+  \pgfpathlineto{\pgfqpoint{\pgf@xa}{-\pgf@yc}}%
+  \pgfusepath{draw}%
+  \pgfsetlinewidth{0.5pt}%
+}
+
+\newcommand{\bpmn@gw@GatewaySplit}{%
+  \pgfsetlinewidth{2pt}
+  \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{-\pgf@xc}{\pgf@ya}}%
+  \pgfpathlineto{\pgfqpoint{\pgf@xa}{-\pgf@yc}}%
+  \pgfusepath{draw}%
+  \pgfsetlinewidth{0.5pt}%
+}
+
+\pgfqkeys{/tikz}{
+  direction/.initial=none,
+  type/.initial=none
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% P A R A L L E L   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@ParallelGateway}{%
+  \pgf@process{\outernortheast}%added
+  \pgf@xc=\pgf@x%added
+  \pgf@yc=\pgf@y%added
+	\ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{none}}{}{%
+	  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{intermediate}}{%
+		  \pgf@xc=.65\pgf@xc\pgf@yc=.65\pgf@yc%
+		}{%
+		  \pgf@xc=.8\pgf@xc\pgf@yc=.8\pgf@yc%
+			}%
+		}%added
+  \advance\pgf@xc by -.5\pgf@xc%
+  \advance\pgf@yc by -.5\pgf@yc%
+  \pgfsetlinewidth{2pt}
+  \pgfpathmoveto{\pgfqpoint{\pgf@xc}{0pt}}%
+  \pgfpathlineto{\pgfqpoint{-\pgf@xc}{0pt}}%
+  \pgfpathmoveto{\pgfqpoint{0pt}{\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{0pt}{-\pgf@yc}}%
+  \pgfusepath{draw}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% E X C L U S I V E   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@ExclusiveGateway}{%
+  \pgf@process{\outernortheast}%added
+  \pgf@xc=\pgf@x%added
+  \pgf@yc=\pgf@y%added
+	\ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{none}}{}{%
+	  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{intermediate}}{%
+		  \pgf@xc=.65\pgf@xc\pgf@yc=.65\pgf@yc%
+		}{%
+		  \pgf@xc=.8\pgf@xc\pgf@yc=.8\pgf@yc%
+			}%
+		}%added
+  \advance\pgf@xc by -.5\pgf@xc%
+  \pgfsetlinewidth{2pt}%
+  \pgfpathmoveto{\pgfqpoint{ 0.6\pgf@xc}{0.8484\pgf@xc}}%
+  \pgfpathlineto{\pgfqpoint{-0.6\pgf@xc}{-0.8484\pgf@xc}}%
+  \pgfpathmoveto{\pgfqpoint{-0.6\pgf@xc}{0.8484\pgf@xc}}%
+  \pgfpathlineto{\pgfqpoint{ 0.6\pgf@xc}{-0.8484\pgf@xc}}%
+  \pgfusepath{draw}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% I N C L U S I V E   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@InclusiveGateway}{%
+  \pgf@process{\outernortheast}%added
+  \pgf@xc=\pgf@x%added
+  \pgf@yc=\pgf@y%added
+	\ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{none}}{}{%
+	  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{intermediate}}{%
+		  \pgf@xc=.65\pgf@xc\pgf@yc=.65\pgf@yc%
+		}{%
+		  \pgf@xc=.8\pgf@xc\pgf@yc=.8\pgf@yc%
+			}%
+		}%added
+  \pgfsetlinewidth{2pt}%
+  \pgfutil@tempdima=\pgf@xc%
+  \pgfutil@tempdima=0.5\pgfutil@tempdima%
+  \pgfpathcircle{\pgfpointorigin}{\pgfutil@tempdima}%
+  \pgfusepath{draw}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% C O M P L E X   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@ComplexGateway}{%
+  \pgf@process{\outernortheast}%added
+  \pgf@xc=\pgf@x%added
+  \pgf@yc=\pgf@y%added
+	\ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{none}}{}{%
+	  \ifthenelse{\equal{\pgfkeysvalueof{/tikz/subtype}}{intermediate}}{%
+		  \pgf@xc=.65\pgf@xc\pgf@yc=.65\pgf@yc%
+		}{%
+		  \pgf@xc=.8\pgf@xc\pgf@yc=.8\pgf@yc%
+			}%
+		}%added
+  \advance\pgf@xc by -.5\pgf@xc%
+  \advance\pgf@yc by -.5\pgf@yc%
+  \pgfsetlinewidth{2pt}%
+  \pgfpathmoveto{\pgfqpoint{\pgf@xc}{0pt}}%
+  \pgfpathlineto{\pgfqpoint{-\pgf@xc}{0pt}}%
+  \pgfpathmoveto{\pgfqpoint{0pt}{\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{0pt}{-\pgf@yc}}%
+  \pgfpathmoveto{\pgfqpoint{0.707\pgf@xc}{0.707\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{-0.707\pgf@xc}{-0.707\pgf@yc}}%
+  \pgfpathmoveto{\pgfqpoint{-0.707\pgf@xc}{0.707\pgf@yc}}%
+  \pgfpathlineto{\pgfqpoint{0.707\pgf@xc}{-0.707\pgf@yc}}%
+  \pgfusepath{draw}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% E V E N T   B A S E D   E X C L U S I V E   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@EventBasedExclusiveGateway}{%
+  \pgf@xc=0.7\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \advance\pgf@xc by-0.8\pgf@xc%
+  \pgfpathmoveto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.587785252\pgf@yc}{-0.809016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.587785252\pgf@yc}{-0.809016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{0}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-0.951056516\pgf@yc}{0.309016994\pgf@yc}}%
+  \pgfusepath{draw}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% E V E N T   B A S E D   P A R A L L E L   I N S T A N T I A T I N G   G A T E W A Y %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bpmn@gw@ParallelMultiplePicture}{%
+  \pgf@xc=0.15\pgfutil@tempdima%
+  \pgf@yc=0.7\pgfutil@tempdima%
+  \pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@yc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@yc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{-\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{-\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@yc}{-\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@yc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{\pgf@xc}}%
+  \pgfpathlineto{\pgfpoint{-\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}%
+  \pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@xc}}%
+  \pgfusepath{draw}%
+}
+
+
+%%%%%%%%%%%%%%%%%
+% G A T E W A Y %
+%%%%%%%%%%%%%%%%%
+\mkswitch[]\gwkind%
+\addcase\gwkind{join}{\bpmn@gw@GatewayJoin}%
+\addcase\gwkind{split}{\bpmn@gw@GatewaySplit}%
+\addcase\gwkind{mixed}{\bpmn@gw@GatewayJoin\bpmn@gw@GatewaySplit}%
+%
+\mkswitch[]\gwsubtype%
+\addcase\gwsubtype{intermediate}{\bpmn@gw@IntermediateCircle}%
+\addcase\gwsubtype{instantiating}{\bpmn@gw@BasicCircle}%
+%
+\mkswitch[]\gwtype%
+\addcase\gwtype{parallel}{\bpmn@gw@ParallelGateway}%
+\addcase\gwtype{exclusive}{\bpmn@gw@ExclusiveGateway}%
+\addcase\gwtype{inclusive}{\bpmn@gw@InclusiveGateway}%
+\addcase\gwtype{complex}{\bpmn@gw@ComplexGateway}%
+\addcase\gwtype{event-based}{\bpmn@gw@EventBasedExclusiveGateway}%
+\addcase\gwtype{par event-based}{\bpmn@gw@ParallelMultiplePicture}%
+%
+\newcommand{\xgateway}{%
+  \bpmn@gw@InheritFromDiamond%
+  \beforebackgroundpath{%
+    \bpmn@gw@Gateway%
+		\gwkind{\pgfkeysvalueof{/tikz/kind}}%
+		\gwsubtype{\pgfkeysvalueof{/tikz/subtype}}%
+		\gwtype{\pgfkeysvalueof{/tikz/type}}%
+}}
+
+
+
+\newcommand{\gateway}[2]{%
+  \bpmn@gw@InheritFromDiamond%
+  \beforebackgroundpath{%
+    \bpmn@gw@Gateway%
+    %
+    \ifthenelse{\equal{#2}{join}}{\bpmn@gw@GatewayJoin}{%
+    \ifthenelse{\equal{#2}{merge}}{\bpmn@gw@GatewayJoin}{%
+    \ifthenelse{\equal{#2}{split}}{\bpmn@gw@GatewaySplit}{%
+    \ifthenelse{\equal{#2}{fork}}{\bpmn@gw@GatewaySplit}{%
+    \ifthenelse{\equal{#2}{mixed}}{\bpmn@gw@GatewayJoin \bpmn@gw@GatewaySplit}{}}}}}%
+    %
+    \ifthenelse{\equal{#1}{parallel}}{\bpmn@gw@ParallelGateway}{%
+    \ifthenelse{\equal{#1}{exclusive}}{\bpmn@gw@ExclusiveGateway}{%
+    \ifthenelse{\equal{#1}{inclusive}}{\bpmn@gw@InclusiveGateway}{%
+    \ifthenelse{\equal{#1}{complex}}{\bpmn@gw@ComplexGateway}{%
+    \ifthenelse{\equal{#1}{event-based}}{\bpmn@gw@IntermediateCircle \bpmn@gw@EventBasedExclusiveGateway}{%
+    \ifthenelse{\equal{#1}{exclusive event-based}}{\bpmn@gw@IntermediateCircle \bpmn@gw@EventBasedExclusiveGateway}{%
+    \ifthenelse{\equal{#1}{instantiating event-based}}{\bpmn@gw@BasicCircle \bpmn@gw@EventBasedExclusiveGateway}{%
+    \ifthenelse{\equal{#1}{exclusive instantiating event-based}}{\bpmn@gw@BasicCircle \bpmn@gw@EventBasedExclusiveGateway}{%
+    \ifthenelse{\equal{#1}{parallel event-based}}{\bpmn@gw@BasicCircle \bpmn@gw@ParallelMultiplePicture}{%
+    \ifthenelse{\equal{#1}{parallel instantiating event-based}}{\bpmn@gw@BasicCircle \bpmn@gw@ParallelMultiplePicture}{}}}}}}}}}}%
+  }%
+}
+
+\pgfdeclareshape{Gateway}{\gateway{\pgfkeysvalueof{/tikz/type}}{}}
+\pgfdeclareshape{JoinGateway}{\gateway{}{join}{}}
+\pgfdeclareshape{SplitGateway}{\gateway{}{split}{}}
+\pgfdeclareshape{ParallelGateway}{\gateway{parallel}{}{}}
+\pgfdeclareshape{ParallelJoinGateway}{\gateway{parallel}{join}{}}
+\pgfdeclareshape{ParallelSplitGateway}{\gateway{parallel}{split}{}}
+\pgfdeclareshape{ExclusiveGateway}{\gateway{exclusive}{}{}}
+\pgfdeclareshape{ExclusiveJoinGateway}{\gateway{exclusive}{join}{}}
+\pgfdeclareshape{ExclusiveSplitGateway}{\gateway{exclusive}{split}{}}
+\pgfdeclareshape{InclusiveGateway}{\gateway{inclusive}{}{}}
+\pgfdeclareshape{InclusiveJoinGateway}{\gateway{inclusive}{join}{}}
+\pgfdeclareshape{InclusiveSplitGateway}{\gateway{inclusive}{split}{}}
+\pgfdeclareshape{ComplexGateway}{\gateway{complex}{}{}}
+\pgfdeclareshape{ComplexJoinGateway}{\gateway{complex}{join}{}}
+\pgfdeclareshape{ComplexSplitGateway}{\gateway{complex}{split}{}}
+\pgfdeclareshape{EventBasedGateway}{\gateway{event-based}{}{}}
+\pgfdeclareshape{EventBasedJoinGateway}{\gateway{event-based}{join}{}}
+\pgfdeclareshape{EventBasedSplitGateway}{\gateway{event-based}{split}{}}
+\pgfdeclareshape{ExclusiveEventBasedGateway}{\gateway{exclusive event-based}{}}
+\pgfdeclareshape{ExclusiveEventBasedJoinGateway}{\gateway{exclusive event-based}{join}}
+\pgfdeclareshape{ExclusiveEventBasedSplitGateway}{\gateway{exclusive event-based}{split}}
+\pgfdeclareshape{InstantiatingEventBasedGateway}{\gateway{instantiating event-based}{}}
+\pgfdeclareshape{InstantiatingEventBasedJoinGateway}{\gateway{instantiating event-based}{join}}
+\pgfdeclareshape{InstantiatingEventBasedSplitGateway}{\gateway{instantiating event-based}{split}}
+\pgfdeclareshape{ExclusiveInstantiatingEventBasedGateway}{\gateway{exclusive instantiating event-based}{}}
+\pgfdeclareshape{ExclusiveInstantiatingEventBasedJoinGateway}{\gateway{exclusive instantiating event-based}{join}}
+\pgfdeclareshape{ExclusiveInstantiatingEventBasedSplitGateway}{\gateway{exclusive instantiating event-based}{split}}
+\pgfdeclareshape{ParallelEventBasedGateway}{\gateway{parallel event-based}{}}
+\pgfdeclareshape{ParallelEventBasedJoinGateway}{\gateway{parallel event-based}{join}}
+\pgfdeclareshape{ParallelEventBasedSplitGateway}{\gateway{parallel event-based}{split}}
+\pgfdeclareshape{ParallelInstantiatingEventBasedGateway}{\gateway{parallel instantiating event-based}{}}
+\pgfdeclareshape{ParallelInstantiatingEventBasedJoinGateway}{\gateway{parallel instantiating event-based}{join}}
+\pgfdeclareshape{ParallelInstantiatingEventBasedSplitGateway}{\gateway{parallel instantiating event-based}{split}}
+%\pgfdeclareshape{bpmn}{\xgateway{\bpmn@typ}{\bpmn@gw}{\bpmn@subtyp}}
+\pgfdeclareshape{bpmn gw}{\xgateway}
+\pgfdeclareshape{bpmn event}{\xevent}
+
+\pgfkeys{/tikz/.cd,
+%  gw/.code={\edef\bpmn@gw{#1}},
+%	typ/.code={\edef\bpmn@typ{#1}},
+%	subtyp/.code={\edef\bpmn@subtyp{#1}},
+  base dim/.initial=5mm,
+	kind/.initial=default,
+	subkind/.initial=default,
+	type/.initial=default,
+	subtype/.initial=default,
+	kind/.default=default,
+	subkind/.default=default,
+	type/.default=default,
+	subtype/.default=default,
+	gw join/.style={kind=join},
+	gw merge/.style={kind=join},
+	gw split/.style={kind=split},
+	gw fork/.style={kind=split},
+	gw mixed/.style={kind=mixed},
+	parallel/.style={type=parallel},
+	exclusive/.style={type=exclusive},
+	inclusive/.style={type=inclusive},
+	complex/.style={type=complex},
+	event-based/.style={type=event-based},
+	parallel event-based/.style={type=par event-based},
+	intermediate/.style={subtype=intermediate},
+	instantiating/.style={subtype=instantiating},
+	%
+	%
+	% for events...
+	non-interrupting/.style={subtype=non-interrupting},
+	intermediate event/.style={kind=intermediate},
+  intermediate throw event/.style={kind=intermediate throw,subkind=end},
+	start event/.style={kind=start},
+	end event/.style={kind=end,subkind=end},
+%	
+	  message/.style={type=message},
+    timer/.style={type=timer},
+    error/.style={type=error},
+    escalation/.style={type=escalation},
+    cancel/.style={type=cancel},
+    compensation/.style={type=compensation},
+    conditional/.style={type=conditional},
+    link/.style={type=link},
+    signal/.style={type=signal},
+    terminate/.style={type=terminate},
+    multiple/.style={type=multiple},
+    parallel multiple/.style={type=parallel multiple},
+		none/.style={},
+}
+\newcommand{\bmpnkey}[1]{\pgfkeysvalueof{/bpmn/#1}}
+\newcommand{\bpmn}[4][]{\node[bpmn,#1,draw,#4](#2){#3}}
+\makeatother
+
+\endinput
+%%
+%% End of file `bpmn.sty'.

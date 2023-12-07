@@ -1,0 +1,333 @@
+\NeedsTeXFormat{LaTeX2e}
+\def\mycalendarversion{0.1}
+\ProvidesPackage{mycalendar}%
+        [2020/03/04 MyCalendar (pgf/TikZ) package version \mycalendarversion]
+
+\RequirePackage{tikz}
+\usetikzlibrary{calendar}
+\RequirePackage{etoolbox}
+\RequirePackage{anyfontsize}
+
+\makeatletter
+		
+\def\cal@FirstDraw{1}
+
+\def\cal@Year{\the\year}
+\def\cal@FirstSemBegin{03-01}
+\def\cal@FirstSemEnd{07-01}
+\def\cal@SecondSemBegin{08-01}
+\def\cal@SecondSemEnd{12-01}
+\def\cal@AcadWeekBegin{2000-09-01}
+\def\cal@AcadWeekEnd{2000-09-07}
+\def\cal@RecessBegin{2000-01-01}
+\def\cal@RecessEnd{2000-01-02}
+
+
+\def\cal@FirstSemColor{green!40!black}
+\def\cal@SecondSemColor{magenta!70!black}
+\def\cal@ExtraDatesColor{lightgray}
+\def\cal@VacationColor{red!20!white}
+\def\cal@RecessColor{blue!20!white}
+
+\def\cal@week{}%
+\def\cal@weekcolor{}%
+
+\def\cal@markline{thin}%
+\def\cal@markcolor{gray}%
+			
+\newcounter{cal@cntweek}%
+
+\def\cal@ymd#1:#2:#3:{#1-#2-#3}%
+\def\cal@md#1:#2:#3:{\cal@Year-#1-#2}%
+\def\cal@datesplit#1-#2-#3-#4#5#6{#5#1:#2:#3:}%
+\def\cal@dateexpand#1{\expandafter\cal@datesplit\expanded{#1}--\cal@ymd\cal@md\empty}%
+
+%\cal@dateexpand{YY-MM-DD} => \cal@datesplitYY-MM-DD--\cal@ymd\cal@md   \empty
+%\cal@datesplitYY-MM-DD--\cal@ymd\cal@md  !! #1:YY #2:MM #3:DD #4:- #5:\cal@ymd #6:\cal@md
+%\cal@dateexpand{MM-DD} => \cal@datesplitMM-DD--\cal@ymd\cal@md\empty
+%\cal@datesplitMM-DD--\cal@ymd\cal@md\empdy  !! #1:MM #2:DD #3: #54\cal@ymd #5:\cal@md #6:\emtpy
+
+	  %% same thing, but using etextools (overkill !!)
+		%\RequirePackage{etextools}
+		%\def\cal@dateexpand#1{\ifstrmatch{.*-.*-.*}{#1}{#1}{\cal@Year-#1}}
+		
+    % This way you can define your own conditions, for example, you
+    % could make something as `full moon', `even week', `odd week',
+    % et cetera. In principle. The math in TeX could be hard.
+\pgfkeys{tikz,%
+	school calendar/.style={%
+		remember picture,%
+		every calendar/.style={%
+			year label left, week starts sunday, semester dates,%
+		}%
+	},%
+	year/.value required,%
+	year/.code={\def\cal@Year{#1}},%
+	/pgf/calendar/start of year/.code={%
+    \ifnum\pgfcalendarifdateday=1\relax%
+      \ifnum\pgfcalendarifdatemonth=1\relax\pgfcalendarmatchestrue\fi%
+    \fi%
+		\ifnum\cal@FirstDraw=1\relax\pgfcalendarmatchestrue\gdef\cal@FirstDraw{0}\fi%
+  },%
+	1st school semester/.code 2 args={%
+		\edef\cal@FirstSemBegin{\cal@dateexpand{#1}}\edef\cal@FirstSemEnd{\cal@dateexpand{#2}}%
+	},%
+	1st school semester color/.code={%
+		\def\cal@FirstSemColor{#1}%
+	},%
+	2nd school semester/.code 2 args={%
+		\edef\cal@SecondSemBegin{\cal@dateexpand{#1}}\edef\cal@SecondSemEnd{\cal@dateexpand{#2}}%
+  },%
+	2nd school semester color/.code={%
+		\def\cal@SecondSemColor{#1}%
+  },%
+	academic week/.code 2 args={%
+		\edef\cal@AcadWeekBegin{\cal@dateexpand{#1}}\edef\cal@AcadWeekEnd{\cal@dateexpand{#2}}%
+  },%
+		academic recess/.code 2 args={%
+		\edef\cal@RecessBegin{\cal@dateexpand{#1}}\edef\cal@RecessEnd{\cal@dateexpand{#2}}%
+  },%
+	extra dates color/.code={%
+		\def\cal@ExtraDatesColor{#1}%
+  },%
+	special dates/.style 2 args={%
+		every calendar/.append style={%
+			if={(datelist={#1}) [color=#2]} %holidays
+		}%
+	},%
+	/pgf/calendar/datelist/.code={%
+		\forcsvlist{\cal@datetest}{#1}%
+	},%
+	special period/.style n args={3}{%
+		every calendar/.append style={%
+			if={(between=\cal@dateexpand{#1} and \cal@dateexpand{#2}) [color=#3]} %holidays
+		}%
+	},%
+	vacation/.style 2 args={%
+		every calendar/.append style={%
+			if={(between=\cal@dateexpand{#1} and \cal@dateexpand{#2}) [color=\cal@VacationColor]} %holidays
+		}%
+	},%
+}%
+
+\newcommand{\cal@datetest}[1]{%
+	\pgfcalendardatetojulian{\cal@dateexpand{#1}}{\pgfutil@tempcnta}%
+	\ifnum\pgfcalendarifdatejulian=\pgfutil@tempcnta\relax\pgfcalendarmatchestrue\fi%
+}
+
+
+%\newcommand{\cal@cdraw}[2]{%
+%	\draw[#1] (#2.center) ++(\cal@mark@Xshift,\cal@mark@Yshift) circle (\cal@mark@radius);
+%}
+
+\newcommand{\cal@markdraw}[2]{%
+	\draw[\cal@markline,\cal@markcolor,#1] (#2.center) ++(\cal@mark@Xshift,\cal@mark@Yshift) ++(-\cal@mark@radius,-\cal@mark@radius) rectangle %
+					++(\cal@mark@square,\cal@mark@square);%
+}%
+
+\newcommand{\cal@rcdraw}[2]{%
+	 \cal@markdraw{rounded corners=\cal@mark@radius,#1}{#2}%
+	 \cal@markdraw{#1}{#2}%
+}%
+
+\newcommand{\cal@boxdraw}[3]{%
+	\draw[\cal@markline,\cal@markcolor,#1] (#3.center) ++(\cal@mark@Xshift,\cal@mark@Yshift) ++(\cal@mark@radius,\cal@mark@radius) coordinate(A) %
+			(#2.center) ++(\cal@mark@Xshift,\cal@mark@Yshift) ++(-\cal@mark@radius,-\cal@mark@radius) rectangle (A);%
+}%
+
+\newcommand{\cal@Note}[6]{%
+	\draw[\cal@markline,\cal@markcolor,#1] (#2.center) ++(#4,#5) node[anchor=#6 west] {\fontsize{\cal@mark@fontsize}{\cal@mark@fontsize}\selectfont #3};%
+}%
+
+\newcommand{\cal@markdrawNote}[6]{%
+	\cal@markdraw{#1}{#2}%
+  \cal@Note{#1}{#2}{#3}{#4}{#5}{#6}%
+}%
+
+\newcommand{\cal@boxdrawNote}[7]{%
+	 \cal@boxdraw{#1}{#2}{#3}%
+	 \cal@Note{#1}{#3}{#4}{#5}{#6}{#7}%
+}%
+
+
+\def\cal@mark@Xshift{0.65pt}
+\def\cal@mark@Yshift{0pt}
+\def\cal@mark@TXshift{3.4pt}
+\def\cal@mark@TYshift{0.3pt}
+\def\cal@mark@TXshiftB{2pt}
+\def\cal@mark@TYshiftB{-0.3pt}
+\def\cal@mark@radius{6.25pt}
+\def\cal@mark@square{12.5pt}
+\def\cal@mark@fontsize{2.8}
+
+\newcommand{\cal@markstyle}[1]{%
+		\pgfkeys{/tikz/#1/.cd,%
+			defaultline/.code={\def\cal@markline{thin}},%
+			defaultcolor/.code={\def\cal@markcolor{gray}},%
+			color/.store in=\cal@markcolor,%
+			line/.store in=\cal@markline,%
+		}
+}
+
+
+%%% Top corner Text
+
+\newcommand{\cal@rcdrawUP}[3][]{%
+	 \cal@rcdraw{#1}{#2}%
+	 \cal@Note{#1}{#2}{#3}{\cal@mark@TXshift}{\cal@mark@TYshift}{south}%
+}
+	
+\newcommand{\calcmarksUP}[1]{\pgfkeys{/tikz/calcmarksUP/.cd,defaultcolor,defaultline,#1}}%
+	\pgfkeysdefargs{/tikz/calcmarksUP/date}{#1:#2}{\cal@markdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
+	\pgfkeysdefargs{/tikz/calcmarksUP/dates}{#1:#2:#3}{\cal@boxdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
+	\cal@markstyle{calcmarksUP}%
+	\newcommand{\calcmarks}{\calcmarksUP}		%
+
+\newcommand{\calrmarksUP}[1]{\pgfkeys{/tikz/calrmarksUP/.cd,defaultcolor,defaultline,#1}}
+	\pgfkeysdefargs{/tikz/calrmarksUP/date}{#1:#2}{\cal@markdrawNote{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshift}{\cal@mark@TYshift}{south}}%
+	\pgfkeysdefargs{/tikz/calrmarksUP/dates}{#1:#2:#3}{\cal@boxdrawNote{}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshift}{\cal@mark@TYshift}{south}}%
+	\cal@markstyle{calrmarksUP}%
+	\newcommand{\calrmarks}{\calrmarksUP}%
+		
+\newcommand{\calnotesUP}[1]{\pgfkeys{/tikz/calnotesUP/.cd,defaultcolor,defaultline,#1}}%
+	\pgfkeysdefargs{/tikz/calnotesUP/date}{#1:#2}{\cal@Note{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
+	\cal@markstyle{calnotesUP}%
+
+
+%%% Lower corner Text
+
+\newcommand{\cal@rcdrawDW}[3][]{%
+	 \cal@rcdraw{#1}{#2}%
+	 \cal@Note{#1}{#2}{#3}{\cal@mark@TXshift}{\cal@mark@TYshiftB}{north}%
+}%
+
+\newcommand{\calcmarksDW}[1]{\pgfkeys{/tikz/calcmarksDW/.cd,defaultcolor,defaultline,#1}}%
+	\pgfkeysdefargs{/tikz/calcmarksDW/date}{#1:#2}{\cal@markdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshiftB}{north}}%
+	\pgfkeysdefargs{/tikz/calcmarksDW/dates}{#1:#2:#3}{\cal@boxdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshiftB}{\cal@mark@TYshiftB}{north}}%
+	\cal@markstyle{calcmarksDW}%
+		
+\newcommand{\calrmarksDW}[1]{\pgfkeys{/tikz/calrmarksDW/.cd,defaultcolor,defaultline,#1}}%
+	\pgfkeysdefargs{/tikz/calrmarksDW/date}{#1:#2}{\cal@markdrawNote{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshift}{\cal@mark@TYshiftB}{north}}%
+	\pgfkeysdefargs{/tikz/calrmarksDW/dates}{#1:#2:#3}{\cal@boxdrawNote{}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshift}{\cal@mark@TYshiftB}{north}}%
+	\cal@markstyle{calrmarksDW}%
+
+\newcommand{\calnotesDW}[1]{\pgfkeys{/tikz/calnotesDW/.cd,defaultcolor,defaultline,#1}}%
+	\pgfkeysdefargs{/tikz/calnotesDW/date}{#1:#2}{\cal@Note{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshiftB}{north}}%
+	\cal@markstyle{calnotesDW}%
+
+		
+    % Define our own style
+\pgfkeys{tikz,%
+	week starts sunday/.style={%
+        % Note that we cannot extend from week list,
+        % the execute before day scope is cumulative
+    execute before day scope={%
+			\ifdate{day of month=1}{%
+				\ifdate{equals=\pgfcalendarbeginiso}{}{%
+               % On first of month, except when first date in calendar.
+					\pgfmathsetlength{\pgf@y}{\tikz@lib@cal@month@yshift}%
+					\pgftransformyshift{-\pgf@y}%
+				}%
+			}{}%
+    },%
+    execute at begin day scope={%
+            % Because for TikZ Monday is 0 and Sunday is 6,
+            % we can't directly use \pgfcalendercurrentweekday,
+            % but instead we define \c@pgf@counta (basically) as:
+            % (\pgfcalendercurrentweekday + 1) % 7
+      \pgfmathsetlength\pgf@x{\tikz@lib@cal@xshift}%
+      \ifnum\pgfcalendarcurrentweekday=6%
+        \c@pgf@counta=0%
+      \else%
+        \c@pgf@counta=\pgfcalendarcurrentweekday%
+        \advance\c@pgf@counta by 1%
+      \fi%
+      \pgf@x=\c@pgf@counta\pgf@x%
+            % Shift to the right position for the day.
+      \pgftransformxshift{\pgf@x}%
+			\cal@semtests{\cal@FirstSemBegin}{\cal@FirstSemEnd}{\cal@FirstSemColor}%
+			\cal@semtests{\cal@SecondSemBegin}{\cal@SecondSemEnd}{\cal@SecondSemColor}%
+			\ifdate{between=\cal@FirstSemEnd and \cal@SecondSemBegin+-7}{\setcounter{cal@cntweek}{0}}{}%
+    },%
+		day text={\cal@weekcolor\tiny\bf$^{^{\cal@week}}$}\%d0,%
+    execute after day scope={%
+        % Week is done, shift to the next line.
+        \ifdate{Saturday}{%
+          \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
+          \pgftransformyshift{-\pgf@y}%
+        }{}%
+    },%
+    % This should be defined, glancing from the source code.
+    tikz@lib@cal@width=7,%
+    if={(Sunday) [blue!70]},%
+	} %% end of "week starts sunday" style
+}%
+
+\newcommand{\cal@semtests}[3]{%
+	\ifdate{Sunday}{%
+    \ifdate{between=#1+-3 and #2}{%
+			\ifdate{between=\cal@AcadWeekBegin+-1 and \cal@AcadWeekEnd}{}{%
+			  \ifdate{between=\cal@RecessBegin+-1 and \cal@RecessEnd}{}{%
+					\stepcounter{cal@cntweek}%
+					\def\cal@weekcolor{\color{#3}}%
+					\def\cal@week{{\thecal@cntweek}}%
+				}%
+			}%
+		}{}%
+	}{}%
+}%
+
+\pgfkeys{tikz,%
+	semester dates/.style={%
+    if={(equals=\cal@FirstSemBegin) [color=\cal@FirstSemColor,thick]},%
+		if={(equals=\cal@FirstSemEnd) [color=\cal@FirstSemColor,thick]},%
+		if={(equals=\cal@SecondSemBegin) [color=\cal@SecondSemColor,thick]},%
+		if={(equals=\cal@SecondSemEnd) [color=\cal@SecondSemColor,thick]},%
+		if={(between=\cal@AcadWeekBegin and \cal@AcadWeekEnd) [color=\cal@ExtraDatesColor]},%
+		if={(between=\cal@RecessBegin and \cal@RecessEnd) [color=\cal@RecessColor]},%
+	},%
+    % New style for drawing the year, it is always drawn
+    % for January and the "first month drawn"
+	year label left/.style={%
+    execute before day scope={%
+      \ifdate{start of year}{%
+        \drawyear%
+      }{}%
+    },%
+      % Right align
+    every year/.append style={%
+      anchor=east,%
+    },%
+    month label above centered,%
+    month text={\textit{\%mt}},%
+    every year/.append style={font=\Large\sffamily\bfseries,green!50!black},%
+	},%
+    % Style to force giving a month a year label.
+	draw year/.style={%
+		execute before day scope={%
+			\ifdate{day of month=1}{\drawyear}{}%
+    }%
+  },%
+	semester marks/.style={%
+		execute after day scope={%
+		    \ifdate{equals=\cal@FirstSemBegin}{\cal@rcdraw{thick,\cal@FirstSemColor}{cal-\cal@dateexpand{\cal@FirstSemBegin}}}{}%
+		    \ifdate{equals=\cal@FirstSemEnd}{\cal@rcdraw{thick,\cal@FirstSemColor}{cal-\cal@dateexpand{\cal@FirstSemEnd}}}{}%
+		    \ifdate{equals=\cal@SecondSemBegin}{\cal@rcdraw{thick,\cal@SecondSemColor}{cal-\cal@dateexpand{\cal@SecondSemBegin}}}{}%
+		    \ifdate{equals=\cal@SecondSemEnd}{\cal@rcdraw{thick,\cal@SecondSemColor}{cal-\cal@dateexpand{\cal@SecondSemEnd}}}{}%
+    },%
+	}%
+}%
+
+    % This actually draws the year.
+\newcommand{\drawyear}{%
+  \pgfmathsetlength{\pgf@x}{\tikz@lib@cal@xshift}%
+  \pgftransformxshift{-\pgf@x}%
+        % \tikzyearcode is defined by default
+  \tikzyearcode%
+  \pgfmathsetlength{\pgf@x}{\tikz@lib@cal@xshift}%
+  \pgftransformxshift{\pgf@x}%
+}%
+
+\newcommand{\calmonth}[2][\cal@Year]{\calendar[name=cal,dates=#1-#2-01 to #1-#2-last];}%
+
+\endinput%

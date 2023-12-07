@@ -1,0 +1,619 @@
+%%
+%% \QA : Circuitos I
+%%         \QAA : 1a Área
+%%         \QAB : 2a Área
+%%         \QAC : outros exercícios
+%%
+%% \QB : Eletronica I
+%%         \QBA : 1a Área
+%%         \QBB : 2a Área
+%%
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{CircuitosI}%
+        [2016/10/15 MyCirc  drawing package version 0.1]
+
+
+\defQuestion{C.I:1a:Q5}{%
+  \draw (0,0) \coord(ref) to[I,l=\Ia] ++(0,4) \coord(A) to[R=\Ra] ++(2,0) \coord(B)
+  (B) to[V,l=\Va] ++(0,-2) \coord(C) node(nC){}
+  (B) -- ++(2,0) \coord(Bb) to[R=\Rb] ++(0,-2) \coord(Cc) -- (C) 
+  (Bb) to[R=\Rc] ++(2,0) \coord(D) node(nD){} to[R=\Rd] (nD |- nC) \coord(E) to[V,l=\Vb] (Cc)
+  (D) -- ++(2,0) \coord(Dd) node(nDd){} to[V,invert,l=\Vc]  (nDd |- nC) \coord(F) node(nF){} -- (E) 
+  (Dd) to[R=\Rf] ++(2,0) to[I,l=\Ib] ++(0,-4) \coord(G) node(nG){} -| (F)
+  (nG -| nF) to[I,l=\Ic] ++(-2,0) to[V,l=\Vd] ++(-2,0) to[R,l_=\Rg] ++(-2,0) \coord(H) -- (C)
+  (H) -- (ref) -- ++(0,-2) to[R=\Rh] ++(2,0) \coord(I) 
+  (I) -- ++(0,1) to[R,l_=\Ri] ++(2,0) -- ++(0,-1)
+  (I) -- ++(0,-1) to[R=\Rj] ++(2,0) -- ++(0,1) -| (G)
+  ;
+}
+
+\defQuestion{C.I:1a:Q6}{
+  \draw (0,0) \coord(ref) node(nref){} to[R,l_=\Ra] ++(3,0) \coord(A) to[R,l_=\Rb] ++(3,0) \coord(B) node(nB){}
+  (A) to[R=\Rc] ++(0,-2) \coord(C) node(nC){} -- (nC -| nref)
+  (C) -- (nC -| nB)
+  (ref) node[Quad,quad width=3.2cm,quad base height=1cm,anchor=inner 1+,draw](q1){Q1}
+  (nC -| nref) ++(0,-2) node[Quad H,quad width=3.2cm,quad base height=1cm,anchor=inner 1+,draw](q2){Q2}
+  (q1.1-) -- (q2.1+) (q1.2-) -- (q2.2+)
+  (q1.1+) -- ++(-1,0) \coord(D) node(nD){} to[R=\Rd] (nD |- q2.1-)
+  (D) -- ++(-1.5,0) \coord(E) node(nE){} to[R=\Re] ++(0,-2) to[V,l=\Va] (nE |- q2.1-)
+  (E) -- ++(-1.5,0) \coord(F) node(nF){} to[I,l=\Ia,invert] (nF |- q2.1-) -- (q2.1-)
+  (q1.2+) -- ++(1,0) \coord(G) node(nG){} to[R=\Rf] ++(0,-2)  to[R=\Rf] (nG |- q2.2-)
+  (G) -- ++(1.5,0) \coord(H) node(nH){} to[I,l=\Ib] ++(0,-3) \coord(G1) to[R=\Rg] (nH |- q2.2-)
+  (H) -- ++(1.5,0) \coord(I) node(nI){} to[R=\Rh] ++(0,-3) \coord(H1) to[I,l=\Ib] (nI |- q2.2-) -- (q2.2-)
+  (G1) -- (H1)
+  %node[Quad H,anchor=1+,draw,I1=\Iaa,I2=\Iba](Qh){}
+  ;
+}
+
+\defQuestion{C.I:1a:Q7}{
+  \draw (0,0)  \coord(ref) to[V,l=\Va] ++(0,2)  to[R=\Ra]  ++(2,0) \coord(A) to[R=\Rb] ++(0,-2)
+  (A) to[V,l=\Va] ++(2,0) \coord(B) to[R=\Rc] ++(0,-2) 
+  (B) to[R=\Rd] ++(2,0) node[BB,anchor=1+,draw](bb){bb}
+  (bb.1-) -- (ref)
+  (bb.inner 1-) ++(0.5,0.25) -- ++(3,0) to[short,i=$I_1$] ++(1,0)
+  (bb.inner 1-) ++(1,-0.25) -- ++(0,1.75) to[short,i=$V_1$] ++(0,1)
+  (bb.inner 1-) ++(0.5,-0.25) ++(0,1.5) \coord(Vth) node(Vth){20} 
+  (bb.inner 1-) ++(0.5,0) ++(3,0) \coord(In) node(In){10} 
+  (Vth) -- (In)
+  ;
+}
+
+\defQuestionAlias{C.I:1a:Q1}{QAAa}
+\defQuestion{QAAa}{%
+	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A) to[R=\Rb]
+	++(2,0) \coord(X) 
+	(X) to[R=\Rx,v=\Vx] ++(0,2) \coord(OPminus)
+	(OPminus) to[R,l_=\Ra] ++(-2,0) \coord(B)
+	(OPminus) ++(3,-1) \coord(out)
+	(ref) to[open] ++(-2,0) node(nG){} \coord(G) to[V,invert,l=\Vb] ++(0,2) |- (B) 
+	(out) to[R=\Rd] ++(2,0) \coord(C) -- ++(0.5,0) node(nD){} \coord(D) node[ocirc] {}
+	(out) to[V,invert,l_=\Kx.\Vx] ++(0,-2) |- (ref)
+	(OPminus) -- ++(0,1) to[R=\Rc] ++(2,0) \coord(E) -- ++(0,+1) -- ++(-2,0) to[R,l_=\Re] ++(-2,0) -- (B)  
+	(E) to[R=\Rf] ++(2,0) -| (C)
+	(D) to[open,v=$V_o$]   (nD |- nG) node[ocirc] {}  -- (G)
+	;	
+}
+
+
+
+\defQuestionAlias{C.I:1a:Q1a}{QAAaa}
+\defQuestion{QAAaa}{%
+	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A) to[R=\Rb]
+	++(2,0) \coord(X) node[op amp,anchor=+](opamp) {}
+	(X) to[R,l_=\Rb] ++(0,-2) |- (ref)
+	(opamp.-) to[R,l_=\Ra] ++(-2,0) \coord(B)
+	(ref) to[open] ++(-2,0) node(nG){} \coord(G) to[V,invert,l=\Vb] ++(0,2) |- (B) 
+	(opamp.out) to[R=\Rd] ++(2,0) \coord(C) -- ++(0.5,0) node(nD){} \coord(D) node[ocirc] {}
+	(opamp.out) to[R=\Rd] ++(0,-2) |- (ref)
+	(opamp.-) -- ++(0,1) to[R=\Rc] ++(2,0) \coord(E) -- ++(0,+1) -- ++(-2,0) to[R,l_=\Re] ++(-2,0) -- (B)  
+	(E) to[R=\Rf] ++(2,0) -| (C)
+	(D) to[open,v=$V_o$]   (nD |- nG) node[ocirc] {}  -- (G)
+	;	
+}
+
+\defQuestionAlias{C.I:1a:Q1b}{QAAab}
+\defQuestion{QAAab}{%
+	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A) to[R=\Rb]
+	++(2,0) \coord(B) node[op amp,anchor=+](opamp) {}
+	(opamp.-) to[R,l_=\Ra] ++(-2,0) \coord(B)
+	(ref) to[open] ++(-2,0) node(nG){} \coord(G) to[V,invert,l=\Vb] ++(0,2) |- (B) 
+	(opamp.out) to[R=\Rd] ++(2,0) \coord(C) -- ++(0.5,0) node(nD){} \coord(D) node[ocirc] {}
+	(opamp.-) -- ++(0,1) to[R=\Rc] ++(2,0) \coord(E) -- ++(0,+1) -- ++(-2,0) to[R,l_=\Re] ++(-2,0) -- (B)
+	(E) to[R=\Rf] ++(2,0) -| (C)
+	(D) to[open,v=$V_o$]   (nD |- nG) node[ocirc] {}  -- (G)
+	;	
+}
+
+\defQuestionAlias{C.I:1a:Q2}{QAAb}
+\defQuestion{QAAb}{%
+	\draw (0,0) \coord(ref)  ++(0,3)  \coord(A)
+	-- ++(2,0)  \coord(C) 
+	(ref) -- ++(2,0) to[V,invert,l_=\Kx$V_x$]  ++(2,0) \coord(E) to[R=\Rg] ++(2,0)
+	\coord(F) -- ++(0,2) to[I,invert,l=\Ky$I_y$] ++(-2,0) -- ++(-2,0) to[R=\Rh,v>=$V_o$]
+	++(0,-2) \coord(D) -- (ref)
+	 
+	(F) -- ++(0,-2) \coord(Z) to[R=\Rf] ++(-2,0) -- ++(-2,0) \coord(Y) |- (ref)
+	(F)  |- (C) -- (C)
+	(ref) to[V,invert,l=\Vi] ++(0,-2) \coord(X) to[R=\Ra,i=$I_y$] ++(-2,0) \coord(G)  -- ++(0,2) \coord(I)
+ 	to[R=\Rb,v>=$V_x$] ++(2,0) -- (ref)
+	(I)  to[R=\Rc] ++(-2,0) \coord(H) |- (A) 
+	(G) -- ++(-3.5,0) to[R=\Rc] ++(0,2) \coord(J) to[I,invert,invert,l=\Ky$I_y$] ++(0,2)  |- (A) 
+	(J) -- (H)
+	(X) to[R=\Ri] (Y)
+	
+	(Z) -- ++(2,0) to[I,invert,l=\Ii] ++(0,2) to[R=\Ri] ++(0,3) -- ++(-2,0)
+	
+	 ;	
+}
+
+\defQuestionAlias{C.I:1a:Q2a}{QAAba}
+\defQuestion{QAAba}{%
+	\draw (0,0) \coord(ref) to[R=\Rd] ++(0,2) -- ++(0,1) \coord(A)
+	to[R=\Re] ++(2,0)  \coord(C) 
+	(ref) -- ++(2,0) to[V,invert,l_=\Kx$V_x$]  ++(2,0) \coord(E) to[R=\Rg] ++(2,0)
+	\coord(F) -- ++(0,2) to[I,invert,l=\Ky$I_y$] ++(-2,0) -- ++(-2,0) to[R=\Rh,v>=$V_o$]
+	++(0,-2) \coord(D) -- (ref)
+	 
+	(F) -- ++(0,-2) \coord(Z) to[R=\Rf] ++(-2,0) -- ++(-2,0) \coord(Y) |- (ref)
+	(F)  |- (C) -- (C)
+	(ref) to[V,invert,l=\Vi] ++(0,-2) \coord(X) to[R=\Ra,i=$I_y$] ++(-2,0) \coord(G)
+ 	to[R=\Rb,v>=$V_x$] ++(0,2) -- (ref)
+	(G) -- ++(-1.5,0) \coord(I) to[R=\Rc] ++(0,2) \coord(H) |- (A) 
+	(I) -- ++(-1.5,0) to[R=\Rc] ++(0,2) \coord(J) to[I,invert,l=\Ky$I_y$] ++(0,2)  |- (A) 
+	(J) -- (H)
+	(X) to[R=\Ri] (Y)
+	
+	(Z) -- ++(2,0) to[I,invert,l=\Ii] ++(0,2) to[R=\Ri] ++(0,3) -- ++(-2,0)
+	
+	 ;	
+}
+
+
+\defQuestionAlias{C.I:1a:Q2b}{QAAbb}
+\defQuestion{QAAbb}{%
+	\draw (0,0) \coord(ref) to[R=\Rd] ++(0,2) -- ++(0,1) \coord(A)
+	to[R=\Re] ++(2,0)  \coord(C) 
+	(ref) -- ++(2,0) to[V,invert,l_=\Kx$V_x$]  ++(2,0) \coord(E) to[R=\Rg] ++(2,0)
+	\coord(F) -- ++(0,2) to[I,invert,l=\Ky$I_y$] ++(-2,0) -- ++(-2,0) to[R=\Rh,v>=$V_o$]
+	++(0,-2) \coord(D) -- (ref)
+	 
+	(F) -- ++(0,-2) \coord(Z) to[R=\Rf] ++(-2,0) -- ++(-2,0) \coord(Y) |- (ref)
+	(F)  |- (C) -- (C)
+	(ref) to[V,invert,l=\Vi] ++(0,-2) \coord(X) to[R=\Ra,i=$I_y$] ++(-2,0) \coord(G)
+ 	to[R=\Rb,v>=$V_x$] ++(0,2) -- (ref)
+	(G) -- ++(-1.5,0) to[R=\Rc] ++(0,2) |- (A) -- (A)
+	(X) to[R=\Ri] (Y)
+	
+	(Z) -- ++(2,0) to[I,invert,l=\Ii] ++(0,2) to[R=\Ri] ++(0,3) -- ++(-2,0)
+	
+	 ;	
+}
+
+\defQuestionAlias{C.I:1a:Q2d}{QAAbd}
+\defQuestion{QAAbd}{%
+	\draw (0,0) \coord(ref)  ++(0,3)  \coord(A)
+	-- ++(2,0)  \coord(C) 
+	(ref) -- ++(2,0) to[V,invert,l_=\Kx$V_x$]  ++(2,0) \coord(E) to[R=\Rg] ++(2,0)
+	\coord(F) -- ++(0,2) to[I,invert,l=\Ky$I_y$] ++(-2,0) -- ++(-2,0) to[R=\Rh,v>=$V_o$]
+	++(0,-2) \coord(D) -- (ref)
+	 
+	(F) -- ++(0,-2) \coord(Z) to[R=\Rf] ++(-2,0) -- ++(-2,0) \coord(Y) |- (ref)
+	(F)  |- (C) -- (C)
+	(ref) to[V,invert,l=\Vi] ++(0,-2) \coord(X) to[R=\Ra,i=$I_y$] ++(-2,0) \coord(G)  -- ++(0,2) \coord(I)
+ 	to[R=\Rb,v>=$V_x$] ++(2,0) -- (ref)
+	(I)  to[R=\Rc] ++(-2,0) \coord(H) %|- (A) 
+	(G) -- ++(-3.5,0) to[R=\Rc] ++(0,2) \coord(J) -- ++(0,2)  |- (A) 
+	(J) -- (H)
+	(J) ++(0,2) to[I,invert,l=\Ky$I_y$] ++(2,0) \coord(W) -| (I)
+	(X) to[R=\Ri] (Y)
+	
+	(Z) -- ++(2,0) to[I,invert,l=\Ii] ++(0,2) to[R=\Ri] ++(0,3) \coord(WW) -- ++(-2,0)
+	(W) ++(1.5,0) to[I,invert,l=\Ky$I_y$] ++(2,0) -- ++(1,0)|- (WW)
+	 ;	
+}
+
+
+
+
+\defQuestionAlias{C.I:1a:Q3}{QAAc}
+\defQuestion{QAAc}{%
+	\draw (0,0) \coord(ref) to[R=\Rm] ++(0,2) to[R=\Rl] ++(0,2)
+	\coord(A) -- ++(-0.5,0) to[I,invert,l=\Ky$V_x$] ++(-2,0) \coord(O) -- (O |- ref) to[short] (ref)
+	(ref) -- ++(2,0) to[V,invert,l=\Va] ++(0,2) \coord(B) to[R=\Rk] ++(0,2)
+	(B) -- ++(1,0) \coord(C) |- (A) 
+	(C) to[R=\Rj,i=$I_y$] ++(2,0) \coord(D) to[R=\Ri] ++(0,-2)
+	(D) ++(2,0) \coord(E) to[V,invert,l_=\Vc] (D)
+	(E) to[R,l_=\Rg] ++(0,2) \coord(F) -- ++(-2,0) -- (A)
+	(E) to[R=\Rh,i=$I_z$] ++(0,-2) \coord(G) -- (ref)
+	(G) to[I,invert,l=\Ky$V_o$] ++(0,-2) \coord(H) to[R=\Rf] ++(-2,0)
+	\coord(I) ++(0,2) to[V,invert,l=\Vd] (I) ++(0,-2) \coord(J) to[I,invert,l_=\Ia] (I)
+	(J) -- ++(-1.5,0) \coord(K) to[R,l_=\Rd] ++(0,2) to[R,l_=\Re] ++(0,2)
+	(K) to[R=\Rc] ++(-2,0) \coord(L) to[R,l_=\Rb,v^>=$V_o$] ++(0,2) ++(0,2)
+	to[V,invert,l=\Kx$I_z$] ++(0,-2)
+	(L) -- ++(-2.0,0) to[R,l_=\Ra,v^>=$V_x$] ++(-2,0)  \coord(P) -- (P |- ref) 
+	(F) -- ++(1.5,0) \coord(M) |- (J) -- (J)
+	(E) -| (M)
+	(H) -| (M)
+	
+	(O) to [R,l_=\Rd] ++(-2,0) \coord(Q) to [R,l_=\Rd] ++(0,-2) -- (Q |- ref) to [R,l_=\Rd] ++(2,0)
+	(P) to [R,l_=\Rd] ++(-2,0)to [R,l_=\Rd] ++(0,2) -- (Q |- ref)
+	
+	(M) to[R,l=\Rx] ++(2,0) -- ++(0,-4) \coord(X) to[I,invert,l=\Ia] ++(-2,0)
+	(X) -- ++(0,-4) to[R,l=\Ry] ++(-2,0)
+	;	
+}
+
+
+
+\defQuestionAlias{C.I:1a:Q3a}{QAAca}
+\defQuestion{QAAca}{%
+	\draw (0,0) \coord(ref) to[R=\Rm] ++(0,2) to[R=\Rl] ++(0,2)
+	\coord(A) -- ++(-0.5,0) to[I,invert,l=\Ky$V_x$] ++(-2,0) \coord(O) -- (O |- ref) to[short] (ref)
+	(ref) -- ++(2,0) to[V,invert,l=\Va] ++(0,2) \coord(B) to[R=\Rk] ++(0,2)
+	(B) -- ++(1,0) \coord(C) |- (A) 
+	(C) to[R=\Rj,i=$I_y$] ++(2,0) \coord(D) to[R=\Ri] ++(0,-2)
+	(D) ++(2,0) \coord(E) to[V,invert,l_=\Vc] (D)
+	(E) to[R,l_=\Rg] ++(0,2) \coord(F) to[V,invert,l=\Vb] ++(-2,0) -- (A)
+	(E) to[R=\Rh,i=$I_z$] ++(0,-2) \coord(G) -- (ref)
+	(G) to[I,invert,l=\Ky$V_o$] ++(0,-2) \coord(H) to[R=\Rf] ++(-2,0)
+	\coord(I) ++(0,2) to[V,invert,l=\Vd] (I) ++(0,-2) \coord(J) to[I,invert,l_=\Ia] (I)
+	(J) -- ++(-1.5,0) \coord(K) to[R,l_=\Rd] ++(0,2) to[R,l_=\Re] ++(0,2)
+	(K) to[R=\Rc] ++(-2,0) \coord(L) to[R,l_=\Rb,v^>=$V_o$] ++(0,2) ++(0,2)
+	to[V,invert,l=\Kx$I_z$] ++(0,-2)
+	(L) -- ++(-2.0,0) to[R,l_=\Ra,v^>=$V_x$] ++(-2,0)  \coord(P) -- (P |- ref) 
+	(F) -- ++(1.5,0) \coord(M) |- (J) -- (J)
+	(E) -| (M)
+	(H) -| (M)
+	
+	(O) to [R,l_=\Rd] ++(-2,0) \coord(Q) to [R,l_=\Rd] ++(0,-2) -- (Q |- ref) to [R,l_=\Rd] ++(2,0)
+	(P) to [R,l_=\Rd] ++(-2,0)to [R,l_=\Rd] ++(0,2) -- (Q |- ref)
+	
+	;	
+}
+
+
+
+\defQuestionAlias{C.I:1a:Q3b}{QAAcb}
+\defQuestion{QAAcb}{%
+	\draw (0,0) \coord(ref) to[R=\Rm] ++(0,2) to[R=\Rl] ++(0,2)
+	\coord(A)
+	(ref) -- ++(2,0) to[V,invert,l=\Va] ++(0,2) \coord(B) to[R=\Rk] ++(0,2)
+	(B) -- ++(1,0) \coord(C) |- (A) 
+	(C) to[R=\Rj,i=$I_y$] ++(2,0) \coord(D) to[R=\Ri] ++(0,-2)
+	(D) ++(2,0) \coord(E) to[V,invert,l_=\Vc] (D)
+	(E) to[R,l_=\Rg] ++(0,2) \coord(F) to[V,invert,l=\Vb] ++(-2,0) -- (A)
+	(E) to[R=\Rh,i=$I_z$] ++(0,-2) \coord(G) -- (ref)
+	(G) to[I,invert,l=\Ky$V_o$] ++(0,-2) \coord(H) to[R=\Rf] ++(-2,0)
+	\coord(I) ++(0,2) to[V,invert,l=\Vd] (I) ++(0,-2) \coord(J) to[I,invert,l_=\Ia] (I)
+	(J) -- ++(-1.5,0) \coord(K) to[R,l_=\Rd] ++(0,2) to[R,l_=\Re] ++(0,2)
+	(K) to[R=\Rc] ++(-2,0) \coord(L) to[R,l_=\Rb,v^>=$V_o$] ++(0,2) ++(0,2)
+	to[V,invert,l=\Kx$I_z$] ++(0,-2)
+	(L) -- ++(-1.5,0) to[R,l_=\Ra,v^>=$V_x$] ++(0,2) |- (ref)
+	(F) -- ++(1.5,0) \coord(M) |- (J) -- (J)
+	(E) -| (M)
+	(H) -| (M)
+	
+	;	
+}
+
+
+\defQuestionAlias{C.I:1a:Q3c}{QAAcc}
+\defQuestion{QAAcc}{%
+	\draw (0,0) \coord(ref) to[R=\Rm] ++(0,2) to[R=\Rl] ++(0,2)
+	\coord(A)
+	(ref) -- ++(2,0) to[V,invert,l=\Va] ++(0,2) \coord(B) to[R=\Rk] ++(0,2)
+	(B) -- ++(1,0) \coord(C) |- (A) 
+	(C) to[R=\Rj,i=$I_y$] ++(2,0) \coord(D) to[R=\Ri] ++(0,-2)
+	(D) ++(2,0) \coord(E) to[V,invert,l_=\Vc] (D)
+	(E) to[R,l_=\Rg] ++(0,2) \coord(F) to[V,invert,l=\Vb] ++(-2,0) -- (A)
+	(E) to[R=\Rh] ++(0,-2) \coord(G) -- (ref)
+	(G) to[I,invert,l=\Ky$V_o$] ++(0,-2) \coord(H) to[R=\Rf] ++(-2,0)
+	\coord(I) ++(0,2) to[V,invert,l=\Vd] (I) ++(0,-2) \coord(J) to[I,invert,l_=\Ia] (I)
+	(J) -- ++(-1.5,0) \coord(K) to[R,l_=\Rd] ++(0,2) to[R,l_=\Re] ++(0,2)
+	(K) to[R=\Rc] ++(-2,0) \coord(L) to[R,l_=\Rb] ++(0,2) ++(0,2)
+	to[V,invert,l=\Kx$I_y$] ++(0,-2)
+	(L) -- ++(-1.5,0) to[R,l_=\Ra,v^>=$V_o$] ++(0,2) |- (ref)
+	(F) -- ++(1.5,0) \coord(M) |- (J) -- (J)
+	(E) -| (M)
+	(H) -| (M)
+	
+	;	
+}
+
+
+
+\defQuestionAlias{C.I:1a:Q4}{QAAd}
+\defQuestion{QAAd}{%
+	\draw (0,0) \coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A) to[R=\Rb]
+	++(2,0) \coord(B) -- ++(0,-2) \coord(C) to[R=\Rd] (ref)
+	to[R=\Rc] ++(-2,0) \coord(D) -- ++(0,+2) \coord(E)
+	to[R=\Ra] (A)
+	(C) to[R=\Re] ++(+2,0) \coord(F) ++(2,0) \coord(G) to[R=\Rf,v=$V_o$]
+	++(0,2) \coord(H)  -- (B) 
+	(G) to[V,invert,l=\Kx$V_x$] (F) 
+	(D) -- ++(0,-1.5) to[R=\Rg,v>=$V_x$] ++(2,0)  -| (G)
+	;	
+}
+
+\defQuestionAlias{C.I:1a:Q2c}{QAAbc}
+\defQuestion{QAAbc}{%
+	\draw (0,0) \coord(ref) to[R=\Rd] ++(0,2) -- ++(0,1) \coord(A)
+	to[R=\Re] ++(2,0)  \coord(C) 
+	(ref) -- ++(2,0) to[V,invert,l_=\Kx$V_x$]  ++(2,0) \coord(E) to[R=\Rg] ++(2,0)
+	\coord(F) -- ++(0,2) to[I,invert,l=\Ky$I_y$] ++(-2,0) -- ++(-2,0) to[R=\Rh,v>=$V_o$]
+	++(0,-2) \coord(D) -- (ref)
+	 
+	(F) -- ++(0,-2) to[R=\Rf] ++(-2,0) -- ++(-2,0) |- (ref)
+	(F)  |- (C) -- (C)
+	(ref) to[V,invert,l=\Vi] ++(0,-2) to[R=\Ra,i=$I_y$] ++(-2,0) \coord(G)
+ 	to[R=\Rb,v>=$V_x$] ++(0,2) -- (ref)
+	(G) -- ++(-1.5,0) to[R=\Rc] ++(0,2) |- (A) -- (A)
+	
+	 ;	
+}
+
+
+\defQuestionAlias{C.I:2a:Q1}{QABa}
+\defQuestion{QABa}{%
+	\draw (0,0) \coord(A) to[V,invert,l=\Vi] ++(0,2) \coord(B) -- ++(0,1.5) to[R=\Rc] ++(2,0) \coord(C)
+	(B) to[R=\Ra] ++(2,0) \coord(E) to[C=\Ca,v>=$V_{C_1}$] (E |- A)
+	(E) to[R=\Rb] ++(2,0) \coord(G) to[open] (G |- A) to[V,invert,l_=\Kx$V_{C_1}$] (G) |- (C)
+	(E) -- ++(0,0.75) \coord(Fa) to[open] (Fa -| G) to[open] ++(-0.25,0) \coord(Fb)
+	(Fa) -- (Fb) arc(180:0:0.25) -- ++(2.5,0) \coord(I)
+	to[C=\Cb,v=$V_{C_2}$] (I |- A)
+	(I) -- ++(1.5,0) \coord(J) to[R=\Rd] (J |- A) -- (A)
+	;	
+}
+
+\defQuestionAlias{C.I:2a:Q1b}{QABab}
+\defQuestion{QABab}{%
+	\draw (0,0) \coord(A) to[V,invert,l=\Vi] ++(0,2) \coord(B) -- ++(0,1.5) to[R=\Rc] ++(2,0) \coord(C)
+	(B) to[R=\Ra] ++(2,0) \coord(E) to[C=\Ca,v>=$V_{C_1}$] (E |- A)
+	(E) to[R=\Rb] ++(2,0) \coord(G) to[open] (G |- A) to[V,invert,l_=\Kx$V_{C_1}$] (G) |- (C)
+	(E) -- ++(0,0.75) \coord(Fa) to[open] (Fa -| G) to[open] ++(-0.25,0) \coord(Fb)
+	(Fa) -- (Fb) arc(180:0:0.25) -- ++(.5,0) to[cspst,l=\Ta] ++ (2,0) \coord(I)
+	to[C=\Cb,v=$V_{C_2}$] (I |- A)
+	(I) -- ++(1.5,0) \coord(J) to[R=\Rd] (J |- A) -- (A)
+	;	
+}
+
+\defQuestionAlias{C.I:2a:Q1a}{QABaa}
+\defQuestion{QABaa}{%
+	\draw (0,0) \coord(A) to[V,invert,l=\Vi] ++(0,2) \coord(B) -- ++(0,1.5) to[R=\Rc] ++(2,0) \coord(C)
+	(B) to[R=\Ra] ++(2,0) \coord(E) to[L=\La,i>=$I_{L_1}$,v>=$V_{L_1}$] (E |- A)
+	(E) to[R=\Rb] ++(2,0) \coord(G) to[open] (G |- A) to[V,invert,l_=\Kx$V_{L_1}$] (G) |- (C)
+	(E) -- ++(0,0.75) \coord(Fa) to[open] (Fa -| G) to[open] ++(-0.25,0) \coord(Fb)
+	(Fa) -- (Fb) arc(180:0:0.25) -- ++(2.5,0) \coord(I)
+	to[L=\Lb,i=$I_{L_2}$] (I |- A)
+	(I) -- ++(1.5,0) \coord(J) to[R=\Rd] (J |- A) -- (A)
+	;	
+}
+
+
+\defQuestionAlias{C.I:2a:Q2}{QABb}
+\defQuestion{QABb}{%
+	\draw (0,0) \coord(A) to[R=\Ra] ++(0,2) \coord(B) -- ++(0,1.5) \coord(C) to[R=\Rb,i=$I_2(t)$] ++(3,0) \coord(I)
+	(B) to[L=\La,i=$I_{L_1}$] ++(3.5,0) \coord(D) to[open] (D |- A) to[V,invert,l=\Vi] (D) to[C=\Ca,v=$V_{C_1}$] ++(2,0) \coord(E)
+	-- (E |- I) \coord(F) -- (I)
+	(F) -- (F |- A) 
+	(E) to[R=\Rd] ++(2,0) \coord(J) to[I,invert,invert,l=\Ii] (J |- A)
+	(F) to[R=\Rc] ++(2,0) \coord(G) -- (J)
+	(G) -- ++(2.5,0) \coord(H) to[R=\Re] (H |- A) -- (A)
+	 ;	
+}
+
+
+
+
+\defQuestionAlias{C.I:2a:Q2a}{QABba}
+\defQuestion{QABba}{%
+	\draw (0,0) \coord(A) to[R=\Ra] ++(0,2) \coord(B) -- ++(0,1.5) \coord(C) to[R=\Rb,i=$I_2(t)$] ++(3,0) \coord(I)
+	(B) to[C=\Cb,v=$V_{C_2}$] ++(3.5,0) \coord(D) to[open] (D |- A) to[V,invert,l=\Vi] (D) to[C=\Ca,v=$V_{C_1}$] ++(2,0) \coord(E)
+	-- (E |- I) \coord(F) -- (I)
+	(F) -- (F |- A) 
+	(E) to[R=\Rd] ++(2,0) \coord(J) to[I,invert,l=\Ii] (J |- A)
+	(F) to[R=\Rc] ++(2,0) \coord(G) -- (J)
+	(G) -- ++(2.5,0) \coord(H) to[R=\Re] (H |- A) -- (A)
+	 ;	
+} 
+
+
+\defQuestionAlias{C.I:2a:Q2b}{QABb}
+\defQuestion{QABbb}{%
+	\draw (0,0) \coord(A)  ++(0,2) \coord(B) to[C,l=\Cb,v=$V_{C_2}$] (A)
+	(B) -- ++(0,1.5) \coord(C) to[R=\Rb,i=$I_2(t)$] ++(3,0) \coord(I)
+	(B) to[L=\La,i=$I_{L_1}$] ++(3.5,0) \coord(D) to[open] (D |- A) to[V,invert,l=\Vi] (D) to[C=\Ca,v=$V_{C_1}$] ++(2,0) \coord(E)
+	-- (E |- I) \coord(F) -- (I)
+	(F) -- (F |- A) 
+	(E) to[R=\Rd] ++(2,0) \coord(J) to[I,invert,l=\Ii] (J |- A)
+	(F) to[R=\Rc] ++(2,0) \coord(G) -- (J)
+	(G) -- ++(2.5,0) \coord(H) to[R=\Re] (H |- A) -- (A)
+	 ;	
+}
+
+
+
+\defQuestionAlias{C.I:2a:Q3}{QABc}
+\defQuestion{QABc}{%
+	\draw (0,0) 
+	
+	node[Quad compact,anchor=1-, draw](qx){\small$Q_x$}
+	(qx.1-) -- ++(-1,0) \coord(A)
+	(qx.1+) -- ++(-1,0) to[L,l_=\La] (A)
+	
+	(qx.2-) -- ++(1,0) \coord(B)
+	(qx.2+) -- ++(1,0) \coord(C) to[R,l_=\Rj] (B) 
+
+	(B) -- ++(3,0) \coord(Kb)
+	(C) -- ++(3,0) \coord(Ka) to[I,invert,l_=\Ic] (Kb) 
+	(Ka) -- ++(1,0) \coord(M) node[ocirc]{}
+	(Kb) -- ++(1,0) \coord(N) node[ocirc]{}
+	(M) to[open,v,l^=$V_o$] (N)
+		;	
+}
+
+
+
+\defQuestionAlias{C.I:2a:Q3a}{QABca}
+\defQuestion{QABca}{%
+	\draw (0,0) 
+	
+	node[Quad compact,anchor=1-, draw](qx){\small$Q_x$}
+	(qx.1-) -- ++(-1,0) \coord(A)
+	(qx.1+) -- ++(-1,0) to[R,l_=\Ra] (A)
+	
+	(qx.2-) -- ++(1,0) \coord(B)
+	(qx.2+) -- ++(1,0) \coord(C) to[R,l_=\Rj] (B) 
+
+	(B) -- ++(3,0) \coord(Kb)
+	(C) -- ++(3,0) \coord(Ka) to[I,invert,l_=\Ic] (Kb) 
+	(Ka) -- ++(1,0) \coord(M) node[ocirc]{}
+	(Kb) -- ++(1,0) \coord(N) node[ocirc]{}
+	(M) to[open,v,l^=$V_o$] (N)
+		;	
+}
+
+\defQuestionAlias{C.I:ext:Q1}{QACa}
+\defQuestion{QACa}{%
+	\draw (0,4) to[V,l=\Vi,i=\Ii] (0,0) \coord(org)  (0,4) to[R=\Rj] ++(2,0) \coord(A)  to[R=\Ra,i=\Ia] ++(2,0)  \coord(B)
+	(org) node[ground](norg){} -- ++(2,0) to[R,l_=\Ra,i_=\Ib] ++(2,0) \coord(L) -- (B)
+	-- ++(1,0) \coord(C) to[R=\Rb] ++(0,-2) \coord(g2) node[ground]{}
+	(C) to[open] ++(2,0) \coord(D) to[I,l_=\Ki*\Ia] ++(-2,0)
+	(D) to[R=\Rc] ++(0,-2) \coord(E) -- (g2)
+	(D) to[R=\Rd,i=\Ic] ++(2,0) \coord(F) -- ++(1,0) \coord(G) to[R=\Re] ++(0,-2) \coord(g3) node[ground]{}
+	(G) to[open] ++(2,0) \coord(H) to[I,l_=\Ki*\Ic] ++(-2,0)
+	(H) to[R=\Rf] ++(0,-2) \coord(I) -- (g3)
+	(H) to[R=\Rg,i=\Ie] ++(2,0) \coord(J) to[R=\Rh] ++(0,-2)
+	(J) to[open] ++(2,0) \coord(K) to[I,l_=\Ki*\Ie] ++(-2,0)
+	(K) node(nK){} to[R=\Ri] ++(0,-2) \coord(P) node[ground]{} -- (g3)
+	
+	(L) -- ++(1,0) to[open] ++(2,0) \coord(M) to[I,l=\Ki*\Ib] ++(-2,0)
+	(M) to[R,l_=\Rc]  ++(0,2)
+	(M) to[R,l_=\Rd,i_=\Id] ++(2,0) \coord(N) -- (F)
+	(N) -- ++(1,0) to[open] ++(2,0) \coord(O) to[I,l=\Ki*\Id] ++(-2,0)
+	(O) to[R,l_=\Rf] ++(0,2)
+	
+	(A) -- ++(0,1.5) node(nX){} to[R=\Rk]  (nX -| nK) -- (K)
+	(P) -- ++(1.5,0) node[ocirc]{} \coord(P1)
+	(K) to[short, i<=\Io] ++(1.5,0) node[ocirc]{} to[open,v^=\Vo] (P1)
+	 
+	;
+}
+
+\defQuestionAlias{C.I:ext:Q2}{QACb}
+\defQuestion{QACb}{%
+	\draw (0,4) to[V,l=\Vi,i=\Ii] (0,0) \coord(org)  (0,4) 
+		to[R=\Rj] ++(2,0) \coord(A)  
+	(org) node[ground](norg){} -- ++(2,0) \coord(B)
+	(A) -- ++(1,0) to[R=\Ra,i=\Ia] ++(0,-2)  
+	(B) -- ++(1,0) to[R,l_=\Ra,i_=\Ib] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C) to[R=\Rb] ++(0,-2) \coord(g2) node[ground]{}
+	(C) -- ++(1.5,0) \coord(D) ++(0,2)  \coord(Da) to[I,l_=\Ki*\Ia] ++(0,-2)
+	(D) ++(0,-2) \coord(Db) to[I,l_=\Ki*\Ib] ++(0,2)
+	(Da) -- ++(1,0) to[R=\Rc] ++(0,-2) node[ground]{}
+	(Db) -- ++(1,0) to[R=\Rc] ++(0,-2) node[ground]{}
+	
+
+	(Da) -- ++(3,0) to[R=\Rd,i=\Ic] ++(0,-2)  
+	(Db) -- ++(3,0) to[R,l_=\Rd,i_=\Id] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C1) to[R=\Re] ++(0,-2) \coord(g2) node[ground]{}
+	(C1) -- ++(1.5,0) \coord(D1) ++(0,2)  \coord(Da1) to[I,l_=\Ki*\Ic] ++(0,-2)
+	(D1) ++(0,-2) \coord(Db1) to[I,l_=\Ki*\Id] ++(0,2)
+	(Da1) -- ++(1,0) to[R=\Rf] ++(0,-2) node[ground]{}
+	(Db1) -- ++(1,0) to[R=\Rf] ++(0,-2) node[ground]{}
+
+
+	(Da1) -- ++(3,0) to[R=\Rg,i=\Ie] ++(0,-2)  
+	%(Db1) -- ++(3,0) to[R,l_=\Rg,i_=\If] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C2) to[R=\Rh] ++(0,-2) \coord(g2) node[ground]{}
+	(C2) -- ++(1.5,0) \coord(D2) ++(0,2)  \coord(Da2) to[I,l_=\Ki*\Ie] ++(0,-2)
+	%(D2) ++(0,-2) \coord(Db2) to[I,l_=\Ki*\If] ++(0,2)
+	(Da2) -- ++(1,0) \coord(E) node(nE){} to[R=\Ri] ++(0,-2) \coord(P) node[ground]{}
+	%(Db2) -- ++(1,0) to[R=\Ri] ++(0,-2) node[ground]{}
+
+	(A) -- ++(0,1.5) node(nX){} to[R=\Rk]  (nX -| nE) -- (E)
+	(P) -- ++(1.5,0) node[ocirc]{} \coord(P1)
+	(E) to[short, i<=\Io] ++(1.5,0) node[ocirc]{} to[open,v^=\Vo] (P1)
+	 
+
+	 
+	;
+}
+
+
+
+\defQuestionAlias{C.I:ext:Q3}{QACc}
+\defQuestion{QACc}{%
+	\draw 
+%	(0,4) to[V,l=\Vi,i=\Ii] (0,0) \coord(org)  (0,4) 
+%		to[R=\Rj] ++(2,0) \coord(A)  
+%	(org) node[ground](norg){} -- ++(2,0) \coord(B)
+	(2,4) \coord(A)
+	(2,0) \coord(B)
+	
+	
+	(A) -- ++(0.5,0) node[Quad,quad width=12.7cm,quad base height=3.5cm,anchor=1+,I1=$I_{A_1}$,V1=$V_{A_1}$,I2=$I_{A_2}$,V2=$V_{A_2}$,draw](qa){\small$Q_A$}
+	
+	(qa.north) node[Quad,quad width=12.7cm,anchor=south,I1=$I_{B_1}$,V1=$V_{B_1}$,I2=$I_{B_2}$,V2=$V_{B_2}$,draw](qb){\small$Q_B$}
+	
+	(qa.inner 1+) -- ++(0.5,0) to[R=\Ra,i=\Ia] ++(0,-2)  
+	(B -| qa.inner 1+) -- ++(0.5,0) to[R,l_=\Ra,i_=\Ib] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C) 
+	(B -| qa.inner 1+) -- (qa.inner 1-)
+	(qa.1-) -- ++(-0.5,0) node[ground]{}
+	(qa.2-) -- ++(0.5,0) node[ground]{}
+	
+	(C) -- ++(1.5,0) to[R=\Rb] ++(0,-2) 
+	(C) node[Quad,quad width=1cm,anchor=1+,I1=$I_{x_1}$,V1=$V_{x_1}$,I2=$I_{x_2}$,V2=$V_{x_2}$,draw](qx){\small$Q_x$}
+	(qx.1+) -- (qx.2+)
+	(qx.1-) -- ++(-0.2,0) node[ground]{}
+	(qx.2-) -- ++(0.2,0) node[ground]{}
+	%quad base height=1cm,
+	(qx.2+) -- ++(1,0) \coord(D)
+	
+	(D) ++(0,2)  \coord(Da) to[I,l_=\Ki*\Ia] ++(0,-2)
+	(D) ++(0,-2) \coord(Db) to[I,l_=\Ki*\Ib] ++(0,2)
+	(Da) -- ++(1,0) to[R=\Rc] ++(0,-2) node[ground]{}
+	(Db) -- ++(1,0) to[R=\Rc] ++(0,-2) node[ground]{}
+	
+
+	(Da) -- ++(3,0) to[R=\Rd,i=\Ic] ++(0,-2)  
+	(Db) -- ++(3,0) to[R,l_=\Rd,i_=\Id] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C1) 
+	
+	%to[R=\Re] ++(0,-2) \coord(g2) node[ground]{}
+	(C1) -- ++(1.5,0) to[R=\Re] ++(0,-2) 
+	(C1) node[Quad,quad width=1cm,anchor=1+,I1=$I_{y_1}$,V1=$V_{y_1}$,I2=$I_{y_2}$,V2=$V_{y_2}$,draw](qy){\small$Q_y$}
+	(qy.1+) -- (qy.2+)
+	(qy.1-) -- ++(-0.2,0) node[ground]{}
+	(qy.2-) -- ++(0.2,0) node[ground]{}
+	%quad base height=1cm,
+	(qy.2+) -- ++(1,0) \coord(D1)
+	
+	
+	(D1) ++(0,2)  \coord(Da1) to[I,l_=\Ki*\Ic] ++(0,-2)
+	(D1) ++(0,-2) \coord(Db1) to[I,l_=\Ki*\Id] ++(0,2)
+	(Da1) -- ++(1,0) to[R=\Rf] ++(0,-2) node[ground]{}
+	(Db1) -- ++(1,0) to[R=\Rf] ++(0,-2) node[ground]{}
+
+
+	(Da1) -- ++(3,0) to[R=\Rg,i=\Ie] ++(0,-2)  
+	%(Db1) -- ++(3,0) to[R,l_=\Rg,i_=\If] ++(0,2)  
+	 -- ++(1.5,0)  \coord(C2) 
+	
+	%to[R=\Rh] ++(0,-2) \coord(g2) node[ground]{}
+	(C2) -- ++(1.5,0) to[R=\Rh] ++(0,-2) 
+	(C2) node[Quad,quad width=1cm,anchor=1+,I1=$I_{z_1}$,V1=$V_{z_1}$,I2=$I_{z_2}$,V2=$V_{z_2}$,draw](qz){\small$Q_z$}
+	(qz.1+) -- (qz.2+)
+	(qz.1-) -- ++(-0.2,0) node[ground]{}
+	(qz.2-) -- ++(0.2,0) node[ground]{}
+	%quad base height=1cm,
+	(qz.2+) -- ++(1,0) \coord(D2)
+	
+	
+	(D2) ++(0,2)  \coord(Da2) to[I,l_=\Ki*\Ie] ++(0,-2)
+	%(D2) ++(0,-2) \coord(Db2) to[I,l_=\Ki*\If] ++(0,2)
+	(Da2) -- ++(1,0) \coord(E) node(nE){} to[R=\Ri] ++(0,-2) \coord(P) node[ground]{}
+	(Da2) -- (qa.inner 2+)
+	%(Db2) -- ++(1,0) to[R=\Ri] ++(0,-2) node[ground]{}
+
+%to be re-instated
+	%(A) -- ++(0,1.5) node(nX){} to[R=\Rk]  (nX -| nE) -- (E)
+	%(P) -- ++(1.5,0) node[ocirc]{} \coord(P1)
+	%(E) to[short, i<=\Io] ++(1.5,0) node[ocirc]{} to[open,v^=\Vo] (P1)
+
+	;
+	
+	\QuadConnect[alt]{qa}{qb}{1}
+	\QuadConnect[alt]{qa}{qb}{2}
+	\draw (qb-X1) to[R,l_=\Rj]  ++(-2,0) to[V,l=\Vi,i=\Ii] ++(0,-2) node[ground]{} -- (qb-Y1)
+	(qb.inner 1+) to[R,l_=\Rk] (qb.inner 2+)
+	(qb-Y2) -- ++(1.5,0) node[ocirc]{} \coord(P1) node(nP1){}
+	(qb-X2) to[short, i<=\Io] (qb-X2 -| nP1) node[ocirc]{} to[open,v^=\Vo] (P1);
+	
+}
+
+
+
+\endinput

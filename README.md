@@ -11,7 +11,7 @@ This is just a repository / test bed of LaTeX packages/ideas.
 (with the new in kernel *\ProcessKeyOptions* and *\NewDocumentCommand*)
 
 
-Be aware most of it are personal tests, definitions, interface, options may and will change at will (as needed)
+Be aware most of it is for personal tests, definitions, interface, options may and will change at will (as needed)
 
 
 ## Contacting Author
