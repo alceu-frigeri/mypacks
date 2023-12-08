@@ -17,6 +17,7 @@
 
 ## test directories
 tests/
+deprecated/
 
 ## TeXstudio
 *.txss2

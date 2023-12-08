@@ -18,8 +18,8 @@
 \ProvidesPackage{CircuitosII}%
         [2016/10/15 MyCirc  drawing package version 0.1]
 
-\defQuestionAlias{C.II:1a:Q1}{QCA}
-\defQuestion{QCA}{%
+\defQuestionAlias{QCA}{C.II:1a:Q1}
+\defQuestion{C.II:1a:Q1}{%
 	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vr,i=\Ir] ++(0,4) -- ++(4.5,0) \coord(R) node[circ] {}
 	(ref) to [V,invert,l=\Vs] ++(3.5,-2) -- ++(1,0) \coord(S) node[circ] {}
 	(ref) to [V,invert,l=\Vt] ++(-3.5,-2) -- ++(0,-1) -- ++(8,0) \coord(T) node[circ] {}
@@ -41,8 +41,8 @@
 	 
 }
 
-\defQuestionAlias{C.II:1a:Q1b}{QCAb}
-\defQuestion{QCAb}{%
+\defQuestionAlias{QCAb}{C.II:1a:Q1b}
+\defQuestion{C.II:1a:Q1b}{%
 	\draw (0,0)  	\coord(ref) to[V,invert,l=\Vr,i>=\Ir] ++(0,4) -- ++(4.5,0) \coord(R) node[circ] {}
 	(ref) to [V,invert,l=\Vs] ++(3.5,-2) -- ++(1,0) \coord(S) node[circ] {}
 	(ref) to [V,invert,l=\Vt] ++(-3.5,-2) -- ++(0,-1) -- ++(8,0) \coord(T) node[circ] {}
@@ -65,8 +65,8 @@
 }
 
 
-\defQuestionAlias{C.II:1a:Q2}{QCB}
-\defQuestion{QCB}{%
+\defQuestionAlias{QCB}{C.II:1a:Q2}
+\defQuestion{C.II:1a:Q2}{%
 	\draw (0,0)  	 \coord(ref) to[V,invert,l=\Vi] ++(0,4) \coord(A)
 	(A) to[R,l=\Ra] ++(2,0) \coord(B)
 	(A) -- ++(0,1.5) to[C,l=\Ca] ++(2,0) -- (B)
@@ -84,8 +84,8 @@
 	;	
 }
 
-\defQuestionAlias{C.II:1a:Q2b}{QCBb}
-\defQuestion{QCBb}{%
+\defQuestionAlias{QCBb}{C.II:1a:Q2b}
+\defQuestion{C.II:1a:Q2b}{%
 	\draw (0,0)  	 \coord(ref) to[V,invert,l=\Vi] ++(0,4) \coord(A)
 	(A) to[R,l=\Ra] ++(2,0) \coord(B)
 	(A) -- ++(0,1.5) to[C,l=\Ca] ++(2,0) -- (B)
@@ -106,8 +106,8 @@
 
 
 
-\defQuestionAlias{C.II:1a:Q3}{QCC}
-\defQuestion{QCC}{%
+\defQuestionAlias{QCC}{C.II:1a:Q3}
+\defQuestion{C.II:1a:Q3}{%
 	\draw (0,0)  	 \coord(ref) node[ground]{} to[V,invert,l=\Vi] ++(0,2) \coord(A)
 	(A) to[R,l=\Ra] ++(2,0) \coord(B)
 	(B) to[L,l=\La] ++(0,-2) -- (ref)
@@ -122,8 +122,8 @@
 ;
 }
 
-\defQuestionAlias{C.II:1a:Q3b}{QCCb}
-\defQuestion{QCCb}{%
+\defQuestionAlias{QCCb}{C.II:1a:Q3b}
+\defQuestion{C.II:1a:Q3b}{%
 	\draw (0,0)  	 \coord(ref) node[ground]{} to[V,invert,l=\Vi] ++(0,2) \coord(A)
 	(A) to[R,l=\Ra] ++(2,0) \coord(B)
 	(B) to[L,l=\La] ++(0,-2) -- (ref)
@@ -139,8 +139,8 @@
 }
 
 
-\defQuestionAlias{C.II:2a:Q1}{QCBc}
-\defQuestion{QCBc}{%
+\defQuestionAlias{QCBc}{C.II:2a:Q1}
+\defQuestion{C.II:2a:Q1}{%
 	\draw (0,0)  	 \coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A)
 	(A) to[R,l=\Ra] ++(4,0) \coord(B)
 	(A) -- ++(0,1.5) to[R,l=\Rb] ++(2,0)  to[L,l=\La] ++(2,0) \coord(C) -- (B)
@@ -157,8 +157,8 @@
 
 
 
-\defQuestionAlias{C.II:2a:Q1d}{QCBd}
-\defQuestion{QCBd}{%
+\defQuestionAlias{QCBd}{C.II:2a:Q1d}
+\defQuestion{C.II:2a:Q1d}{%
 	\draw (0,0)  	 \coord(ref) to[V,invert,l=\Vi] ++(0,2) \coord(A)
 	(A) to[R,l=\Ra] ++(2,0) \coord(B)
 	(B) to[R,l_=\Rb] ++(0,-2) to[open,v=\Vx] (B)

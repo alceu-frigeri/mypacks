@@ -781,57 +781,57 @@
 
 
 
-\defQuestion{E.I:sl:S1}{%
-
-		\draw
-		(0,0) node[pnp,anchor=B](pnpB){}
-		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-		(pnpB.B) -- ++(-0.5,0) node(nB){} \coord(B) node[npn,anchor=C](npnA){}
-		(npnA) node{\Ta}
-		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \coord(G)
-		(pnpB.C) -- ++(1.5,0) \coord(BC) node(nBC){} to[zD,invert,mirror] ++(0,-2) -- (nBC |- nG) \coord(DG)
-		(pnpB) node{\Tb}
+%\defQuestion{E.I:sl:S1}{%
 %
-%		(nB |- nG)
-		(B) to[zD] (nX -| nB)
-		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \coord(CX) -- (X)
-		(npnA.B) -- ++(-0.5,0) node(nAB){} \coord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
-		(AB) to[R=\Rc] ++(0,2) -- (nAB |- nX)
-
-		(BC) -- ++(2,0) node(nBC){} -- (nBC |- pnpB.E) -- ++(0,1) node[npn,anchor=B,rotate=90](npnC){}
-		(npnC.E) -- ++(1,0) node[npn,anchor=B,rotate=90](npnD){}
-		(npnC.C) -- (npnC.C |- npnD.C)
-		(npnC) node{\Tc}
-		(npnD) node{\Td}
-
-
-
-		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \coord(XX) to[C=\Cb] (nXX |- nG) \coord(GG) -- (DG)
-		(XX) -- (nXX |- npnD.C) \coord(T) -- (npnD.C)
-
-		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
-		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
-
-		(GG) to[D] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
-		(GG) ++(0,+1) to[D] ++(-2,0) \coord(ZX)
-		(ZZ) ++(0,-1) -- (ZX)
-		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
-%		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
-%		(ZX) ++(-1,0) ++(0,1) -- ++(-2,0)
-		(ZX) ++(-1,0) node(nZX){} -- (nZX |- nZZ) -- (ZZ)
-		(ZX) ++(-1,0) -- ++(-1,0)
-		(npnD.E) -- ++(1,0) node[ocirc](nL){} to[R,l_=\Rl,v^=\Vl,f>_=\Il] (nL |- GG) node[ocirc]{} -- (GG)
-		;
-		\only<2>{
-		\draw[thick,red] (npnC.E) -- (npnD.B) (npnC.E) to[open,f>_=\Aa,color=red] (npnD.B) (npnC.B) -- ++(0,-1) to[open,f>_=\Ab,color=red] (npnC.B);
-		}
-		\only<3->{
-		\draw (npnC.E) -- (npnD.B) (npnC.E) to[open,f>_=\Aa] (npnD.B) (npnC.B) -- ++(0,-1) to[open,f>_=\Ab] (npnC.B);
-		\draw[thick,red] (pnpB.C) -- (BC) (pnpB.C) to[open,f>_=\Ac,color=red]  (BC) to[zD,invert,mirror,color=red] ++(0,-2) to[open,f>_=\Ad,color=red] (DG);
-		}
-
-}
-
+%		\draw
+%		(0,0) node[pnp,anchor=B](pnpB){}
+%		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
+%		(pnpB.B) -- ++(-0.5,0) node(nB){} \coord(B) node[npn,anchor=C](npnA){}
+%		(npnA) node{\Ta}
+%		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \coord(G)
+%		(pnpB.C) -- ++(1.5,0) \coord(BC) node(nBC){} to[zD,invert,mirror] ++(0,-2) -- (nBC |- nG) \coord(DG)
+%		(pnpB) node{\Tb}
+%%
+%%		(nB |- nG)
+%		(B) to[zD] (nX -| nB)
+%		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \coord(CX) -- (X)
+%		(npnA.B) -- ++(-0.5,0) node(nAB){} \coord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
+%		(AB) to[R=\Rc] ++(0,2) -- (nAB |- nX)
+%
+%		(BC) -- ++(2,0) node(nBC){} -- (nBC |- pnpB.E) -- ++(0,1) node[npn,anchor=B,rotate=90](npnC){}
+%		(npnC.E) -- ++(1,0) node[npn,anchor=B,rotate=90](npnD){}
+%		(npnC.C) -- (npnC.C |- npnD.C)
+%		(npnC) node{\Tc}
+%		(npnD) node{\Td}
+%
+%
+%
+%		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \coord(XX) to[C=\Cb] (nXX |- nG) \coord(GG) -- (DG)
+%		(XX) -- (nXX |- npnD.C) \coord(T) -- (npnD.C)
+%
+%		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
+%		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
+%
+%		(GG) to[D] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
+%		(GG) ++(0,+1) to[D] ++(-2,0) \coord(ZX)
+%		(ZZ) ++(0,-1) -- (ZX)
+%		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
+%%		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
+%%		(ZX) ++(-1,0) ++(0,1) -- ++(-2,0)
+%		(ZX) ++(-1,0) node(nZX){} -- (nZX |- nZZ) -- (ZZ)
+%		(ZX) ++(-1,0) -- ++(-1,0)
+%		(npnD.E) -- ++(1,0) node[ocirc](nL){} to[R,l_=\Rl,v^=\Vl,f>_=\Il] (nL |- GG) node[ocirc]{} -- (GG)
+%		;
+%		\only<2>{
+%		\draw[thick,red] (npnC.E) -- (npnD.B) (npnC.E) to[open,f>_=\Aa,color=red] (npnD.B) (npnC.B) -- ++(0,-1) to[open,f>_=\Ab,color=red] (npnC.B);
+%		}
+%		\only<3->{
+%		\draw (npnC.E) -- (npnD.B) (npnC.E) to[open,f>_=\Aa] (npnD.B) (npnC.B) -- ++(0,-1) to[open,f>_=\Ab] (npnC.B);
+%		\draw[thick,red] (pnpB.C) -- (BC) (pnpB.C) to[open,f>_=\Ac,color=red]  (BC) to[zD,invert,mirror,color=red] ++(0,-2) to[open,f>_=\Ad,color=red] (DG);
+%		}
+%
+%}
+%
 
 
 \defQuestionAlias{QBCbx}{E.I:ext:Q2.errata}
@@ -877,4 +877,4 @@
 
 
 
-\endinput
+%\endinput
