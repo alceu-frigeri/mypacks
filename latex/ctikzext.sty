@@ -66,7 +66,6 @@
 \RequirePackage{etoolbox}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage{lmodern}
 
 
 \keys_define:nn {ctikzext }
@@ -85,12 +84,37 @@
 
     beamer .usage:n = load ,
     beamer  .bool_set:N = \l__ctikzext_beamer_bool ,
+    
+    xpacks .usage:n = load ,
+    xpacks  .bool_set:N = \l__ctikzext_xpacks_bool ,
+    
+    times .usage:n = load ,
+    times  .bool_set:N = \l__ctikzext_times_bool ,
+    
+    xtrakeys .usage:n = general ,
+    xtrakeys .tl_set:N = \l__ctikzext_xtrakeys_tl ,
+    xtrakeys .value_required:n  = true ,
   }
 \ProcessKeyOptions [ ctikzext ]
 
+\makeatletter
+\tl_if_empty:NTF \l__ctikzext_xtrakeys_tl
+  {
+    \def\ctikz@@xtratkey{}
+  }
+  {
+    \exp_args:NNe\def\ctikz@@xtratkey{,\l__ctikzext_xtrakeys_tl}
+  }
+
+
+\makeatother
+
+
+\RequirePackage{xcolor}
+
 \bool_if:NTF \l__ctikzext_beamer_bool
   {}
-  {
+  { %these have problems with beamer
     \RequirePackage[a4paper,margin=15mm,right=15mm,marginparwidth=0cm,asymmetric,top=2.5cm,bottom=1.5cm]{geometry}
     \RequirePackage[calcwidth]{titlesec}
     \RequirePackage{listings}
@@ -107,8 +131,24 @@
       %	xleftmargin=7pt,%
       %	xrightmargin=7pt%
     }%
+    %%%
+    %%% from https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
+    \lstset{literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    	{ã}{{\~{a}}}1 {õ}{{\~{o}}}1
+    	{Ã}{{\~{A}}}1 {Õ}{{\~{O}}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\EUR}}1 {£}{{\pounds}}1
+    }
   }
-%this has problems with beamer
 
 
 \bool_if:NT \l__ctikzext_showframe_bool
@@ -130,17 +170,21 @@
   }
 
 
-\RequirePackage{xcolor}
-\RequirePackage{hycolor}
+\bool_if:NT \l__ctikzext_xpacks_bool
+  {
+    \RequirePackage{longtable}%
+    \RequirePackage{fancyhdr}
+    \RequirePackage{csquotes}
+    \RequirePackage[position=above,font=small,labelfont=bf,textfont=md,textfont+=sl,width=.80\textwidth]{caption}
+    \RequirePackage{subcaption}
+    \RequirePackage{url}% Para imprimir corretamente URLs
+    \RequirePackage{multirow,bigdelim}
+  }
+\bool_if:NTF \l__ctikzext_times_bool
+  { \RequirePackage{mathptmx} }
+  { \RequirePackage{lmodern} }
 
-\RequirePackage{longtable}%
 
-\RequirePackage{fancyhdr}
-
-\RequirePackage{csquotes}
-\RequirePackage{mathptmx}
-
-\RequirePackage{url}% Para imprimir corretamente URLs
 \RequirePackage{enumerate}% Para poder enumerar com letras ao inves de numeros
 
 \RequirePackage{keyval,graphicx}  % Para importar figuras
@@ -152,14 +196,12 @@
 \RequirePackage{extarrows}
 \RequirePackage{mathfixs}
 
-%\RequirePackage{multirow,bigdelim}
-%\RequirePackage{longtable}%
-%\RequirePackage{multicol}
-%\RequirePackage{steinmetz}
-\RequirePackage[position=above,font=small,labelfont=bf,textfont=md,textfont+=sl,width=.80\textwidth]{caption}
-\RequirePackage{subcaption}
+\RequirePackage{steinmetz}
 
 
+%
+% pgf/tikz packages can't be loaded in an Expl3 code regim 
+%
 \ExplSyntaxOff
 
 \RequirePackage[american,siunitx,cuteinductors,smartlabels,arrowmos,EFvoltages,betterproportions]{circuitikz}
@@ -179,7 +221,6 @@
   \pgfmathsmuggle\pgfmathresult%
   \endgroup%
   }
-
 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.18}
@@ -230,7 +271,7 @@
      }
      \bool_if:nT {\l__ctikzext_simplegrad_bool}
        {
-         \simple
+         \__ctikzext_simplecab:
        }
        
      Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
@@ -243,21 +284,19 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
   }
   
 
-\ExplSyntaxOff  
-\NewDocumentCommand{\simple}{}%
+\cs_new:Npn \__ctikzext_simplecab:
   {
     \fbox{%
           \footnotesize%
       	  \begin{minipage}{.6\textwidth}%
-            Assinalar um “\textbf{X}”, no tipo de correção a ser realizada.
+            Assinalar~ um~ “\textbf{X}”,~ no~ tipo~ de~ correção~ a~ ser~ realizada.
       			  \begin{description}%
-       	        \item[( ) Simplificada]	Será atribuída uma nota igual a $3$ – independente do que estiver escrito na prova.
-       	        \item[( ) Completa]	Todas as questões serão corrigidas e a nota será dada pela soma dos pontos obtidos em cada questão. Neste caso, a nota estará no intervalo $[0;10]$.
+       	        \item[(~\ )~ Simplificada]~	Será~ atribuída~ uma~ nota~ igual~ a~ $3$~ –--~ independente~ do~ que~ estiver~ escrito~ na~ prova.
+       	        \item[(~\ )~ Completa]~	Todas~ as~ questões~ serão~ corrigidas~ e~ a~ nota~ será~ dada~ pela~ soma~ dos~ pontos~ obtidos~ em~ cada~ questão.~ Neste~ caso,~ a~ nota~ estará~ no~ intervalo~ $[0;10]$.
               \end{description}
           \end{minipage}%
       	}\\[3ex]%
   }
-\ExplSyntaxOn
 
 %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%
@@ -267,13 +306,26 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%
 
+%%
+%% For once, spaces (pgf/tikz) and then ':' 
+%%
+\ExplSyntaxOff
 \def\normalcoord(#1){coordinate(#1)}
-\def\showcoord(#1){coordinate(#1) node[circle, red,  inner sep=0pt, outer sep=0pt, radius=1pt, draw,
-pin={[red, overlay, inner sep=0pt, outer sep=0pt, font=\tiny, pin distance=5pt,
-pin edge={red, overlay}]45:#1}](#1-node){}}
 \newcommand{\normalcoords}{\let\coord=\normalcoord}
 \newcommand{\showcoords}{\let\coord=\showcoord}
 \let\coord=\normalcoord
+
+
+\def\genpincoord[#1,#2](#3){%
+  coordinate(#3)%
+  node[circle, #1,  inner sep=0pt, outer sep=0pt, radius=1pt, draw,
+    pin={[#1, overlay, inner sep=0pt, outer sep=0pt, font=\tiny, pin distance=5pt,
+    pin edge={#1, overlay}]#2:#3}](#3-node){}%
+  }
+      
+\def\pincoord(#1){\genpincoord[blue,-45](#1)}
+\def\showcoord(#1){\genpincoord[red,45](#1)}
+\ExplSyntaxOn
 
 %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%
@@ -296,7 +348,7 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
   }
   
 \tl_new:N \l__ctikzext_quest_tl  
-\NewDocumentCommand{\csQuestion}{O{0.66}mO{}}
+\NewDocumentCommand{\ftikzQuestion}{O{0.66}mO{}}
   {
     \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
       {
@@ -304,7 +356,7 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
     			\begin{center}
     				\resizebox{#1\textwidth}{!}{
     				\begin{tikzpicture}
-              \pgPar{#3}
+              \__ctikzext_pgfkeys:n{#3}
     					\l__ctikzext_quest_tl
     				\end{tikzpicture}}
     			\end{center}
@@ -319,23 +371,29 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
       }
   }  
   
-\NewDocumentCommand{\csQ}{O{0.66}mO{}}
+\NewDocumentCommand{\tikzQuestion}{O{0.66}mO{}}
   {
     \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
       {
 				\resizebox{#1\textwidth}{!}{
 				\begin{tikzpicture}
-          \pgPar{#3}
+          \__ctikzext_pgfkeys:n{#3}
   				\l__ctikzext_quest_tl
 				\end{tikzpicture}}
+      }
+      {
+        Invalid~key:~#2
       }
   }  
 \NewDocumentCommand{\rawQuestion}{mO{}}
   {
     \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
       {
-        \pgPar{#2}
+        \__ctikzext_pgfkeys:n{#2}
  				\l__ctikzext_quest_tl
+      }
+      {
+        Invalid~key:~#2
       }
   }
 
@@ -357,7 +415,7 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
     \begin{description}
       \seq_map_inline:Nn \l__ctikzext_questions_seq
         {
-          \item[\raisebox{3em}{##1}] \csQ[0.33]{##1}
+          \item[\raisebox{3em}{##1}] \tikzQuestion[0.33]{##1}
         }    
     \end{description}
   }
@@ -369,10 +427,8 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
 %%
 %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%
-\ExplSyntaxOff
+%\ExplSyntaxOff
 %
-
-
 
 
 \pgfplotsset{width=0.7\textwidth}
@@ -381,17 +437,17 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
   % Preamble: \pgfplotsset{width=7cm,compat=1.16}
   \begin{tikzpicture}
     \begin{loglogaxis}[
-      /pgfplots/log identify minor tick positions=true,
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
       grid=both,
-      tick align=outside,
+      tick~ align=outside,
       width=0.8\textwidth,
       height=0.4\textwidth,
-      log basis y=10,
-      x unit=rad/s,
+      log~ basis~ y=10,
+      x~ unit=rad/s,
       xlabel=$\omega$,
-      axis line style={color=blue,very thick},
-      axis x line=bottom,
-      axis y line=left,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
       #1 ]
       \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
       #4
@@ -399,72 +455,65 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
 \end{tikzpicture}
 }
 
-\NewDocumentCommand{\semilogxplot}{O{}mmO{}}{
+
+\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
   % Preamble: \pgfplotsset{width=7cm,compat=1.16}
   \begin{tikzpicture}
     \begin{semilogxaxis}[
-      /pgfplots/log identify minor tick positions=true,
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
       grid=both,
-      tick align=outside,
+      tick~ align=outside,
       width=0.9\textwidth,
       height=0.4\textwidth,
-      x unit=rad/s,
+      x~ unit=rad/s,
       %      minor tick = 5,
-      minor y tick num = 1,
+      minor~ y~ tick~ num = 1,
       xlabel=$\omega$,
-      y unit=rad,
-      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
-      axis line style={color=blue,very thick},
-      axis x line=bottom,
-      axis y line=left,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
       #1 ]
       \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
       #4
     \end{semilogxaxis}
   \end{tikzpicture}
+}
+
+\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=rad,
+      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
 }
 
 \NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
   % Preamble: \pgfplotsset{width=7cm,compat=1.16}
-  \begin{tikzpicture}
-    \begin{semilogxaxis}[
-      /pgfplots/log identify minor tick positions=true,
-      grid=both,
-      tick align=outside,
-      width=0.9\textwidth,
-      height=0.4\textwidth,
-      x unit=rad/s,
-      %      minor tick = 5,
-      minor y tick num = 3,
-      xlabel=$\omega$,
-      y unit=db,
+  \semilogplot
+    [ y~ unit=db,
       ytick = {-20,0,20,40,60,80},
-      axis line style={color=blue,very thick},
-      axis x line=bottom,
-      axis y line=left,
+      minor~ y~ tick~ num = 3,
       #1 ]
-      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
-      #4
-    \end{semilogxaxis}
-  \end{tikzpicture}
+    {#2}
+    {#3}
+    [#4]
 }
 
 
+\cs_new:Npn \__ctikzext_pgfkeys:n #1
+  { \pgfkeys{/Zval, #1} }
 
+\ExplSyntaxOff
 
-
-
-
-
-
-
-\newcommand{\pgPar}[1]{\pgfkeys{/Zval, #1}}%
-%
 
 \makeatletter
 
 %
-\newcommand{\@SetDef}[2][]{%
+%\newcommand{\ctikz@@SetDef}[2][]{%
+\NewDocumentCommand{\ctikz@@SetDef}{O{}m}{%
   \pgfkeys{%
 	  /Zval, default/.append style={/Zval/#2, default},%
 	  /Zval/#2/.is family, /Zval/#2, default/.style={},%
@@ -472,22 +521,26 @@ pin edge={red, overlay}]45:#1}](#1-node){}}
 		  default/.append style = {##1=#2_{#1{##1}}},%
 			##1/.code={\csedef{#2##1}{$####1$}}%
 		}},%
-		setaux/.code={\pgfkeysalso{keyset/.list/.expanded={##1a,##1b,##1c,##1d,##1e,##1f,##1g,##1h,##1i,##1j,##1k,##1l,##1m,##1n,##1o,##1p,##1q,##1r,##1s,##1t,##1u,##1v,##1w,##1x,##1y,##1z,##1z}}},%
+		setaux/.code={\pgfkeysalso{keyset/.list/.expanded={##1a,##1b,##1c,##1d,##1e,##1f,##1g,##1h,##1i,##1j,##1k,##1l,##1m,##1n,##1o,##1p,##1q,##1r,##1s,##1t,##1u,##1v,##1w,##1x,##1y,##1z}}},%
 		setaux/.list/.expanded={,a,b,c,d,e,f,g}%
 	}%
 }%
 %
-\newcommand{\KeysDef}{%
+
+
+\AtBeginDocument{\ctikz@@KeysDef}
+
+\NewDocumentCommand{\ctikz@@KeysDef}{}{%
   \pgfkeys{/Zval/.is family, /Zval, default/.style={},%
-	  defset/.code={\@SetDef{##1}},%
-		defset/.list/.expanded={R,L,C,Z,K,T,Q,EQ,X,Y,D,M,N,A,B,U},%
-		defset/.code={\@SetDef[f_]{##1}},%
+	  defset/.code={\ctikz@@SetDef{##1}},%
+		defset/.list/.expanded={R,L,C,Z,K,T,Q,EQ,X,Y,D,M,N,A,B,U\ctikz@@xtratkey},%
+		defset/.code={\ctikz@@SetDef[f_]{##1}},%
 		defset/.list/.expanded={V,I},%
 		default%
 	}%
 }%
 
-\newcommand{\Zkey}[1]{\pgfkeysvalueof{/tikz/#1}}
+\newcommand{\ctikz@@Zkey}[1]{\pgfkeysvalueof{/tikz/#1}}
 \newtoggle{Z@inverted}
 \newtoggle{Z@generic}
 %\toggletrue{Z@generic}
@@ -535,9 +588,9 @@ opt/.style={@alternate},
 
 
 
-\newcommand{\Zdraw}[7]{
-	\IfDecimal{\Zkey{#1}}{
-		\ifnumequal{0+\Zkey{#1}}{0}{
+\newcommand{\ctikz@@Zdraw}[7]{
+	\IfDecimal{\ctikz@@Zkey{#1}}{
+		\ifnumequal{0+\ctikz@@Zkey{#1}}{0}{
 			\pgfnode{#3}{#4}{}{#7}{\pgfusepath{discard}}
 			\pgfpathmoveto{\pgfpointanchor{#7}{#5}}
 			\pgfpathlineto{\pgfpointanchor{#7}{#6}}
@@ -547,9 +600,9 @@ opt/.style={@alternate},
 		}
 	}{\pgfnode{#2}{#4}{}{#7}{\pgfusepath{stroke}}}
 }
-\newcommand{\Ydraw}[7]{
-	\IfDecimal{\Zkey{#1}}{
-		\ifnumequal{0+\Zkey{#1}}{0}{
+\newcommand{\ctikz@@Ydraw}[7]{
+	\IfDecimal{\ctikz@@Zkey{#1}}{
+		\ifnumequal{0+\ctikz@@Zkey{#1}}{0}{
 			\pgfnode{#3}{#4}{}{#7}{\pgfusepath{discard}}
 		}{
 			\pgfnode{#2}{#4}{}{#7}{\pgfusepath{stroke}}
@@ -557,46 +610,46 @@ opt/.style={@alternate},
 	}{\pgfnode{#2}{#4}{}{#7}{\pgfusepath{stroke}}}
 }
 
-\newcommand{\CondDraw}[3]{
-	\IfDecimal{\Zkey{#1}}{
-		\ifnumequal{0+\Zkey{#1}}{0}{
+\newcommand{\ctikz@@CondDraw}[3]{
+	\IfDecimal{\ctikz@@Zkey{#1}}{
+		\ifnumequal{0+\ctikz@@Zkey{#1}}{0}{
 			#2
 		}{
 			#3
 		}
 	}{#3}
 }
-\newcommand{\QuadPoints}{
+\newcommand{\ctikz@@QuadPoints}{
 		\centerpoint
 		\tikzmath{
 			real \x,\y;
-			\x1=\pgf@x + \Zkey{quad width};
-			\y1=\pgf@y +( \Zkey{quad base height} +  \Zkey{quad height ext});
+			\x1=\pgf@x + \ctikz@@Zkey{quad width};
+			\y1=\pgf@y +( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext});
 			%
-			\x0=\pgf@x - \Zkey{quad width};
-			\y0=\pgf@y -( \Zkey{quad base height} +  \Zkey{quad height ext});
+			\x0=\pgf@x - \ctikz@@Zkey{quad width};
+			\y0=\pgf@y -( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext});
 			%
-			\y2=\pgf@y - \Zkey{quad base height};
-			\y3=\pgf@y + \Zkey{quad base height};
+			\y2=\pgf@y - \ctikz@@Zkey{quad base height};
+			\y3=\pgf@y + \ctikz@@Zkey{quad base height};
 			%
-			\x2=\x0 - \Zkey{quad outer ext};
-			\x3=\x0 + \Zkey{quad inner ext};
+			\x2=\x0 - \ctikz@@Zkey{quad outer ext};
+			\x3=\x0 + \ctikz@@Zkey{quad inner ext};
 			%
-			\x4=\x3 + 3*\Zkey{quad inner ext};
-			\x5=\x3+\pgf@circ@Rlen+\Zkey{quad inner ext};
+			\x4=\x3 + 3*\ctikz@@Zkey{quad inner ext};
+			\x5=\x3+\pgf@circ@Rlen+\ctikz@@Zkey{quad inner ext};
 			%
-			%\x6=\x3+0.75*\pgf@circ@Rlen+\Zkey{quad inner ext};
-			\x6=\x3+0.5*\pgf@circ@Rlen+2*\Zkey{quad inner ext};
+			%\x6=\x3+0.75*\pgf@circ@Rlen+\ctikz@@Zkey{quad inner ext};
+			\x6=\x3+0.5*\pgf@circ@Rlen+2*\ctikz@@Zkey{quad inner ext};
 		}
 }
 
-\newcommand{\QuadTextPoints}{
+\newcommand{\ctikz@@QuadTextPoints}{
 		\tikzmath{
 			real \x,\y;
-			\y1=-( \Zkey{quad base height} +  \Zkey{quad height ext}) + 1.15ex;
-			\x1=- \Zkey{quad width} + \Zkey{quad inner ext} ;
-			\y2=- \Zkey{quad base height} + 1.15ex;
-			\x2=+ \Zkey{quad width} - \Zkey{quad inner ext};
+			\y1=-( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) + 1.15ex;
+			\x1=- \ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad inner ext} ;
+			\y2=- \ctikz@@Zkey{quad base height} + 1.15ex;
+			\x2=+ \ctikz@@Zkey{quad width} - \ctikz@@Zkey{quad inner ext};
 		}
 }
 
@@ -611,16 +664,16 @@ opt/.style={@alternate},
 % #6->res east/west
 % #7->"-" minus signal !!! for B side
 %
-\newcommand{\Zside}[7]{
+\newcommand{\ctikz@@Zside}[7]{
 		\togglefalse{Z@auxA}
-		\IfDecimal{\Zkey{#1}}{
-			\ifnumequal{0+\Zkey{#1}}{0}{
+		\IfDecimal{\ctikz@@Zkey{#1}}{
+			\ifnumequal{0+\ctikz@@Zkey{#1}}{0}{
 			\toggletrue{Z@auxA}}
 			}{}{
 		}
 		\togglefalse{Z@auxB}
-		\IfDecimal{\Zkey{#2}}{
-			\ifnumequal{0+\Zkey{#2}}{0}{
+		\IfDecimal{\ctikz@@Zkey{#2}}{
+			\ifnumequal{0+\ctikz@@Zkey{#2}}{0}{
 			\toggletrue{Z@auxB}}
 			}{}{
 		}
@@ -628,7 +681,7 @@ opt/.style={@alternate},
 			\iftoggle{Z@auxA}{
 				{
 					\pgftransformshift{\pgfpoint{#7\x6}{0}}
-					\Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
+					\ctikz@@Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
 				}
 				{
 					\pgfpathmoveto{\pgfpoint{#7\x3}{\y3}}
@@ -643,7 +696,7 @@ opt/.style={@alternate},
 				{
 					\pgftransformshift{\pgfpoint{#7\x6}{0}}
 					\pgftransformrotate{#790}
-					\Zdraw{#1}{Res}{Res}{center}{#5}{#6}{#3}
+					\ctikz@@Zdraw{#1}{Res}{Res}{center}{#5}{#6}{#3}
 				}
 				{
 					\pgfpathmoveto{\pgfpoint{#7\x3}{\y3}}
@@ -658,11 +711,11 @@ opt/.style={@alternate},
 		}{
 			{
 				\pgftransformshift{\pgfpoint{#7\x3}{\y3}}
-				\Zdraw{#1}{Res}{Res}{#5}{#5}{#6}{#3}
+				\ctikz@@Zdraw{#1}{Res}{Res}{#5}{#5}{#6}{#3}
 			}
 			{
 				\pgftransformshift{\pgfpoint{#7\x5}{0}}
-				\Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
+				\ctikz@@Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
 			}
 			{
 				\pgfpathmoveto{\pgfpointanchor{#3}{#6}}
@@ -675,17 +728,17 @@ opt/.style={@alternate},
 			}
 		}
 }
-%		\ZsideA{Z11}{Z12}{z1}{v1}{west}{east}{}{I2}
+%		\ctikz@@ZsideA{Z11}{Z12}{z1}{v1}{west}{east}{}{I2}
 
 
-\newcommand{\ZsideXX}[7]{
+\newcommand{\ctikz@@ZsideXX}[7]{
 		{
 			\pgftransformshift{\pgfpoint{#7\x3}{\y3}}
-			\Zdraw{#1}{Res}{Res}{#5}{#5}{#6}{#3}
+			\ctikz@@Zdraw{#1}{Res}{Res}{#5}{#5}{#6}{#3}
 		}
 		{
 			\pgftransformshift{\pgfpoint{#7\x5}{0}}
-			\Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
+			\ctikz@@Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
 		}
 		{
 			\pgfpathmoveto{\pgfpointanchor{#3}{#6}}
@@ -700,51 +753,49 @@ opt/.style={@alternate},
 
 
 
-
-
-\newcommand{\ZsideA}[5]{
-		\Zside{#1}{#2}{#3}{#4}{west}{east}{}
+\newcommand{\ctikz@@ZsideA}[5]{
+		\ctikz@@Zside{#1}{#2}{#3}{#4}{west}{east}{}
 		\iftoggle{Z@inverted}{
 			{
 				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}\Zkey{#5}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 			}
 		}{
-			\CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-			\CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}\Zkey{#5}}}
+			\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 		}
 }
 
-\newcommand{\ZsideAx}[4]{
-		\Zside{#1}{#2}{#3}{#4}{west}{east}{}
+\newcommand{\ctikz@@ZsideAx}[4]{
+		\ctikz@@Zside{#1}{#2}{#3}{#4}{west}{east}{}
 		\iftoggle{Z@inverted}{
 			{
 				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}}}
 			}
 		}{
-			\CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-			\CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}}}
+			\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}}}
 		}
 }
 
-\newcommand{\ZsideB}[5]{
-		\Zside{#1}{#2}{#3}{#4}{east}{west}{-}
+\newcommand{\ctikz@@ZsideB}[5]{
+		\ctikz@@Zside{#1}{#2}{#3}{#4}{east}{west}{-}
 		\iftoggle{Z@inverted}{
 			{
 				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south east}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[left,bottom,at={\pgfpointanchor{#4}{north west}}]{\Zkey{#2}\Zkey{#5}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south east}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[left,bottom,at={\pgfpointanchor{#4}{north west}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 			}
 		}{
 			\ifboolexpr{togl{Z@alternate} and togl{Z@auxB}}{
-				\CondDraw{#1}{}{\pgftext[right,bottom,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,bottom,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
 			}{
-				\CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south east}}]{\Zkey{#1}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south east}}]{\ctikz@@Zkey{#1}}}
 			}
-			\CondDraw{#2}{}{\pgftext[right,bottom,at={\pgfpointanchor{#4}{north west}}]{\Zkey{#2}\Zkey{#5}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[right,bottom,at={\pgfpointanchor{#4}{north west}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 		}
 }
 
@@ -757,16 +808,16 @@ opt/.style={@alternate},
 % #6->res east/west
 % #7->"-" minus signal !!! for B side
 %
-\newcommand{\Yside}[8][Isource]{
+\newcommand{\ctikz@@Yside}[8][Isource]{
 		\togglefalse{Z@auxA}
-		\IfDecimal{\Zkey{#2}}{
-			\ifnumequal{0+\Zkey{#2}}{0}{
+		\IfDecimal{\ctikz@@Zkey{#2}}{
+			\ifnumequal{0+\ctikz@@Zkey{#2}}{0}{
 				\toggletrue{Z@auxA}}
 			}{}{
 		}
 		\togglefalse{Z@auxB}
-		\IfDecimal{\Zkey{#3}}{
-			\ifnumequal{0+\Zkey{#3}}{0}{
+		\IfDecimal{\ctikz@@Zkey{#3}}{
+			\ifnumequal{0+\ctikz@@Zkey{#3}}{0}{
 				\toggletrue{Z@auxB}}
 			}{}{
 		}
@@ -785,9 +836,9 @@ opt/.style={@alternate},
 		{
 			\pgftransformshift{\pgfpoint{#8\x7}{0}}
 			\pgftransformrotate{#890}
-			\Ydraw{#2}{Res}{Res}{center}{#6}{#7}{#4}
+			\ctikz@@Ydraw{#2}{Res}{Res}{center}{#6}{#7}{#4}
 		}
-		\CondDraw{#2}{}{
+		\ctikz@@CondDraw{#2}{}{
 			\pgfpathmoveto{\pgfpoint{#8\x3}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x7}{\y3}}
 			\pgfpathlineto{\pgfpointanchor{#4}{#7}}
@@ -798,9 +849,9 @@ opt/.style={@alternate},
 		}
 		{
 			\pgftransformshift{\pgfpoint{#8\x8}{0}}
-			\Ydraw{#3}{#1}{Bsource}{center}{north}{south}{#5}
+			\ctikz@@Ydraw{#3}{#1}{Bsource}{center}{north}{south}{#5}
 		}
-		\CondDraw{#3}{}{
+		\ctikz@@CondDraw{#3}{}{
 			\pgfpathmoveto{\pgfpoint{#8\x3}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x4}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x8}{\y3}}
@@ -812,13 +863,13 @@ opt/.style={@alternate},
 		}
 }
 
-\newcommand{\YsideXX}[8][Isource]{
+\newcommand{\ctikz@@YsideXX}[8][Isource]{
 		{
 			\pgftransformshift{\pgfpoint{#8\x4}{0}}
 			\pgftransformrotate{#890}
-			\Ydraw{#2}{Res}{Res}{center}{#6}{#7}{#4}
+			\ctikz@@Ydraw{#2}{Res}{Res}{center}{#6}{#7}{#4}
 		}
-		\CondDraw{#2}{}{
+		\ctikz@@CondDraw{#2}{}{
 			\pgfpathmoveto{\pgfpoint{#8\x3}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x4}{\y3}}
 			\pgfpathlineto{\pgfpointanchor{#4}{#7}}
@@ -829,9 +880,9 @@ opt/.style={@alternate},
 		}
 		{
 			\pgftransformshift{\pgfpoint{#8\x5}{0}}
-			\Ydraw{#3}{#1}{Bsource}{center}{north}{south}{#5}
+			\ctikz@@Ydraw{#3}{#1}{Bsource}{center}{north}{south}{#5}
 		}
-		\CondDraw{#3}{}{
+		\ctikz@@CondDraw{#3}{}{
 			\pgfpathmoveto{\pgfpoint{#8\x3}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x4}{\y3}}
 			\pgfpathlineto{\pgfpoint{#8\x5}{\y3}}
@@ -843,50 +894,48 @@ opt/.style={@alternate},
 		}
 }
 
-\newcommand{\YsideA}[5]{
-		\Yside{#1}{#2}{#3}{#4}{west}{east}{}
+\newcommand{\ctikz@@YsideA}[5]{
+		\ctikz@@Yside{#1}{#2}{#3}{#4}{west}{east}{}
 		\iftoggle{Z@inverted}{
 			{
 				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}\Zkey{#5}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 			}
 		}{
-			\CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-			\CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}\Zkey{#5}}}
+			\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 		}
 }
 
-\newcommand{\YsideAx}[4]{
-		\Yside[IsourceUP]{#1}{#2}{#3}{#4}{west}{east}{}
+\newcommand{\ctikz@@YsideAx}[4]{
+		\ctikz@@Yside[IsourceUP]{#1}{#2}{#3}{#4}{west}{east}{}
 		\iftoggle{Z@inverted}{
 			{
 				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}}}
+				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[right,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}}}
 			}
 		}{
-			\CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-			\CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\Zkey{#2}}}
-		}
-}
-
-
-\newcommand{\YsideB}[5]{
-		\Yside{#1}{#2}{#3}{#4}{east}{west}{-}
-		\iftoggle{Z@inverted}{
-			{
-				\pgftransformresetnontranslations
-				\CondDraw{#1}{}{\pgftext[left,base,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-				\CondDraw{#2}{}{\pgftext[left,bottom,at={\pgfpointanchor{#4}{north west}}]{\Zkey{#2}\Zkey{#5}}}
-			}
-		}{
-			\CondDraw{#1}{}{\pgftext[right,base,at={\pgfpointanchor{#3}{south west}}]{\Zkey{#1}}}
-			\CondDraw{#2}{}{\pgftext[right,bottom,at={\pgfpointanchor{#4}{north west}}]{\Zkey{#2}\Zkey{#5}}}
+			\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[left,top,at={\pgfpointanchor{#4}{south east}}]{\ctikz@@Zkey{#2}}}
 		}
 }
 
 
+\newcommand{\ctikz@@YsideB}[5]{
+		\ctikz@@Yside{#1}{#2}{#3}{#4}{east}{west}{-}
+		\iftoggle{Z@inverted}{
+			{
+				\pgftransformresetnontranslations
+				\ctikz@@CondDraw{#1}{}{\pgftext[left,base,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+				\ctikz@@CondDraw{#2}{}{\pgftext[left,bottom,at={\pgfpointanchor{#4}{north west}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
+			}
+		}{
+			\ctikz@@CondDraw{#1}{}{\pgftext[right,base,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
+			\ctikz@@CondDraw{#2}{}{\pgftext[right,bottom,at={\pgfpointanchor{#4}{north west}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
+		}
+}
 
 
 \pgfdeclareshape{arrowtip}{
@@ -921,7 +970,7 @@ opt/.style={@alternate},
 		\tikzmath{
 			real \x,\y;
 			\x1=0;
-			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\Zkey{outer sep};
+			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -948,7 +997,7 @@ opt/.style={@alternate},
 		\tikzmath{
 			real \x,\y;
 			\x1=0;
-			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\Zkey{outer sep};
+			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -957,7 +1006,7 @@ opt/.style={@alternate},
 		\tikzmath{
 			real \x,\y;
 			\x1=0;
-			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\Zkey{outer sep};
+			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -965,8 +1014,8 @@ opt/.style={@alternate},
 	\savedanchor{\northwest}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=-\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 -\Zkey{outer sep};
-			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\Zkey{outer sep};
+			\x1=-\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 -\ctikz@@Zkey{outer sep};
+			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -974,8 +1023,8 @@ opt/.style={@alternate},
 	\savedanchor{\northeast}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=+\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 +\Zkey{outer sep};
-			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\Zkey{outer sep};
+			\x1=+\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
+			\y1=+\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -983,8 +1032,8 @@ opt/.style={@alternate},
 	\savedanchor{\southwest}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=-\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 -\Zkey{outer sep};
-			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\Zkey{outer sep};
+			\x1=-\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 -\ctikz@@Zkey{outer sep};
+			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -992,8 +1041,8 @@ opt/.style={@alternate},
 	\savedanchor{\southeast}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=+\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 +\Zkey{outer sep};
-			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\Zkey{outer sep};
+			\x1=+\ctikzvalof{bipoles/resistor/width}\pgf@circ@Rlen/2 +\ctikz@@Zkey{outer sep};
+			\y1=-\ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen/2 -\ctikz@@Zkey{outer sep};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1043,8 +1092,8 @@ opt/.style={@alternate},
 	\savedanchor{\text}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
-			\y1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
+			\x1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
+			\y1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1052,7 +1101,7 @@ opt/.style={@alternate},
 	\savedanchor{\west}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=-\Zkey{source radius};
+			\x1=-\ctikz@@Zkey{source radius};
 			\y1=0;
 		}
 		\pgfpoint{\x1}{\y1}
@@ -1061,7 +1110,7 @@ opt/.style={@alternate},
 	\savedanchor{\east}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=\Zkey{source radius};
+			\x1=\ctikz@@Zkey{source radius};
 			\y1=0;
 		}
 		\pgfpoint{\x1}{\y1}
@@ -1071,7 +1120,7 @@ opt/.style={@alternate},
 		\tikzmath{
 			real \x,\y;
 			\x1=0;
-			\y1=\Zkey{source radius};
+			\y1=\ctikz@@Zkey{source radius};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1080,7 +1129,7 @@ opt/.style={@alternate},
 		\tikzmath{
 			real \x,\y;
 			\x1=0;
-			\y1=-\Zkey{source radius};
+			\y1=-\ctikz@@Zkey{source radius};
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1088,8 +1137,8 @@ opt/.style={@alternate},
 	\savedanchor{\northwest}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=-cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
-			\y1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
+			\x1=-cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
+			\y1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1097,8 +1146,8 @@ opt/.style={@alternate},
 	\savedanchor{\northeast}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
-			\y1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
+			\x1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
+			\y1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1106,8 +1155,8 @@ opt/.style={@alternate},
 	\savedanchor{\southwest}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=-cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
-			\y1=-cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
+			\x1=-cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
+			\y1=-cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
 		}
 		\pgfpoint{\x1}{\y1}
 	}
@@ -1115,14 +1164,14 @@ opt/.style={@alternate},
 	\savedanchor{\southeast}{%
 		\tikzmath{
 			real \x,\y;
-			\x1=+cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
-			\y1=-cos(45)*(\Zkey{source radius}+\Zkey{outer sep});
+			\x1=+cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
+			\y1=-cos(45)*(\ctikz@@Zkey{source radius}+\ctikz@@Zkey{outer sep});
 		}
 		\pgfpoint{\x1}{\y1}
 	}
 	\backgroundpath{}
 		\pgfsetroundcap
-		\pgfpathcircle{\pgfpoint{0}{0}}{\Zkey{source radius}}
+		\pgfpathcircle{\pgfpoint{0}{0}}{\ctikz@@Zkey{source radius}}
 	}
 
 %%%%%%%%%%%
@@ -1140,8 +1189,8 @@ opt/.style={@alternate},
 	\backgroundpath{
 		%\pgfsetlinewidth{2\pgflinewidth}
 		\pgfsetroundcap
-		\pgfpathmoveto{\pgfpoint{0}{\Zkey{source radius}}}
-		\pgfpathlineto{\pgfpoint{0}{-\Zkey{source radius}}}
+		\pgfpathmoveto{\pgfpoint{0}{\ctikz@@Zkey{source radius}}}
+		\pgfpathlineto{\pgfpoint{0}{-\ctikz@@Zkey{source radius}}}
 	}}
 
 %%%%%%%%%%%
@@ -1159,13 +1208,13 @@ opt/.style={@alternate},
 	\backgroundpath{
 		%\pgfsetlinewidth{2\pgflinewidth}
 		\pgfsetroundcap
-		\pgfpathcircle{\pgfpoint{0}{0}}{\Zkey{source radius}}
-		\pgfpathmoveto{\pgfpoint{-\Zkey{vsource -len}}{-\Zkey{vsource ydist}}}
-		\pgfpathlineto{\pgfpoint{\Zkey{vsource -len}}{-\Zkey{vsource ydist}}}
-		\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}}{\Zkey{vsource ydist}}}
-		\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}}{\Zkey{vsource ydist}}}
-		\pgfpathmoveto{\pgfpoint{0}{\Zkey{vsource ydist}-\Zkey{vsource +len}}}
-		\pgfpathlineto{\pgfpoint{0}{\Zkey{vsource ydist}+\Zkey{vsource +len}}}
+		\pgfpathcircle{\pgfpoint{0}{0}}{\ctikz@@Zkey{source radius}}
+		\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource -len}}{-\ctikz@@Zkey{vsource ydist}}}
+		\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource -len}}{-\ctikz@@Zkey{vsource ydist}}}
+		\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}}{\ctikz@@Zkey{vsource ydist}}}
+		\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}}{\ctikz@@Zkey{vsource ydist}}}
+		\pgfpathmoveto{\pgfpoint{0}{\ctikz@@Zkey{vsource ydist}-\ctikz@@Zkey{vsource +len}}}
+		\pgfpathlineto{\pgfpoint{0}{\ctikz@@Zkey{vsource ydist}+\ctikz@@Zkey{vsource +len}}}
 	}}
 
 
@@ -1185,11 +1234,11 @@ opt/.style={@alternate},
 		\begin{pgfscope}
 %		\pgfsetlinewidth{2\pgflinewidth}
 		\pgfsetroundcap
-		\pgfpathcircle{\pgfpoint{0}{0}}{\Zkey{source radius}}
-		\pgfpathmoveto{\pgfpoint{0}{\Zkey{isource len}}}
-		\pgfpathlineto{\pgfpoint{0}{-\Zkey{isource len}}}
+		\pgfpathcircle{\pgfpoint{0}{0}}{\ctikz@@Zkey{source radius}}
+		\pgfpathmoveto{\pgfpoint{0}{\ctikz@@Zkey{isource len}}}
+		\pgfpathlineto{\pgfpoint{0}{-\ctikz@@Zkey{isource len}}}
 		\pgftransformrotate{-90}
-     	\pgftransformshift{\pgfpoint{\Zkey{isource len}-2.5*\Zkey{inner sep}}{0}}
+     	\pgftransformshift{\pgfpoint{\ctikz@@Zkey{isource len}-2.5*\ctikz@@Zkey{inner sep}}{0}}
 		\pgfusepath{stroke}
 		\pgfnode{arrowtip}{center}{}{mc}{}
 		\end{pgfscope}
@@ -1204,11 +1253,11 @@ opt/.style={@alternate},
 		\begin{pgfscope}
 %		\pgfsetlinewidth{2\pgflinewidth}
 		\pgfsetroundcap
-		\pgfpathcircle{\pgfpoint{0}{0}}{\Zkey{source radius}}
-		\pgfpathmoveto{\pgfpoint{0}{\Zkey{isource len}}}
-		\pgfpathlineto{\pgfpoint{0}{-\Zkey{isource len}}}
+		\pgfpathcircle{\pgfpoint{0}{0}}{\ctikz@@Zkey{source radius}}
+		\pgfpathmoveto{\pgfpoint{0}{\ctikz@@Zkey{isource len}}}
+		\pgfpathlineto{\pgfpoint{0}{-\ctikz@@Zkey{isource len}}}
 		\pgftransformrotate{90}
-     	\pgftransformshift{\pgfpoint{\Zkey{isource len}-2.5*\Zkey{inner sep}}{0}}
+     	\pgftransformshift{\pgfpoint{\ctikz@@Zkey{isource len}-2.5*\ctikz@@Zkey{inner sep}}{0}}
 		\pgfusepath{stroke}
 		\pgfnode{arrowtip}{center}{}{mc}{}
 		\end{pgfscope}
@@ -1230,75 +1279,75 @@ opt/.style={@alternate},
 	\savedanchor{\text}{%
 		\tikzmath{
 			real \x,\y;
-			\y3=-( \Zkey{quad base height} +  \Zkey{quad height ext}) + 0.65ex;
-			\x3=- \Zkey{quad width} + \Zkey{quad inner ext} + 1ex;%
+			\y3=-( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) + 0.65ex;
+			\x3=- \ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad inner ext} + 1ex;%
 		}
 			\pgfpoint{\x3}{\y3}
 	}
 	\anchor{bottom left}{\bottomleft}
 	\savedanchor{\bottomleft}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x1}{\y1}
 	}
 	\anchor{bottom center}{\bottomcenter}
 	\savedanchor{\bottomcenter}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{0}{\y1}
 	}
 	\anchor{bottom right}{\bottomright}
 	\savedanchor{\bottomright}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x2}{\y1}
 	}
 	\anchor{lower left}{\lowerleft}
 	\savedanchor{\lowerleft}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x1}{\y2}
 	}
 	\anchor{lower center}{\lowercenter}%
 	\savedanchor{\lowercenter}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{0}{\y2}
 	}
 	\anchor{lower right}{\lowerright}%
 	\savedanchor{\lowerright}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x2}{\y2}
 	}
 	\anchor{top left}{\topleft}%
 	\savedanchor{\topleft}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x1}{-\y1}
 	}
 	\anchor{top center}{\topcenter}%
 	\savedanchor{\topcenter}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{0}{-\y1}
 	}
 	\anchor{top right}{\topright}%
 	\savedanchor{\topright}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x2}{-\y1}
 	}
 	\anchor{upper left}{\upperleft}%
 	\savedanchor{\upperleft}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x1}{-\y2}
 	}
 	\anchor{upper center}{\uppercenter}%
 	\savedanchor{\uppercenter}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{0}{-\y2}
 	}
 	\anchor{upper right}{\upperright}%
 	\savedanchor{\upperright}{%
-		\QuadTextPoints
+		\ctikz@@QuadTextPoints
 		\pgfpoint{\x2}{-\y2}
 	}
 	\anchor{west}{\west}%
 	\savedanchor{\west}{%
 		\tikzmath{
-			\pgf@x= -\Zkey{quad width} -  \Zkey{quad outer ext};
+			\pgf@x= -\ctikz@@Zkey{quad width} -  \ctikz@@Zkey{quad outer ext};
 			\pgf@y=0;
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
@@ -1306,7 +1355,7 @@ opt/.style={@alternate},
 	\anchor{east}{\east}%
 	\savedanchor{\east}{%
 		\tikzmath{
-			\pgf@x=\Zkey{quad width} +\Zkey{quad outer ext};
+			\pgf@x=\ctikz@@Zkey{quad width} +\ctikz@@Zkey{quad outer ext};
 			\pgf@y=0;
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
@@ -1315,23 +1364,23 @@ opt/.style={@alternate},
 	\savedanchor{\north}{%
 		\tikzmath{
 			\pgf@x=0;
-			\pgf@y=( \Zkey{quad base height} +  \Zkey{quad height ext}) +0.5*\Zkey{quad outer ext};
+			\pgf@y=( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) +0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
 	\anchor{north west}{\northwest}%
 	\savedanchor{\northwest}{%
 		\tikzmath{
-			\pgf@x=-\Zkey{quad width} -  \Zkey{quad outer ext};
-			\pgf@y=( \Zkey{quad base height} +  \Zkey{quad height ext}) +0.5*\Zkey{quad outer ext};
+			\pgf@x=-\ctikz@@Zkey{quad width} -  \ctikz@@Zkey{quad outer ext};
+			\pgf@y=( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) +0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
 	\anchor{north east}{\northeast}%
 	\savedanchor{\northeast}{%
 		\tikzmath{
-			\pgf@x=\Zkey{quad width} +  \Zkey{quad outer ext};
-			\pgf@y=( \Zkey{quad base height} +  \Zkey{quad height ext}) +0.5*\Zkey{quad outer ext};
+			\pgf@x=\ctikz@@Zkey{quad width} +  \ctikz@@Zkey{quad outer ext};
+			\pgf@y=( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) +0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
@@ -1339,23 +1388,23 @@ opt/.style={@alternate},
 	\savedanchor{\south}{%
 		\tikzmath{
 			\pgf@x=0;
-			\pgf@y=-( \Zkey{quad base height} +  \Zkey{quad height ext}) -0.5*\Zkey{quad outer ext};
+			\pgf@y=-( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) -0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
 	\anchor{south west}{\southwest}%
 	\savedanchor{\southwest}{%
 		\tikzmath{
-			\pgf@x=-\Zkey{quad width} -  \Zkey{quad outer ext};
-			\pgf@y=-( \Zkey{quad base height} +  \Zkey{quad height ext}) -0.5*\Zkey{quad outer ext};
+			\pgf@x=-\ctikz@@Zkey{quad width} -  \ctikz@@Zkey{quad outer ext};
+			\pgf@y=-( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) -0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
 	\anchor{south east}{\southeast}%
 	\savedanchor{\southeast}{%
 		\tikzmath{
-			\pgf@x=\Zkey{quad width} +  \Zkey{quad outer ext};
-			\pgf@y=-( \Zkey{quad base height} +  \Zkey{quad height ext}) -0.5*\Zkey{quad outer ext};
+			\pgf@x=\ctikz@@Zkey{quad width} +  \ctikz@@Zkey{quad outer ext};
+			\pgf@y=-( \ctikz@@Zkey{quad base height} +  \ctikz@@Zkey{quad height ext}) -0.5*\ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\pgf@x}{\pgf@y}
 	}
@@ -1363,8 +1412,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeA}{
 		\tikzmath{
 			real \x,\y;
-			\y3=\Zkey{quad base height};
-			\x2=- \Zkey{quad width} - \Zkey{quad outer ext};
+			\y3=\ctikz@@Zkey{quad base height};
+			\x2=- \ctikz@@Zkey{quad width} - \ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1372,8 +1421,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeB}{
 		\tikzmath{
 			real \x,\y;
-			\y3=-\Zkey{quad base height};
-			\x2=-\Zkey{quad width} - \Zkey{quad outer ext};
+			\y3=-\ctikz@@Zkey{quad base height};
+			\x2=-\ctikz@@Zkey{quad width} - \ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1381,8 +1430,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeC}{
 		\tikzmath{
 			real \x,\y;
-			\y3=+\Zkey{quad base height};
-			\x2= \Zkey{quad width} + \Zkey{quad outer ext};
+			\y3=+\ctikz@@Zkey{quad base height};
+			\x2= \ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1390,8 +1439,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeD}{
 		\tikzmath{
 			real \x,\y;
-			\y3=- \Zkey{quad base height};
-			\x2= \Zkey{quad width} + \Zkey{quad outer ext};
+			\y3=- \ctikz@@Zkey{quad base height};
+			\x2= \ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad outer ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1399,8 +1448,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeAi}{
 		\tikzmath{
 			real \x,\y;
-			\y3=\Zkey{quad base height};
-			\x2=- \Zkey{quad width} + \Zkey{quad inner ext};
+			\y3=\ctikz@@Zkey{quad base height};
+			\x2=- \ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad inner ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1408,8 +1457,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeBi}{
 		\tikzmath{
 			real \x,\y;
-			\y3=-\Zkey{quad base height};
-			\x2=-\Zkey{quad width} + \Zkey{quad inner ext};
+			\y3=-\ctikz@@Zkey{quad base height};
+			\x2=-\ctikz@@Zkey{quad width} + \ctikz@@Zkey{quad inner ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1417,8 +1466,8 @@ opt/.style={@alternate},
 	\savedanchor{\NodeCi}{
 		\tikzmath{
 			real \x,\y;
-			\y3=+\Zkey{quad base height};
-			\x2= \Zkey{quad width} - \Zkey{quad inner ext};
+			\y3=+\ctikz@@Zkey{quad base height};
+			\x2= \ctikz@@Zkey{quad width} - \ctikz@@Zkey{quad inner ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
@@ -1426,14 +1475,14 @@ opt/.style={@alternate},
 	\savedanchor{\NodeDi}{
 		\tikzmath{
 			real \x,\y;
-			\y3=- \Zkey{quad base height};
-			\x2= \Zkey{quad width} - \Zkey{quad inner ext};
+			\y3=- \ctikz@@Zkey{quad base height};
+			\x2= \ctikz@@Zkey{quad width} - \ctikz@@Zkey{quad inner ext};
 		}
 		\pgfpoint{\x2}{\y3}
 	}
 %
 	\behindbackgroundpath{%  this is new
-		\QuadPoints
+		\ctikz@@QuadPoints
 		\pgfpathmoveto{\pgfpoint{\x0}{\y0}}
 		\pgfpathlineto{\pgfpoint{\x0}{\y1}}
 		\pgfpathlineto{\pgfpoint{\x1}{\y1}}
@@ -1448,36 +1497,36 @@ opt/.style={@alternate},
 		\pgfpathmoveto{\pgfpoint{-\x2}{\y3}}
 		\pgfpathlineto{\pgfpoint{-\x3}{\y3}}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y3-\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
-			\pgfpathmoveto{\pgfpoint{0}{-\Zkey{vsource +len}/2}}
-			\pgfpathlineto{\pgfpoint{0}{\Zkey{vsource +len}/2}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y3-\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathmoveto{\pgfpoint{0}{-\ctikz@@Zkey{vsource +len}/2}}
+			\pgfpathlineto{\pgfpoint{0}{\ctikz@@Zkey{vsource +len}/2}}
 		}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y2+\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y2+\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
 		}
 		{
-			\pgftransformshift{\pgfpoint{-\x2-\Zkey{quad outer ext}/2}{\y3-\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
-			\pgfpathmoveto{\pgfpoint{0}{-\Zkey{vsource +len}/2}}
-			\pgfpathlineto{\pgfpoint{0}{\Zkey{vsource +len}/2}}
+			\pgftransformshift{\pgfpoint{-\x2-\ctikz@@Zkey{quad outer ext}/2}{\y3-\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathmoveto{\pgfpoint{0}{-\ctikz@@Zkey{vsource +len}/2}}
+			\pgfpathlineto{\pgfpoint{0}{\ctikz@@Zkey{vsource +len}/2}}
 		}
 		{
-			\pgftransformshift{\pgfpoint{-\x2-\Zkey{quad outer ext}/2}{\y2+\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
+			\pgftransformshift{\pgfpoint{-\x2-\ctikz@@Zkey{quad outer ext}/2}{\y2+\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
 		}
 		\pgfusepath{draw}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y3}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y3}}
 			\pgfnode{arrowtip}{center}{}{i1}{}
 		}
 		{
-			\pgftransformshift{\pgfpoint{-\x2-\Zkey{quad outer ext}/2}{\y3}}
+			\pgftransformshift{\pgfpoint{-\x2-\ctikz@@Zkey{quad outer ext}/2}{\y3}}
 			\pgftransformrotate{180}
 			\pgfnode{arrowtip}{center}{}{i2}{}
 		}
@@ -1486,15 +1535,15 @@ opt/.style={@alternate},
 		\pgfpathlineto{\pgfpoint{\x4}{\y2}}
 		\iftoggle{Z@inverted}{
 			\pgftransformresetnontranslations
-			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\Zkey{I2}}
-			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\Zkey{I1}}
-			\pgftext[left,x=\x1+0.4ex]{\Zkey{V1}}
-			\pgftext[right,x=\x0-0.4ex]{\Zkey{V2}}
+			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I2}}
+			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
+			\pgftext[left,x=\x1+0.4ex]{\ctikz@@Zkey{V1}}
+			\pgftext[right,x=\x0-0.4ex]{\ctikz@@Zkey{V2}}
 		}{
-			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\Zkey{I2}}
-			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\Zkey{I1}}
-			\pgftext[right,x=\x0-0.4ex]{\Zkey{V1}}
-			\pgftext[left,x=\x1+0.4ex]{\Zkey{V2}}
+			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I2}}
+			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
+			\pgftext[right,x=\x0-0.4ex]{\ctikz@@Zkey{V1}}
+			\pgftext[left,x=\x1+0.4ex]{\ctikz@@Zkey{V2}}
 		}
 		\pgfusepath{draw}
 	}
@@ -1507,8 +1556,6 @@ opt/.style={@alternate},
 %%%%% QuadZ
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{Quad Z}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1518,9 +1565,9 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad]
 	\backgroundpath{
-		\QuadPoints
-		\ZsideA{Z11}{Z12}{\tikz@fig@name-z1}{\tikz@fig@name-v1}{I2}
-		\ZsideB{Z22}{Z21}{\tikz@fig@name-z2}{\tikz@fig@name-v2}{I1}
+		\ctikz@@QuadPoints
+		\ctikz@@ZsideA{Z11}{Z12}{\tikz@fig@name-z1}{\tikz@fig@name-v1}{I2}
+		\ctikz@@ZsideB{Z22}{Z21}{\tikz@fig@name-z2}{\tikz@fig@name-v2}{I1}
 	}}
 
 
@@ -1530,8 +1577,6 @@ opt/.style={@alternate},
 %%%%% QuadY
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{Quad Y}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1541,9 +1586,9 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad]
 	\backgroundpath{
-		\QuadPoints
-		\YsideA{Y11}{Y12}{\tikz@fig@name-y1}{\tikz@fig@name-i1}{V2}
-		\YsideB{Y22}{Y21}{\tikz@fig@name-y2}{\tikz@fig@name-i2}{V1}
+		\ctikz@@QuadPoints
+		\ctikz@@YsideA{Y11}{Y12}{\tikz@fig@name-y1}{\tikz@fig@name-i1}{V2}
+		\ctikz@@YsideB{Y22}{Y21}{\tikz@fig@name-y2}{\tikz@fig@name-i2}{V1}
 	}}
 
 
@@ -1552,8 +1597,6 @@ opt/.style={@alternate},
 %%%%% QuadH
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{Quad H}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1563,9 +1606,9 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad]
 	\backgroundpath{
-		\QuadPoints
-		\ZsideA{H11}{H12}{\tikz@fig@name-z1}{\tikz@fig@name-v1}{V2}
-		\YsideB{H22}{H21}{\tikz@fig@name-y2}{\tikz@fig@name-i2}{I1}
+		\ctikz@@QuadPoints
+		\ctikz@@ZsideA{H11}{H12}{\tikz@fig@name-z1}{\tikz@fig@name-v1}{V2}
+		\ctikz@@YsideB{H22}{H21}{\tikz@fig@name-y2}{\tikz@fig@name-i2}{I1}
 	}}
 
 %%%%%%%%%%%
@@ -1573,8 +1616,6 @@ opt/.style={@alternate},
 %%%%% QuadG
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{Quad G}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1584,26 +1625,26 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad]
 	\backgroundpath{
-		\QuadPoints
-		\YsideA{G11}{G12}{\tikz@fig@name-y1}{\tikz@fig@name-i1}{I2}
-		\ZsideB{G22}{G21}{\tikz@fig@name-z2}{\tikz@fig@name-v2}{V1}
+		\ctikz@@QuadPoints
+		\ctikz@@YsideA{G11}{G12}{\tikz@fig@name-y1}{\tikz@fig@name-i1}{I2}
+		\ctikz@@ZsideB{G22}{G21}{\tikz@fig@name-z2}{\tikz@fig@name-v2}{V1}
 	}}
 
 
 
 
-\newcommand{\QuadConnect}[4][]{
-	\ifstrequal{#4}{1}{\def\Qsig{-} \def\stAng{0}\def\endAng{180}}{\def\Qsig{}\def\stAng{180}\def\endAng{0}}
+\NewDocumentCommand{\QuadParConnect}{O{}mmm}{
+	\ifstrequal{#4}{1}{\def\ctikz@@Qsig{-} \def\ctikz@@stAng{0}\def\ctikz@@endAng{180}}{\def\ctikz@@Qsig{}\def\ctikz@@stAng{180}\def\ctikz@@endAng{0}}
 	\ifstrequal{#1}{alt}{
-		\draw (#3.#4-) arc[start angle=\stAng,end angle=\endAng,x radius=+\Zkey{quad outer ext}/2,y radius=+\Zkey{quad outer ext}/2] -- ++(\Qsig\Zkey{quad outer ext}/2,0) \coord(#3-Y#4) node[circ]{}
-			(#2.#4-) --  ++(\Qsig\Zkey{quad outer ext}*3/2,0) -- (#3-Y#4)
-			(#3.#4+) -- ++(\Qsig\Zkey{quad outer ext}/2,0) \coord(#3-X#4)  node[circ]{}
-               (#2.#4+) -- ++(\Qsig\Zkey{quad outer ext}/2,0) -- (#3-X#4);
+		\draw (#3.#4-) arc[start angle=\ctikz@@stAng,end angle=\ctikz@@endAng,x radius=+\ctikz@@Zkey{quad outer ext}/2,y radius=+\ctikz@@Zkey{quad outer ext}/2] -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) \coord(#3-Y#4) node[circ]{}
+			(#2.#4-) --  ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}*3/2,0) -- (#3-Y#4)
+			(#3.#4+) -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) \coord(#3-X#4)  node[circ]{}
+               (#2.#4+) -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) -- (#3-X#4);
 	}{
-		\draw (#2.#4+) arc[start angle=\stAng,end angle=\endAng,x radius=+\Zkey{quad outer ext}/2,y radius=+\Zkey{quad outer ext}/2] -- ++(\Qsig\Zkey{quad outer ext}/2,0) \coord(#2-Y#4) node[circ]{}
-			(#3.#4+) --  ++(\Qsig\Zkey{quad outer ext}*3/2,0) -- (#2-Y#4)
-			(#3.#4-) -- ++(\Qsig\Zkey{quad outer ext}/2,0) \coord(#2-X#4) node[circ]{}
-			(#2.#4-) -- ++(\Qsig\Zkey{quad outer ext}/2,0) -- (#2-X#4);
+		\draw (#2.#4+) arc[start angle=\ctikz@@stAng,end angle=\ctikz@@endAng,x radius=+\ctikz@@Zkey{quad outer ext}/2,y radius=+\ctikz@@Zkey{quad outer ext}/2] -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) \coord(#2-Y#4) node[circ]{}
+			(#3.#4+) --  ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}*3/2,0) -- (#2-Y#4)
+			(#3.#4-) -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) \coord(#2-X#4) node[circ]{}
+			(#2.#4-) -- ++(\ctikz@@Qsig\ctikz@@Zkey{quad outer ext}/2,0) -- (#2-X#4);
 	}
 }
 
@@ -1615,8 +1656,6 @@ opt/.style={@alternate},
 %%%%% Black Box
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{BB}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1625,7 +1664,7 @@ opt/.style={@alternate},
 	1+,2+,1-,2-, inner 1+, inner 2+, inner 1-, inner 2-}{%
 		\inheritanchor[from=Quad]{\anchor}}
 	\behindbackgroundpath{
-		\QuadPoints
+		\ctikz@@QuadPoints
 		\pgfpathmoveto{\pgfpoint{\x0}{\y0}}
 		\pgfpathlineto{\pgfpoint{\x0}{\y1}}
 		\pgfpathlineto{\pgfpoint{\x1}{\y1}}
@@ -1636,30 +1675,30 @@ opt/.style={@alternate},
 		\pgfpathmoveto{\pgfpoint{\x2}{\y3}}
 		\pgfpathlineto{\pgfpoint{\x3}{\y3}}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y3-\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
-			\pgfpathmoveto{\pgfpoint{0}{-\Zkey{vsource +len}/2}}
-			\pgfpathlineto{\pgfpoint{0}{\Zkey{vsource +len}/2}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y3-\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathmoveto{\pgfpoint{0}{-\ctikz@@Zkey{vsource +len}/2}}
+			\pgfpathlineto{\pgfpoint{0}{\ctikz@@Zkey{vsource +len}/2}}
 		}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y2+\Zkey{quad outer ext}/2}}
-			\pgfpathmoveto{\pgfpoint{-\Zkey{vsource +len}/2}{0}}
-			\pgfpathlineto{\pgfpoint{\Zkey{vsource +len}/2}{0}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y2+\ctikz@@Zkey{quad outer ext}/2}}
+			\pgfpathmoveto{\pgfpoint{-\ctikz@@Zkey{vsource +len}/2}{0}}
+			\pgfpathlineto{\pgfpoint{\ctikz@@Zkey{vsource +len}/2}{0}}
 		}
 		\pgfusepath{draw}
 		{
-			\pgftransformshift{\pgfpoint{\x2+\Zkey{quad outer ext}/2}{\y3}}
+			\pgftransformshift{\pgfpoint{\x2+\ctikz@@Zkey{quad outer ext}/2}{\y3}}
 			\pgftransformrotate{180}
 			\pgfnode{arrowtip}{center}{}{i1}{}
 		}
 		\iftoggle{Z@inverted}{
 			\pgftransformresetnontranslations
-			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\Zkey{I1}}
-			\pgftext[left,x=\x1+0.4ex]{\Zkey{V1}}
+			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
+			\pgftext[left,x=\x1+0.4ex]{\ctikz@@Zkey{V1}}
 		}{
-			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\Zkey{I1}}
-			\pgftext[right,x=\x0-0.4ex]{\Zkey{V1}}
+			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
+			\pgftext[right,x=\x0-0.4ex]{\ctikz@@Zkey{V1}}
 		}
 		\pgfusepath{draw}
 	}
@@ -1672,8 +1711,6 @@ opt/.style={@alternate},
 %%%%% Thevenin
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{TheveninBB}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1683,8 +1720,8 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=BB]
 	\backgroundpath{
-		\QuadPoints
-		\ZsideAx{Zth}{Vth}{\tikz@fig@name-z1}{\tikz@fig@name-v1}
+		\ctikz@@QuadPoints
+		\ctikz@@ZsideAx{Zth}{Vth}{\tikz@fig@name-z1}{\tikz@fig@name-v1}
 		\pgftransformresetnontranslations
 	}
 }
@@ -1695,8 +1732,6 @@ opt/.style={@alternate},
 %%%%% Norton
 %%%%%%%%%%%
 %%%%%%%%%%%
-
-
 \pgfdeclareshape{NortonBB}{
 	\inheritsavedanchors[from=Quad]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
@@ -1706,8 +1741,8 @@ opt/.style={@alternate},
 		\inheritanchor[from=Quad]{\anchor}}
 	\inheritbehindbackgroundpath[from=BB]
 	\backgroundpath{
-		\QuadPoints
-		\YsideAx{Yn}{In}{\tikz@fig@name-y1}{\tikz@fig@name-i1}
+		\ctikz@@QuadPoints
+		\ctikz@@YsideAx{Yn}{In}{\tikz@fig@name-y1}{\tikz@fig@name-i1}
 		\pgftransformresetnontranslations
 	}
 }
