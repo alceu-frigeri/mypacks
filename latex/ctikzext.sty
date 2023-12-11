@@ -318,8 +318,8 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 
 \def\genpincoord[#1,#2](#3){%
   coordinate(#3)%
-  node[circle, #1,  inner sep=0pt, outer sep=0pt, radius=1pt, draw,
-    pin={[#1, overlay, inner sep=0pt, outer sep=0pt, font=\tiny, pin distance=5pt,
+  node[circle, #1,  inner sep=0pt, outer sep=0pt, radius=1pt, fill=#1!10!white, opacity=0.4, draw,
+    pin={[#1, overlay, inner sep=0pt, outer sep=0pt, font=\tiny, pin distance=7pt,
     pin edge={#1, overlay}]#2:#3}](#3-node){}%
   }
       
@@ -541,10 +541,10 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 }%
 
 \newcommand{\ctikz@@Zkey}[1]{\pgfkeysvalueof{/tikz/#1}}
-\newtoggle{Z@inverted}
-\newtoggle{Z@generic}
-%\toggletrue{Z@generic}
-\newtoggle{Z@alternate}
+\newtoggle{ctikzext@@toggle@inverted}
+\newtoggle{ctikzext@@toggle@generic}
+%\toggletrue{ctikzext@@toggle@generic}
+\newtoggle{ctikzext@@toggle@alternate}
 %
 %
 %
@@ -558,6 +558,7 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 %quad width/.initial=28mm, quad height/.initial=14mm, quad base height/.initial=10mm, quad inner ext/.initial=1.5mm, quad outer ext/.initial=3mm,
 quad width/.initial=2\pgf@circ@Rlen,%
 quad height ext/.initial=4\pgf@circ@Rlen/14,%
+quad height ext+/.style={quad height ext={4\pgf@circ@Rlen/14 + #1}},%
 quad height/.initial=\pgf@circ@Rlen,%
 quad base height/.initial=10\pgf@circ@Rlen/14,%
 quad inner ext/.initial=2\pgf@circ@Rlen/14,%
@@ -576,14 +577,38 @@ G11/.initial=$G_{11}$, G12/.initial=$G_{12}$, G21/.initial=$G_{21}$, G22/.initia
 zero/.initial=0,
 outer sep/.initial=1.5pt,
 inner sep/.initial=1pt,
-@invert/.code={\toggletrue{Z@inverted}},
+@invert/.code={\toggletrue{ctikzext@@toggle@inverted}},
 invert/.style={xscale=-1,@invert},
-@generic/.code={\toggletrue{Z@generic}},
+@generic/.code={\toggletrue{ctikzext@@toggle@generic}},
 generic/.style={@generic},
 compact/.style={quad width=\pgf@circ@Rlen},
-@alternate/.code={\toggletrue{Z@alternate}},
+@alternate/.code={\toggletrue{ctikzext@@toggle@alternate}},
 alt/.style={@alternate},
 opt/.style={@alternate},
+  inner x fit/.code 2 args={%
+    \tikzmath{coordinate \Xa , \Xb;
+      \Xa = (#1);
+      \Xb = (#2);
+      \Xdiff = 0.5*abs(\Xbx - \Xax) + \ctikz@@Zkey{quad inner ext};
+    }
+    \pgfkeysalso{quad width=\Xdiff}
+  },
+  outer x fit/.code 2 args={%
+    \tikzmath{coordinate \Xa , \Xb;
+      \Xa = (#1);
+      \Xb = (#2);
+      \Xdiff = 0.5*abs(\Xbx - \Xax) - \ctikz@@Zkey{quad outer ext};
+    }
+    \pgfkeysalso{quad width=\Xdiff}
+  } ,
+  y fit/.code 2 args={%
+    \tikzmath{coordinate \Xa , \Xb;
+      \Xa = (#1);
+      \Xb = (#2);
+      \Ydiff = 0.5*abs(\Xby - \Xay);
+    }
+    \pgfkeysalso{quad base height=\Ydiff}
+  } ,  
 }
 
 
@@ -653,8 +678,8 @@ opt/.style={@alternate},
 		}
 }
 
-\newtoggle{Z@auxA}
-\newtoggle{Z@auxB}
+\newtoggle{ctikzext@@toggle@auxA}
+\newtoggle{ctikzext@@toggle@auxB}
 %
 % #1->z11/z22 (res)
 % #2->z12/z21 (vsource)
@@ -665,20 +690,20 @@ opt/.style={@alternate},
 % #7->"-" minus signal !!! for B side
 %
 \newcommand{\ctikz@@Zside}[7]{
-		\togglefalse{Z@auxA}
+		\togglefalse{ctikzext@@toggle@auxA}
 		\IfDecimal{\ctikz@@Zkey{#1}}{
 			\ifnumequal{0+\ctikz@@Zkey{#1}}{0}{
-			\toggletrue{Z@auxA}}
+			\toggletrue{ctikzext@@toggle@auxA}}
 			}{}{
 		}
-		\togglefalse{Z@auxB}
+		\togglefalse{ctikzext@@toggle@auxB}
 		\IfDecimal{\ctikz@@Zkey{#2}}{
 			\ifnumequal{0+\ctikz@@Zkey{#2}}{0}{
-			\toggletrue{Z@auxB}}
+			\toggletrue{ctikzext@@toggle@auxB}}
 			}{}{
 		}
-		\ifboolexpr{togl{Z@alternate} and ( togl{Z@auxA} or togl{Z@auxB})}{
-			\iftoggle{Z@auxA}{
+		\ifboolexpr{togl{ctikzext@@toggle@alternate} and ( togl{ctikzext@@toggle@auxA} or togl{ctikzext@@toggle@auxB})}{
+			\iftoggle{ctikzext@@toggle@auxA}{
 				{
 					\pgftransformshift{\pgfpoint{#7\x6}{0}}
 					\ctikz@@Zdraw{#2}{Vsource}{Bsource}{center}{north}{south}{#4}
@@ -755,7 +780,7 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@ZsideA}[5]{
 		\ctikz@@Zside{#1}{#2}{#3}{#4}{west}{east}{}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
@@ -769,7 +794,7 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@ZsideAx}[4]{
 		\ctikz@@Zside{#1}{#2}{#3}{#4}{west}{east}{}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
@@ -783,14 +808,14 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@ZsideB}[5]{
 		\ctikz@@Zside{#1}{#2}{#3}{#4}{east}{west}{-}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[left,top,at={\pgfpointanchor{#3}{south east}}]{\ctikz@@Zkey{#1}}}
 				\ctikz@@CondDraw{#2}{}{\pgftext[left,bottom,at={\pgfpointanchor{#4}{north west}}]{\ctikz@@Zkey{#2}\ctikz@@Zkey{#5}}}
 			}
 		}{
-			\ifboolexpr{togl{Z@alternate} and togl{Z@auxB}}{
+			\ifboolexpr{togl{ctikzext@@toggle@alternate} and togl{ctikzext@@toggle@auxB}}{
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,bottom,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
 			}{
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south east}}]{\ctikz@@Zkey{#1}}}
@@ -809,19 +834,19 @@ opt/.style={@alternate},
 % #7->"-" minus signal !!! for B side
 %
 \newcommand{\ctikz@@Yside}[8][Isource]{
-		\togglefalse{Z@auxA}
+		\togglefalse{ctikzext@@toggle@auxA}
 		\IfDecimal{\ctikz@@Zkey{#2}}{
 			\ifnumequal{0+\ctikz@@Zkey{#2}}{0}{
-				\toggletrue{Z@auxA}}
+				\toggletrue{ctikzext@@toggle@auxA}}
 			}{}{
 		}
-		\togglefalse{Z@auxB}
+		\togglefalse{ctikzext@@toggle@auxB}
 		\IfDecimal{\ctikz@@Zkey{#3}}{
 			\ifnumequal{0+\ctikz@@Zkey{#3}}{0}{
-				\toggletrue{Z@auxB}}
+				\toggletrue{ctikzext@@toggle@auxB}}
 			}{}{
 		}
-		\ifboolexpr{togl{Z@alternate} and ( togl{Z@auxA} or togl{Z@auxB})}{
+		\ifboolexpr{togl{ctikzext@@toggle@alternate} and ( togl{ctikzext@@toggle@auxA} or togl{ctikzext@@toggle@auxB})}{
 			\tikzmath{
 				\x7 = \x6;
 				\x8 = \x6;
@@ -896,7 +921,7 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@YsideA}[5]{
 		\ctikz@@Yside{#1}{#2}{#3}{#4}{west}{east}{}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
@@ -910,7 +935,7 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@YsideAx}[4]{
 		\ctikz@@Yside[IsourceUP]{#1}{#2}{#3}{#4}{west}{east}{}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[right,top,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
@@ -925,7 +950,7 @@ opt/.style={@alternate},
 
 \newcommand{\ctikz@@YsideB}[5]{
 		\ctikz@@Yside{#1}{#2}{#3}{#4}{east}{west}{-}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			{
 				\pgftransformresetnontranslations
 				\ctikz@@CondDraw{#1}{}{\pgftext[left,base,at={\pgfpointanchor{#3}{south west}}]{\ctikz@@Zkey{#1}}}
@@ -1054,7 +1079,7 @@ opt/.style={@alternate},
 		\pgf@circ@res@step = \ctikzvalof{bipoles/resistor/height}\pgf@circ@Rlen
 		\divide \pgf@circ@res@step by 2
 		\pgfsetyvec{\pgfpoint{0}{\pgf@circ@res@step}}
-		\iftoggle{Z@generic}{
+		\iftoggle{ctikzext@@toggle@generic}{
 			\pgfpathmoveto{\pgfpointxy{-6}{-1}}
 			\pgfpathlineto{\pgfpointxy{-6}{1}}
 			\pgfpathlineto{\pgfpointxy{6}{1}}
@@ -1533,7 +1558,7 @@ opt/.style={@alternate},
 		\pgfsetdash{{0.8pt}{1pt}{0.2pt}{1pt}}{0pt}
 		\pgfpathmoveto{\pgfpoint{-\x4}{\y2}}
 		\pgfpathlineto{\pgfpoint{\x4}{\y2}}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			\pgftransformresetnontranslations
 			\pgftext[bottom,right,at={\pgfpoint{\x0-0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I2}}
 			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
@@ -1547,7 +1572,7 @@ opt/.style={@alternate},
 		}
 		\pgfusepath{draw}
 	}
-	\backgroundpath{\iftoggle{Z@inverted}{	\pgftransformresetnontranslations	}{	}}
+	\backgroundpath{\iftoggle{ctikzext@@toggle@inverted}{	\pgftransformresetnontranslations	}{	}}
 }
 
 
@@ -1692,7 +1717,7 @@ opt/.style={@alternate},
 			\pgftransformrotate{180}
 			\pgfnode{arrowtip}{center}{}{i1}{}
 		}
-		\iftoggle{Z@inverted}{
+		\iftoggle{ctikzext@@toggle@inverted}{
 			\pgftransformresetnontranslations
 			\pgftext[bottom,left,at={\pgfpoint{\x1+0.4ex}{\y3+0.8ex}}]{\ctikz@@Zkey{I1}}
 			\pgftext[left,x=\x1+0.4ex]{\ctikz@@Zkey{V1}}

@@ -605,8 +605,8 @@
 
 	;
 	
-	\QuadConnect[alt]{qa}{qb}{1}
-	\QuadConnect[alt]{qa}{qb}{2}
+	\QuadParConnect[alt]{qa}{qb}{1}
+	\QuadParConnect[alt]{qa}{qb}{2}
 	\draw (qb-X1) to[R,l_=\Rj]  ++(-2,0) to[V,l=\Vi,i=\Ii] ++(0,-2) node[ground]{} -- (qb-Y1)
 	(qb.inner 1+) to[R,l_=\Rk] (qb.inner 2+)
 	(qb-Y2) -- ++(1.5,0) node[ocirc]{} \coord(P1) node(nP1){}
