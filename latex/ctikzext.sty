@@ -318,7 +318,7 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 
 \def\genpincoord[#1,#2](#3){%
   coordinate(#3)%
-  node[circle, #1,  inner sep=0pt, outer sep=0pt, radius=1pt, fill=#1!10!white, opacity=0.4, draw,
+  node[circle, #1,  inner sep=0pt, outer sep=0pt, radius=1pt, fill=#1!10!white, fill opacity=0.1, draw opacity=0.4, draw,
     pin={[#1, overlay, inner sep=0pt, outer sep=0pt, font=\tiny, pin distance=7pt,
     pin edge={#1, overlay}]#2:#3}](#3-node){}%
   }
@@ -541,6 +541,9 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 }%
 
 \newcommand{\ctikz@@Zkey}[1]{\pgfkeysvalueof{/tikz/#1}}
+%\newcommand{\ctikz@@Zkey}[1]{\pgfkeysvalueof{/tikz/Q/#1}}
+
+
 \newtoggle{ctikzext@@toggle@inverted}
 \newtoggle{ctikzext@@toggle@generic}
 %\toggletrue{ctikzext@@toggle@generic}
@@ -585,7 +588,7 @@ compact/.style={quad width=\pgf@circ@Rlen},
 @alternate/.code={\toggletrue{ctikzext@@toggle@alternate}},
 alt/.style={@alternate},
 opt/.style={@alternate},
-  inner x fit/.code 2 args={%
+quad inner x fit/.code 2 args={%
     \tikzmath{coordinate \Xa , \Xb;
       \Xa = (#1);
       \Xb = (#2);
@@ -593,7 +596,7 @@ opt/.style={@alternate},
     }
     \pgfkeysalso{quad width=\Xdiff}
   },
-  outer x fit/.code 2 args={%
+quad outer x fit/.code 2 args={%
     \tikzmath{coordinate \Xa , \Xb;
       \Xa = (#1);
       \Xb = (#2);
@@ -601,7 +604,7 @@ opt/.style={@alternate},
     }
     \pgfkeysalso{quad width=\Xdiff}
   } ,
-  y fit/.code 2 args={%
+quad y fit/.code 2 args={%
     \tikzmath{coordinate \Xa , \Xb;
       \Xa = (#1);
       \Xb = (#2);
@@ -609,6 +612,7 @@ opt/.style={@alternate},
     }
     \pgfkeysalso{quad base height=\Ydiff}
   } ,  
+  %to path/.style={outer x fit={\tikztostart}{\tikztotarget}},
 }
 
 
@@ -1508,7 +1512,7 @@ opt/.style={@alternate},
 %
 	\behindbackgroundpath{%  this is new
 		\ctikz@@QuadPoints
-		\pgfpathmoveto{\pgfpoint{\x0}{\y0}}
+		\pgfpathmoveto{\pgfpoint{\x0}{\y0}} 
 		\pgfpathlineto{\pgfpoint{\x0}{\y1}}
 		\pgfpathlineto{\pgfpoint{\x1}{\y1}}
 		\pgfpathlineto{\pgfpoint{\x1}{\y0}}
@@ -1518,7 +1522,7 @@ opt/.style={@alternate},
 		\pgfpathmoveto{\pgfpoint{-\x2}{\y2}}
 		\pgfpathlineto{\pgfpoint{-\x3}{\y2}}
 		\pgfpathmoveto{\pgfpoint{\x2}{\y3}}
-		\pgfpathlineto{\pgfpoint{\x3}{\y3}}
+		\pgfpathlineto{\pgfpoint{\x3}{\y3}} 
 		\pgfpathmoveto{\pgfpoint{-\x2}{\y3}}
 		\pgfpathlineto{\pgfpoint{-\x3}{\y3}}
 		{
@@ -1555,6 +1559,22 @@ opt/.style={@alternate},
 			\pgftransformrotate{180}
 			\pgfnode{arrowtip}{center}{}{i2}{}
 		}
+%    {
+%      \pgftransformshift{\pgfpoint{\x3}{\y3}}
+%      \pgfnode{ocirc}{center}{}{oc1}{}
+%    }
+%    {
+%      \pgftransformshift{\pgfpoint{-\x3}{\y3}}
+%      \pgfnode{ocirc}{center}{}{oc2}{}
+%    }
+%    {
+%      \pgftransformshift{\pgfpoint{-\x3}{\y2}}
+%      \pgfnode{ocirc}{center}{}{oc3}{}
+%    }
+%    {
+%      \pgftransformshift{\pgfpoint{\x3}{\y2}}
+%      \pgfnode{ocirc}{center}{}{oc4}{}
+%    }
 		\pgfsetdash{{0.8pt}{1pt}{0.2pt}{1pt}}{0pt}
 		\pgfpathmoveto{\pgfpoint{-\x4}{\y2}}
 		\pgfpathlineto{\pgfpoint{\x4}{\y2}}
