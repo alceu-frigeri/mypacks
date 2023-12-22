@@ -63,9 +63,484 @@
 %%% End of cut-n-paste
 %%%%%%%
 
+\RequirePackage{etoolbox}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+
+
+\keys_define:nn {ctikzext }
+  {
+    showframe .usage:n = load ,
+    showframe .bool_set:N = \l__ctikzext_showframe_bool ,
+
+    showlabels .usage:n = load ,
+    showlabels .bool_set:N = \l__ctikzext_showlabels_bool ,
+
+    english .usage:n = load ,
+    english .bool_set:N = \l__ctikzext_english_bool ,
+
+    noalias .usage:n = load ,
+    noalias  .bool_set:N = \l__ctikzext_noalias_bool ,
+
+    beamer .usage:n = load ,
+    beamer  .bool_set:N = \l__ctikzext_beamer_bool ,
+    
+    xpacks .usage:n = load ,
+    xpacks  .bool_set:N = \l__ctikzext_xpacks_bool ,
+    
+    times .usage:n = load ,
+    times  .bool_set:N = \l__ctikzext_times_bool ,
+    
+    xtrakeys .usage:n = general ,
+    xtrakeys .tl_set:N = \l__ctikzext_xtrakeys_tl ,
+    xtrakeys .value_required:n  = true ,
+  }
+\ProcessKeyOptions [ ctikzext ]
+
+\makeatletter
+\tl_if_empty:NTF \l__ctikzext_xtrakeys_tl
+  {
+    \def\ctikzext@@xtratkey{}
+  }
+  {
+    \exp_args:NNe\def\ctikzext@@xtratkey{,\l__ctikzext_xtrakeys_tl}
+  }
+
+
+\makeatother
+
+
+\RequirePackage{xcolor}
+
+\bool_if:NTF \l__ctikzext_beamer_bool
+  {}
+  { %these have problems with beamer
+    \RequirePackage[a4paper,margin=15mm,right=15mm,marginparwidth=0cm,asymmetric,top=2.5cm,bottom=1.5cm]{geometry}
+    \RequirePackage[calcwidth]{titlesec}
+    \RequirePackage{listings}
+    \definecolor{lstgray}{rgb}{0.965,0.965,0.965}%
+    \lstset{basicstyle=\ttfamily\small,%
+      columns=fullflexible,%
+      keepspaces=true,%
+      frame=tb,%
+      inputencoding=latin1,%
+      %  inputencoding=utf8,%
+      extendedchars=true,%
+      backgroundcolor=\color{lstgray},%
+    	breaklines=true,%
+      %	xleftmargin=7pt,%
+      %	xrightmargin=7pt%
+    }%
+    %%%
+    %%% from https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
+    \lstset{literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    	{ã}{{\~{a}}}1 {õ}{{\~{o}}}1
+    	{Ã}{{\~{A}}}1 {Õ}{{\~{O}}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\EUR}}1 {£}{{\pounds}}1
+    }
+  }
+
+
+\bool_if:NT \l__ctikzext_showframe_bool
+  {
+    \RequirePackage{showframe}
+  }
+
+\bool_if:NT \l__ctikzext_showlabels_bool
+  {
+    \RequirePackage{showlabels}
+  }
+
+\bool_if:NTF \l__ctikzext_english_bool
+  {
+    \RequirePackage[english]{babel}
+  }
+  {
+    \RequirePackage[brazilian]{babel}
+  }
+
+
+\bool_if:NT \l__ctikzext_xpacks_bool
+  {
+    \RequirePackage{longtable}%
+    \RequirePackage{fancyhdr}
+    \RequirePackage{csquotes}
+    \RequirePackage[position=above,font=small,labelfont=bf,textfont=md,textfont+=sl,width=.80\textwidth]{caption}
+    \RequirePackage{subcaption}
+    \RequirePackage{url}% Para imprimir corretamente URLs
+    \RequirePackage{multirow,bigdelim}
+  }
+\bool_if:NTF \l__ctikzext_times_bool
+  { \RequirePackage{mathptmx} }
+  { \RequirePackage{lmodern} }
+
+
+\RequirePackage{enumerate}% Para poder enumerar com letras ao inves de numeros
+
+\RequirePackage{keyval,graphicx}  % Para importar figuras
+\RequirePackage{amsmath, amsthm, amssymb, amsfonts}
+\RequirePackage{mathrsfs}
+\RequirePackage{mathtools}
+\RequirePackage{empheq}
+\RequirePackage{cases}
+\RequirePackage{extarrows}
+\RequirePackage{mathfixs}
+
+\RequirePackage{steinmetz}
+
+
+%
+% pgf/tikz packages can't be loaded in an Expl3 code regim 
+%
+\ExplSyntaxOff
+
+\RequirePackage[american,siunitx,cuteinductors,smartlabels,arrowmos,EFvoltages,betterproportions]{circuitikz}
+%%\RequirePackage{pgffor}
+\usetikzlibrary{fit,math,calc,fpu}
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{shapes.geometric} %needed for the triangle
+\usetikzlibrary{shapes.misc} %needed for the triangle
+\usetikzlibrary{graphs,3d}
+\usetikzlibrary{datavisualization,datavisualization.formats.functions}
+\usetikzlibrary[commutative-diagrams]  %% oriented graphs.
+
+\NewDocumentCommand{\pgfmathparseFPU}{+m}{%
+  \begingroup%
+  \pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}%
+  \pgfmathparse{#1}%
+  \pgfmathsmuggle\pgfmathresult%
+  \endgroup%
+  }
+
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{pgfplots.units}
+
+\ExplSyntaxOn
+
+\keys_define:nn {ctikzext / cab}
+  {
+    class .usage:n = general ,
+    class .tl_set:N = \l__ctikzext_class_tl ,
+    class .value_required:n  = true ,
+    class .initial:n         = {nome disciplina} ,
+
+    classcode .usage:n = general ,
+    classcode .tl_set:N = \l__ctikzext_code_tl ,
+    classcode .value_required:n  = true ,
+    classcode .initial:n         = {ENG-code} ,
+    
+    exam .usage:n = general ,
+    exam .tl_set:N = \l__ctikzext_exam_tl ,
+    exam .value_required:n  = true ,
+    exam .initial:n         = {XX Verificação de Aproveitamento} ,
+    
+    
+    semester .usage:n = general ,
+    semester .tl_set:N = \l__ctikzext_semester_tl ,
+    semester .value_required:n  = true ,
+    semester .initial:n         = {202x / y} ,
+    
+    simplegrad .usage:n = general ,
+    simplegrad .bool_set:N = \l__ctikzext_simplegrad_bool ,
+
+    duo .usage:n = general ,
+    duo .bool_set:N = \l__ctikzext_duo_bool ,
+  }
+
+\NewDocumentCommand{\cab}{m}
+  {
+   \keys_set:nn{ctikzext / cab}{#1}
+   \newpage
+   \begin{center}
+     {
+       \sc\large Universidade ~\ Federal\ ~ do\ ~ Rio\ ~ Grande\ ~ do\ ~ Sul\\
+       Escola\ ~ de\ ~ Engenharia\ ~ /\ ~ DELAE \\
+       \l__ctikzext_code_tl \ ~-\ ~\l__ctikzext_class_tl\\ 
+       \l__ctikzext_exam_tl \ ~-\ ~ \l__ctikzext_semester_tl\\[2ex]
+     }
+     \bool_if:nT {\l__ctikzext_simplegrad_bool}
+       {
+         \__ctikzext_simplecab:
+       }
+       
+     Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots
+
+     \bool_if:nT {\l__ctikzext_duo_bool}
+       {\\[-3ex]Dupla:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
+   \end{center}
+  }
+  
+
+\cs_new:Npn \__ctikzext_simplecab:
+  {
+    \fbox{%
+          \footnotesize%
+      	  \begin{minipage}{.6\textwidth}%
+            Assinalar~ um~ “\textbf{X}”,~ no~ tipo~ de~ correção~ a~ ser~ realizada.
+      			  \begin{description}%
+       	        \item[(~\ )~ Simplificada]~	Será~ atribuída~ uma~ nota~ igual~ a~ $3$~ –--~ independente~ do~ que~ estiver~ escrito~ na~ prova.
+       	        \item[(~\ )~ Completa]~	Todas~ as~ questões~ serão~ corrigidas~ e~ a~ nota~ será~ dada~ pela~ soma~ dos~ pontos~ obtidos~ em~ cada~ questão.~ Neste~ caso,~ a~ nota~ estará~ no~ intervalo~ $[0;10]$.
+              \end{description}
+          \end{minipage}%
+      	}\\[3ex]%
+  }
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+%%
+%% For once, spaces (pgf/tikz) and then ':' 
+%%
+\ExplSyntaxOff
+\def\normalcoord(#1){coordinate(#1)  node(n-#1){}}
+\newcommand{\normalcoords}{\let\coord=\normalcoord}
+\newcommand{\showcoords}{\let\coord=\showcoord}
+\let\coord=\normalcoord
+
+
+\def\genpincoord[#1,#2](#3){%
+  coordinate(#3) node(n-#3){}%
+  node[circle, #1,  inner sep=1.2pt, outer sep=0pt, radius=1pt, fill=#1!20!white, fill opacity=0.2, draw opacity=0.4, draw,
+    pin={[#1, overlay, inner sep=0pt, outer sep=1pt, font=\tiny, pin distance=4pt,
+    pin edge={#1, overlay}]#2:#3}](pin-#3){}%
+  }
+      
+\def\pincoord(#1){\genpincoord[blue,-45](#1)}
+\def\showcoord(#1){\genpincoord[red,45](#1)}
+\ExplSyntaxOn
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+\prop_new:N \l__ctikzext_questions_prop
+\NewDocumentCommand{\defQuestion}{m+m}
+  {
+    \prop_put:Nnn {\l__ctikzext_questions_prop}{#1}{#2}
+  }
+\NewDocumentCommand{\defQuestionAlias}{mm}
+  {
+    \bool_if:NF \l__ctikzext_noalias_bool
+      {
+        \prop_put:Nnn {\l__ctikzext_questions_prop}{#1}{\prop_item:Nn \l__ctikzext_questions_prop {#2}}
+      }
+  }
+  
+\tl_new:N \l__ctikzext_quest_tl  
+\NewDocumentCommand{\ftikzQuestion}{O{0.66}mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+    		\begin{figure}[!htb]
+    			\begin{center}
+    				\resizebox{#1\textwidth}{!}{
+    				\begin{tikzpicture}
+              \__ctikzext_pgfkeys:n{#3}
+    					\l__ctikzext_quest_tl
+    				\end{tikzpicture}}
+    			\end{center}
+    		\end{figure}    
+      }
+      {
+    		\begin{figure}[!htb]
+    			\begin{center}
+            Invalid~key:~#2
+    			\end{center}
+    		\end{figure}           
+      }
+  }  
+  
+\NewDocumentCommand{\tikzQuestion}{O{0.66}mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+				\resizebox{#1\textwidth}{!}{
+				\begin{tikzpicture}
+          \__ctikzext_pgfkeys:n{#3}
+  				\l__ctikzext_quest_tl
+				\end{tikzpicture}}
+      }
+      {
+        Invalid~key:~#2
+      }
+  }  
+\NewDocumentCommand{\rawQuestion}{mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+        \__ctikzext_pgfkeys:n{#2}
+ 				\l__ctikzext_quest_tl
+      }
+      {
+        Invalid~key:~#2
+      }
+  }
+
+\NewDocumentCommand{\Questionslist}{}
+  {
+    \seq_gclear_new:N \l__ctikzext_questions_seq
+    \prop_map_inline:Nn \l__ctikzext_questions_prop
+      {
+        \seq_put_right:Nn \l__ctikzext_questions_seq {##1}
+      }
+%      \seq_show:N \l__ctikzext_questions_seq
+    \seq_sort:Nn \l__ctikzext_questions_seq
+      {
+        \str_compare:eNeTF { ##1 } > { ##2 }
+          { \sort_return_swapped: }
+          { \sort_return_same: }
+      }
+%      \seq_show:N \l__ctikzext_questions_seq
+    \begin{description}
+      \seq_map_inline:Nn \l__ctikzext_questions_seq
+        {
+          \item[\raisebox{3em}{##1}] \tikzQuestion[0.33]{##1}
+        }    
+    \end{description}
+  }
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%\ExplSyntaxOff
+%
+
+
+\pgfplotsset{width=0.7\textwidth}
+
+\NewDocumentCommand{\loglogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{loglogaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.8\textwidth,
+      height=0.4\textwidth,
+      log~ basis~ y=10,
+      x~ unit=rad/s,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+\end{loglogaxis}
+\end{tikzpicture}
+}
+
+
+\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{semilogxaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.9\textwidth,
+      height=0.4\textwidth,
+      x~ unit=rad/s,
+      %      minor tick = 5,
+      minor~ y~ tick~ num = 1,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+    \end{semilogxaxis}
+  \end{tikzpicture}
+}
+
+\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=rad,
+      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+\NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=db,
+      ytick = {-20,0,20,40,60,80},
+      minor~ y~ tick~ num = 3,
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+
+\cs_new:Npn \__ctikzext_pgfkeys:n #1
+  { \pgfkeys{/Zval, #1} }
 
 \ExplSyntaxOff
+
+
 \makeatletter
+
+%
+%\newcommand{\ctikzext@@SetDef}[2][]{%
+\NewDocumentCommand{\ctikzext@@SetDef}{O{}m}{%
+  \pgfkeys{%
+	  /Zval, default/.append style={/Zval/#2, default},%
+	  /Zval/#2/.is family, /Zval/#2, default/.style={},%
+		keyset/.code={\pgfkeysalso{%
+		  default/.append style = {##1=#2_{#1{##1}}},%
+			##1/.code={\csedef{#2##1}{$####1$}}%
+		}},%
+		setaux/.code={\pgfkeysalso{keyset/.list/.expanded={##1a,##1b,##1c,##1d,##1e,##1f,##1g,##1h,##1i,##1j,##1k,##1l,##1m,##1n,##1o,##1p,##1q,##1r,##1s,##1t,##1u,##1v,##1w,##1x,##1y,##1z}}},%
+		setaux/.list/.expanded={,a,b,c,d,e,f,g}%
+	}%
+}%
+%
+
+
+\AtBeginDocument{\ctikzext@@KeysDef}
+
+\NewDocumentCommand{\ctikzext@@KeysDef}{}{%
+  \pgfkeys{/Zval/.is family, /Zval, default/.style={},%
+	  defset/.code={\ctikzext@@SetDef{##1}},%
+		defset/.list/.expanded={R,L,C,Z,K,T,Q,EQ,X,Y,D,M,N,A,B,U\ctikzext@@xtratkey},%
+		defset/.code={\ctikzext@@SetDef[f_]{##1}},%
+		defset/.list/.expanded={V,I},%
+		default%
+	}%
+}%
+
+
 
 \newtoggle{ctikzext@@toggle@inverted}
 \newtoggle{ctikzext@@toggle@generic}

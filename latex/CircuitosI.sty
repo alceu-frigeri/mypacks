@@ -32,8 +32,8 @@
   \draw (0,0) \coord(ref) node(nref){} to[R,l_=\Ra] ++(3,0) \coord(A) to[R,l_=\Rb] ++(3,0) \coord(B) node(nB){}
   (A) to[R=\Rc] ++(0,-2) \coord(C) node(nC){} -- (nC -| nref)
   (C) -- (nC -| nB)
-  (ref) node[Quad,quad width=3.2cm,quad base height=1cm,anchor=inner 1+,draw](q1){Q1}
-  (nC -| nref) ++(0,-2) node[Quad H,quad width=3.2cm,quad base height=1cm,anchor=inner 1+,draw](q2){Q2}
+  (ref) node[Quad,width=3.2cm,base height=1cm,anchor=inner 1+](q1){Q1}
+  (nC -| nref) ++(0,-2) node[Quad H,anchor=inner 1+,width=3.2cm,base height=1cm](q2){Q2}
   (q1.1-) -- (q2.1+) (q1.2-) -- (q2.2+)
   (q1.1+) -- ++(-1,0) \coord(D) node(nD){} to[R=\Rd] (nD |- q2.1-)
   (D) -- ++(-1.5,0) \coord(E) node(nE){} to[R=\Re] ++(0,-2) to[V,l=\Va] (nE |- q2.1-)
@@ -42,7 +42,7 @@
   (G) -- ++(1.5,0) \coord(H) node(nH){} to[I,l=\Ib] ++(0,-3) \coord(G1) to[R=\Rg] (nH |- q2.2-)
   (H) -- ++(1.5,0) \coord(I) node(nI){} to[R=\Rh] ++(0,-3) \coord(H1) to[I,l=\Ib] (nI |- q2.2-) -- (q2.2-)
   (G1) -- (H1)
-  %node[Quad H,anchor=1+,draw,I1=\Iaa,I2=\Iba](Qh){}
+  %node[Quad H,anchor=inner 1+,anchor=1+,I1=\Iaa,I2=\Iba](Qh){}
   ;
 }
 
@@ -533,9 +533,9 @@
 	(2,0) \coord(B)
 	
 	
-	(A) -- ++(0.5,0) node[Quad,quad width=12.7cm,quad base height=3.5cm,anchor=1+,I1=$I_{A_1}$,V1=$V_{A_1}$,I2=$I_{A_2}$,V2=$V_{A_2}$,draw](qa){\small$Q_A$}
+	(A) -- ++(0.5,0) node[Quad,anchor=1+,half base width=12.7cm,half base height=3.5cm,I1=$I_{A_1}$,V1=$V_{A_1}$,I2=$I_{A_2}$,V2=$V_{A_2}$](qa){\small$Q_A$}
 	
-	(qa.north) node[Quad,quad width=12.7cm,anchor=south,I1=$I_{B_1}$,V1=$V_{B_1}$,I2=$I_{B_2}$,V2=$V_{B_2}$,draw](qb){\small$Q_B$}
+	(qa.north) node[Quad,anchor=south,half base width=12.7cm,I1=$I_{B_1}$,V1=$V_{B_1}$,I2=$I_{B_2}$,V2=$V_{B_2}$](qb){\small$Q_B$}
 	
 	(qa.inner 1+) -- ++(0.5,0) to[R=\Ra,i=\Ia] ++(0,-2)  
 	(B -| qa.inner 1+) -- ++(0.5,0) to[R,l_=\Ra,i_=\Ib] ++(0,2)  
@@ -545,11 +545,11 @@
 	(qa.2-) -- ++(0.5,0) node[ground]{}
 	
 	(C) -- ++(1.5,0) to[R=\Rb] ++(0,-2) 
-	(C) node[Quad,quad width=1cm,anchor=1+,I1=$I_{x_1}$,V1=$V_{x_1}$,I2=$I_{x_2}$,V2=$V_{x_2}$,draw](qx){\small$Q_x$}
+	(C) node[Quad,anchor=1+,half base width=1cm,I1=$I_{x_1}$,V1=$V_{x_1}$,I2=$I_{x_2}$,V2=$V_{x_2}$](qx){\small$Q_x$}
 	(qx.1+) -- (qx.2+)
 	(qx.1-) -- ++(-0.2,0) node[ground]{}
 	(qx.2-) -- ++(0.2,0) node[ground]{}
-	%quad base height=1cm,
+	%base height=1cm,
 	(qx.2+) -- ++(1,0) \coord(D)
 	
 	(D) ++(0,2)  \coord(Da) to[I,l_=\Ki*\Ia] ++(0,-2)
@@ -564,11 +564,11 @@
 	
 	%to[R=\Re] ++(0,-2) \coord(g2) node[ground]{}
 	(C1) -- ++(1.5,0) to[R=\Re] ++(0,-2) 
-	(C1) node[Quad,quad width=1cm,anchor=1+,I1=$I_{y_1}$,V1=$V_{y_1}$,I2=$I_{y_2}$,V2=$V_{y_2}$,draw](qy){\small$Q_y$}
+	(C1) node[Quad,anchor=1+,half base width=1cm,I1=$I_{y_1}$,V1=$V_{y_1}$,I2=$I_{y_2}$,V2=$V_{y_2}$](qy){\small$Q_y$}
 	(qy.1+) -- (qy.2+)
 	(qy.1-) -- ++(-0.2,0) node[ground]{}
 	(qy.2-) -- ++(0.2,0) node[ground]{}
-	%quad base height=1cm,
+	%base height=1cm,
 	(qy.2+) -- ++(1,0) \coord(D1)
 	
 	
@@ -584,11 +584,11 @@
 	
 	%to[R=\Rh] ++(0,-2) \coord(g2) node[ground]{}
 	(C2) -- ++(1.5,0) to[R=\Rh] ++(0,-2) 
-	(C2) node[Quad,quad width=1cm,anchor=1+,I1=$I_{z_1}$,V1=$V_{z_1}$,I2=$I_{z_2}$,V2=$V_{z_2}$,draw](qz){\small$Q_z$}
+	(C2) node[Quad,anchor=1+,half base width=1cm,I1=$I_{z_1}$,V1=$V_{z_1}$,I2=$I_{z_2}$,V2=$V_{z_2}$](qz){\small$Q_z$}
 	(qz.1+) -- (qz.2+)
 	(qz.1-) -- ++(-0.2,0) node[ground]{}
 	(qz.2-) -- ++(0.2,0) node[ground]{}
-	%quad base height=1cm,
+	%base height=1cm,
 	(qz.2+) -- ++(1,0) \coord(D2)
 	
 	
@@ -605,12 +605,12 @@
 
 	;
 	
-	\QuadParConnect[alt]{qa}{qb}{1}
-	\QuadParConnect[alt]{qa}{qb}{2}
-	\draw (qb-X1) to[R,l_=\Rj]  ++(-2,0) to[V,l=\Vi,i=\Ii] ++(0,-2) node[ground]{} -- (qb-Y1)
+	\QuadParConnect*{qa}{qb}{1}
+	\QuadParConnect*{qa}{qb}{2}
+	\draw (qb.1+) to[R,l_=\Rj]  ++(-2,0) to[V,l=\Vi,i=\Ii] ++(0,-2) node[ground]{} -- ++(1.5,0)%(qb.1-)
 	(qb.inner 1+) to[R,l_=\Rk] (qb.inner 2+)
-	(qb-Y2) -- ++(1.5,0) node[ocirc]{} \coord(P1) node(nP1){}
-	(qb-X2) to[short, i<=\Io] (qb-X2 -| nP1) node[ocirc]{} to[open,v^=\Vo] (P1);
+	(qb.2-) ++(0.5,0) -- ++(1,0) node[ocirc]{} \coord(P1) node(nP1){}
+	(qb.2+) to[short, i>=\Io] (qb.2+ -| nP1) node[ocirc]{} to[open,v^=\Vo] (P1);
 	
 }
 

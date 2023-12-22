@@ -1,0 +1,363 @@
+%%%==============================================================================
+%% Copyright 2023-present by Alceu Frigeri
+%%
+%% This work may be distributed and/or modified under the conditions of
+%%
+%% * The [LaTeX Project Public License](http://www.latex-project.org/lppl.txt),
+%%   version 1.3c (or later), and/or
+%% * The [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html),
+%%   version 3 (or later)
+%%
+%% This work has the LPPL maintenance status *maintained*.
+%%
+%% The Current Maintainer of this work is Alceu Frigeri
+%%
+%% This is version {0.1} {2023/12/05}
+%%
+%% The list of files that compose this work can be found in the README.md file at
+%% https://ctan.org/pkg/ufrgscca
+%%
+%%%==============================================================================
+%% WARNING: These are personal packs/tests
+%%          They might and probably will change at will as needed
+%% 
+%%%==============================================================================
+\NeedsTeXFormat{LaTeX2e}[2022/06/01]
+
+
+\ProvidesExplPackage
+    {mypacks}
+    {2023/12/05}
+    {0.1}
+    {small assortment of commom packs, and a few auxiliary macros}
+
+%%%%%%%
+%%%
+%%% Just an attempt of having my packages info in a regular way
+%%% Idea being: { <pck-name> / pkg info } for each and all.
+%%%
+%%%%%%%
+\keys_define:nn { mypacks / pkg info}
+  {
+     name        .code:n = {mypacks} ,
+     prefix      .code:n = {mypacks} ,
+     date        .code:n = {2023/12/05},
+     version     .code:n = {0.1} ,
+     description .code:n = {small assortment of commom packs, and a few auxiliary macros}
+  }
+\cs_if_exist:NF \__codedesc_pkg_info:nn 
+  {
+    \cs_new_protected:Npn \__codedesc_pkg_info:nn #1#2
+      { \keys_set:nn {#1 / pkg info}{#2} }
+  }
+\cs_if_exist:NF \PkgInfo
+  { \NewDocumentCommand \PkgInfo {mm} { \keys_set:nn {#1 / pkg info}{#2} } }
+\cs_if_exist:NF \PkgDescription
+  { 
+    \NewDocumentCommand \PkgDescription {m} 
+      { 
+        \noindent Package~ \textbf{\PkgInfo{#1}{name}}~Version:~\PkgInfo{#1}{version}~ -~ \PkgInfo{#1}{date}\par \emph{\PkgInfo{#1}{description}}~\par 
+      } 
+  }  
+%%%%%%%
+%%% End of cut-n-paste
+%%%%%%%
+
+\RequirePackage{etoolbox}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+
+
+\keys_define:nn {mypacks }
+  {
+    showframe .usage:n = load ,
+    showframe .bool_set:N = \l__mypacks_showframe_bool ,
+
+    showlabels .usage:n = load ,
+    showlabels .bool_set:N = \l__mypacks_showlabels_bool ,
+
+    english .usage:n = load ,
+    english .bool_set:N = \l__mypacks_english_bool ,
+
+    beamer .usage:n = load ,
+    beamer  .bool_set:N = \l__mypacks_beamer_bool ,
+    
+    xpacks .usage:n = load ,
+    xpacks  .bool_set:N = \l__mypacks_xpacks_bool ,
+    
+    times .usage:n = load ,
+    times  .bool_set:N = \l__mypacks_times_bool ,
+  }
+\ProcessKeyOptions [ mypacks ]
+
+
+\RequirePackage{xcolor}
+
+\bool_if:NTF \l__mypacks_beamer_bool
+  {}
+  { %these have problems with beamer
+    \RequirePackage[a4paper,margin=15mm,right=15mm,marginparwidth=0cm,asymmetric,top=2.5cm,bottom=1.5cm]{geometry}
+    \RequirePackage[calcwidth]{titlesec}
+    \RequirePackage{listings}
+    \definecolor{lstgray}{rgb}{0.965,0.965,0.965}%
+    \lstset{basicstyle=\ttfamily\small,%
+      columns=fullflexible,%
+      keepspaces=true,%
+      frame=tb,%
+      inputencoding=latin1,%
+      %  inputencoding=utf8,%
+      extendedchars=true,%
+      backgroundcolor=\color{lstgray},%
+    	breaklines=true,%
+      %	xleftmargin=7pt,%
+      %	xrightmargin=7pt%
+    }%
+    %%%
+    %%% from https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
+    \lstset{literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    	{ã}{{\~{a}}}1 {õ}{{\~{o}}}1
+    	{Ã}{{\~{A}}}1 {Õ}{{\~{O}}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\EUR}}1 {£}{{\pounds}}1
+    }
+  }
+
+
+\bool_if:NT \l__mypacks_showframe_bool
+  {
+    \RequirePackage{showframe}
+  }
+
+\bool_if:NT \l__mypacks_showlabels_bool
+  {
+    \RequirePackage{showlabels}
+  }
+
+\bool_if:NTF \l__mypacks_english_bool
+  {
+    \RequirePackage[english]{babel}
+  }
+  {
+    \RequirePackage[brazilian]{babel}
+  }
+
+
+\bool_if:NT \l__mypacks_xpacks_bool
+  {
+    \RequirePackage{longtable}%
+    \RequirePackage{fancyhdr}
+    \RequirePackage{csquotes}
+    \RequirePackage[position=above,font=small,labelfont=bf,textfont=md,textfont+=sl,width=.80\textwidth]{caption}
+    \RequirePackage{subcaption}
+    \RequirePackage{url}% Para imprimir corretamente URLs
+    \RequirePackage{multirow,bigdelim}
+  }
+\bool_if:NTF \l__mypacks_times_bool
+  { \RequirePackage{mathptmx} }
+  { \RequirePackage{lmodern} }
+
+
+\RequirePackage{enumerate}% Para poder enumerar com letras ao inves de numeros
+
+\RequirePackage{keyval,graphicx}  % Para importar figuras
+\RequirePackage{amsmath, amsthm, amssymb, amsfonts}
+\RequirePackage{mathrsfs}
+\RequirePackage{mathtools}
+\RequirePackage{empheq}
+\RequirePackage{cases}
+\RequirePackage{extarrows}
+\RequirePackage{mathfixs}
+
+\RequirePackage{steinmetz}
+
+
+%
+% pgf/tikz packages can't be loaded in an Expl3 code regim 
+%
+\ExplSyntaxOff
+
+\RequirePackage[american,siunitx,cuteinductors,smartlabels,arrowmos,EFvoltages,betterproportions]{circuitikz}
+%%\RequirePackage{pgffor}
+\usetikzlibrary{fit,math,calc,fpu}
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{shapes.geometric} %needed for the triangle
+\usetikzlibrary{shapes.misc} %needed for the triangle
+\usetikzlibrary{graphs,3d}
+\usetikzlibrary{datavisualization,datavisualization.formats.functions}
+\usetikzlibrary[commutative-diagrams]  %% oriented graphs.
+
+\NewDocumentCommand{\pgfmathparseFPU}{+m}{%
+  \begingroup%
+  \pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}%
+  \pgfmathparse{#1}%
+  \pgfmathsmuggle\pgfmathresult%
+  \endgroup%
+  }
+
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{pgfplots.units}
+
+\ExplSyntaxOn
+
+\keys_define:nn {mypacks / cab}
+  {
+    class .usage:n = general ,
+    class .tl_set:N = \l__mypacks_class_tl ,
+    class .value_required:n  = true ,
+    class .initial:n         = {nome disciplina} ,
+
+    classcode .usage:n = general ,
+    classcode .tl_set:N = \l__mypacks_code_tl ,
+    classcode .value_required:n  = true ,
+    classcode .initial:n         = {ENG-code} ,
+    
+    exam .usage:n = general ,
+    exam .tl_set:N = \l__mypacks_exam_tl ,
+    exam .value_required:n  = true ,
+    exam .initial:n         = {XX Verificação de Aproveitamento} ,
+    
+    
+    semester .usage:n = general ,
+    semester .tl_set:N = \l__mypacks_semester_tl ,
+    semester .value_required:n  = true ,
+    semester .initial:n         = {202x / y} ,
+    
+    simplegrad .usage:n = general ,
+    simplegrad .bool_set:N = \l__mypacks_simplegrad_bool ,
+
+    duo .usage:n = general ,
+    duo .bool_set:N = \l__mypacks_duo_bool ,
+  }
+
+\NewDocumentCommand{\cab}{m}
+  {
+   \keys_set:nn{mypacks / cab}{#1}
+   \newpage
+   \begin{center}
+     {
+       \sc\large Universidade ~\ Federal\ ~ do\ ~ Rio\ ~ Grande\ ~ do\ ~ Sul\\
+       Escola\ ~ de\ ~ Engenharia\ ~ /\ ~ DELAE \\
+       \l__mypacks_code_tl \ ~-\ ~\l__mypacks_class_tl\\ 
+       \l__mypacks_exam_tl \ ~-\ ~ \l__mypacks_semester_tl\\[2ex]
+     }
+     \bool_if:nT {\l__mypacks_simplegrad_bool}
+       {
+         \__mypacks_simplecab:
+       }
+       
+     Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots
+
+     \bool_if:nT {\l__mypacks_duo_bool}
+       {\\[-3ex]Dupla:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
+   \end{center}
+  }
+  
+
+\cs_new:Npn \__mypacks_simplecab:
+  {
+    \fbox{%
+          \footnotesize%
+      	  \begin{minipage}{.6\textwidth}%
+            Assinalar~ um~ “\textbf{X}”,~ no~ tipo~ de~ correção~ a~ ser~ realizada.
+      			  \begin{description}%
+       	        \item[(~\ )~ Simplificada]~	Será~ atribuída~ uma~ nota~ igual~ a~ $3$~ –--~ independente~ do~ que~ estiver~ escrito~ na~ prova.
+       	        \item[(~\ )~ Completa]~	Todas~ as~ questões~ serão~ corrigidas~ e~ a~ nota~ será~ dada~ pela~ soma~ dos~ pontos~ obtidos~ em~ cada~ questão.~ Neste~ caso,~ a~ nota~ estará~ no~ intervalo~ $[0;10]$.
+              \end{description}
+          \end{minipage}%
+      	}\\[3ex]%
+  }
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+
+
+\pgfplotsset{width=0.7\textwidth}
+
+\NewDocumentCommand{\loglogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{loglogaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.8\textwidth,
+      height=0.4\textwidth,
+      log~ basis~ y=10,
+      x~ unit=rad/s,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+\end{loglogaxis}
+\end{tikzpicture}
+}
+
+
+\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{semilogxaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.9\textwidth,
+      height=0.4\textwidth,
+      x~ unit=rad/s,
+      %      minor tick = 5,
+      minor~ y~ tick~ num = 1,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+    \end{semilogxaxis}
+  \end{tikzpicture}
+}
+
+\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=rad,
+      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+\NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=db,
+      ytick = {-20,0,20,40,60,80},
+      minor~ y~ tick~ num = 3,
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+

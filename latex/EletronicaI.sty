@@ -579,7 +579,7 @@
 \defQuestion{E.I:2a:Q3}{%
 		\draw
 		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) to[R=\Ra] ++(0,-2) \coord(B)
-		      node[nmos,invert,anchor=D] (T1){} (T1) node(){T1}
+		      node[nmos,anchor=D] (T1){} (T1) node(){T1}
 		(T1.D) -|  (T1.G) node[nmos,anchor=G] (T2){T2}
 		(T1.S) |- (A)
 		(T2.S) |- (A)
@@ -594,7 +594,7 @@
 		\draw
 %		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) to[R=\Ra] ++(0,-2) \coord(B)
 %		      node[nmos,invert,anchor=D] (T1){} (T1) node(){T1}
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) node[pmos,invert,anchor=S] (T1){}
+		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) node[pmos,anchor=S] (T1){}
 		(A) -- (A -| T1.D) to[R=\Ra] (T1.D)
 		(T1) node(){T1\ \ \ \ \ \ }
 		(T1.D) -|  (T1.G) node[pmos,anchor=G] (T2){T2}
