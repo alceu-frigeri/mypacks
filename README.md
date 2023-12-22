@@ -1,7 +1,7 @@
 mypacks
 ==========
 
-This is just a repository / test bed of LaTeX packages/ideas.
+This is just a repository / test bed for LaTeX packages/ideas.
 
 (no documentation, sorry)
 --------------
@@ -11,7 +11,7 @@ This is just a repository / test bed of LaTeX packages/ideas.
 (with the new in kernel *\ProcessKeyOptions* and *\NewDocumentCommand*)
 
 
-Be aware most of it is for personal tests, definitions, interface, options may and will change at will (as needed)
+Be aware that most/all of these are for personal tests. Definitions, interface, options may and will change at will (as needed)
 
 
 ## Contacting Author

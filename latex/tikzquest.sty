@@ -146,7 +146,7 @@
       }
   }
 
-\NewDocumentCommand{\Questionslist}{O{\tikzQuestion}}
+\NewDocumentCommand{\Questionslist}{O{\tikzQuestion[0.33]}}
   {
     \seq_gclear_new:N \l__tikzquest_questions_seq
     \prop_map_inline:Nn \l__tikzquest_questions_prop
@@ -164,7 +164,7 @@
     \begin{description}
       \seq_map_inline:Nn \l__tikzquest_questions_seq
         {
-          \item[\raisebox{3em}{##1}] #1[0.33]{##1}
+          \item[\raisebox{3em}{##1}] #1{##1}
         }    
     \end{description}
   }
