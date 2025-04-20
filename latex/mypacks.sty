@@ -24,7 +24,6 @@
 %%%==============================================================================
 \NeedsTeXFormat{LaTeX2e}[2022/06/01]
 
-
 \ProvidesExplPackage
     {mypacks}
     {2023/12/05}
@@ -37,31 +36,22 @@
 %%% Idea being: { <pck-name> / pkg info } for each and all.
 %%%
 %%%%%%%
-\keys_define:nn { mypacks / pkg info}
+\ProvideDocumentCommand \PkgInfoSet {mm} { \keys_define:nn {#1 / pkg info} { name .code:n = {#1} , prefix .code:n = {#1} , #2} }
+\ProvideDocumentCommand \PkgInfo {mm} { \keys_set:nn {#1 / pkg info}{#2} } 
+\ProvideDocumentCommand \PkgDescription {m} 
+  { \noindent Package~ \textbf{\PkgInfo{#1}{name}}~Version:~\PkgInfo{#1}{version}~ -~ \PkgInfo{#1}{date}\par \emph{\PkgInfo{#1}{description}}~\par } 
+
+\PkgInfoSet { mypacks }
   {
-     name        .code:n = {mypacks} ,
-     prefix      .code:n = {mypacks} ,
      date        .code:n = {2023/12/05},
      version     .code:n = {0.1} ,
-     description .code:n = {small assortment of commom packs, and a few auxiliary macros}
+     description .code:n = {small~ assortment~ of~ commom~ packs,~ and~ a~ few~ auxiliary~ macros}
   }
-\cs_if_exist:NF \__codedesc_pkg_info:nn 
-  {
-    \cs_new_protected:Npn \__codedesc_pkg_info:nn #1#2
-      { \keys_set:nn {#1 / pkg info}{#2} }
-  }
-\cs_if_exist:NF \PkgInfo
-  { \NewDocumentCommand \PkgInfo {mm} { \keys_set:nn {#1 / pkg info}{#2} } }
-\cs_if_exist:NF \PkgDescription
-  { 
-    \NewDocumentCommand \PkgDescription {m} 
-      { 
-        \noindent Package~ \textbf{\PkgInfo{#1}{name}}~Version:~\PkgInfo{#1}{version}~ -~ \PkgInfo{#1}{date}\par \emph{\PkgInfo{#1}{description}}~\par 
-      } 
-  }  
 %%%%%%%
 %%% End of cut-n-paste
 %%%%%%%
+
+
 
 \RequirePackage{etoolbox}
 \RequirePackage[T1]{fontenc}
@@ -87,6 +77,9 @@
     
     times .usage:n = load ,
     times  .bool_set:N = \l__mypacks_times_bool ,
+    
+    noquests .usage:n = load ,
+    noquests .bool_set:N = \l__mypacks_noquests_bool ,
   }
 \ProcessKeyOptions [ mypacks ]
 
@@ -207,7 +200,14 @@
 \pgfplotsset{compat=1.18}
 \usetikzlibrary{pgfplots.units}
 
+
 \ExplSyntaxOn
+\RequirePackage{tikzdotncross}
+\bool_if:nF {\l__mypacks_noquests_bool}
+  {
+    \@ifpackageloaded{tikzquests}{}{\RequirePackage[xtrakeys={D}]{tikzquests}}
+  }
+\RequirePackage{tikzquads}
 
 \keys_define:nn {mypacks / cab}
   {
@@ -237,6 +237,9 @@
 
     duo .usage:n = general ,
     duo .bool_set:N = \l__mypacks_duo_bool ,
+
+    nonames .usage:n = general ,
+    nonames .bool_set:N = \l__mypacks_nonames_bool ,
   }
 
 \NewDocumentCommand{\cab}{m}
@@ -255,8 +258,11 @@
          \__mypacks_simplecab:
        }
        
-     Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
-Cartão:\ldots\ldots\ldots\ldots\ldots\ldots
+     \bool_if:nF {\l__mypacks_nonames_bool}
+     {
+       Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+        Cartão:\ldots\ldots\ldots\ldots\ldots\ldots
+     }
 
      \bool_if:nT {\l__mypacks_duo_bool}
        {\\[-3ex]Dupla:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
@@ -287,77 +293,506 @@ Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
 %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%
 
-
-
-\pgfplotsset{width=0.7\textwidth}
-
-\NewDocumentCommand{\loglogplot}{O{}mmO{}}{
-  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
-  \begin{tikzpicture}
-    \begin{loglogaxis}[
-      /pgfplots/log~ identify~ minor~ tick~ positions=true,
-      grid=both,
-      tick~ align=outside,
-      width=0.8\textwidth,
-      height=0.4\textwidth,
-      log~ basis~ y=10,
-      x~ unit=rad/s,
-      xlabel=$\omega$,
-      axis~ line~ style={color=blue,very~ thick},
-      axis~ x~ line=bottom,
-      axis~ y~ line=left,
-      #1 ]
-      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
-      #4
-\end{loglogaxis}
-\end{tikzpicture}
-}
-
-
-\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
-  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
-  \begin{tikzpicture}
-    \begin{semilogxaxis}[
-      /pgfplots/log~ identify~ minor~ tick~ positions=true,
-      grid=both,
-      tick~ align=outside,
-      width=0.9\textwidth,
-      height=0.4\textwidth,
-      x~ unit=rad/s,
-      %      minor tick = 5,
-      minor~ y~ tick~ num = 1,
-      xlabel=$\omega$,
-      axis~ line~ style={color=blue,very~ thick},
-      axis~ x~ line=bottom,
-      axis~ y~ line=left,
-      #1 ]
-      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
-      #4
-    \end{semilogxaxis}
-  \end{tikzpicture}
-}
-
-\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
-  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
-  \semilogplot
-    [ y~ unit=rad,
-      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
-      #1 ]
-    {#2}
-    {#3}
-    [#4]
-}
-
-\NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
-  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
-  \semilogplot
-    [ y~ unit=db,
-      ytick = {-20,0,20,40,60,80},
-      minor~ y~ tick~ num = 3,
-      #1 ]
-    {#2}
-    {#3}
-    [#4]
-}
-
-
+%%%
+%%%
+%%%\pgfplotsset{width=0.7\textwidth}
+%%%\pgfkeys{
+%%%    pgfplots,
+%%%    semi-log/.style = 
+%%%      {
+%%%        log~ identify~ minor~ tick~ positions=true,
+%%%        grid=both,
+%%%        tick~ align=outside,
+%%%        width=0.9\textwidth,
+%%%        height=0.4\textwidth,
+%%%        x~ unit=rad/s,
+%%%        xlabel=$\omega$,
+%%%        axis~ line~ style={color=black!60!white,very~ thick},
+%%%        axis~ x~ line=bottom,
+%%%        axis~ y~ line=left,
+%%%                legend~ style = 
+%%%          {
+%%%            font=\footnotesize,
+%%%            legend~ pos = outer~ north~ east,
+%%%            draw = none ,
+%%%            inner xsep=0pt,
+%%%            inner ysep=0pt,
+%%%            anchor = west ,
+%%%          }
+%%%
+%%%      } ,
+%%%    log-log/.style=
+%%%      {
+%%%       semi-log,
+%%%       log~ basis~ y = 10,
+%%%      }   
+%%%  }
+%%%
+%%%
+%%%
+%%%%\pgfkeys{
+%%%%    pgfplots,
+%%%%    linear~ axis/.style =
+%%%%      {
+%%%%        grid=both,
+%%%%        tick~ align=outside,
+%%%%        width=0.9\textwidth,
+%%%%        height=0.4\textwidth,
+%%%%        x~ unit=rad/s,
+%%%%        xlabel=$\omega$,
+%%%%        axis~ line~ style={color=black,very~ thick},
+%%%%        axis~ x~ line=bottom,
+%%%%        axis~ y~ line=left,
+%%%%      } ,
+%%%%    semilog~ x~ axis/.style =
+%%%%      {
+%%%%        linear~ axis,
+%%%%        log~ identify~ minor~ tick~ positions=true,        
+%%%%      } ,
+%%%%    semilog~ y~ axis/.style =
+%%%%      {
+%%%%        linear~ axis,
+%%%%        log~ identify~ minor~ tick~ positions=true,        
+%%%%      } ,
+%%%%    loglog~ axis/.style =
+%%%%      {
+%%%%        semilog~ x~ axis,
+%%%%       log~ basis~ y = 10,
+%%%%      }
+%%%%  }
+%%%
+%%%
+%%%\NewDocumentCommand{\tick}{m}
+%%%  {
+%%%    \__mypacks_tick:Nn \l_tmpa_tl{#1}
+%%%    \l_tmpa_tl
+%%%  }
+%%%
+%%%
+%%%  
+%%%
+%%%\NewDocumentCommand{\loglogplot}{O{}mmO{}}{
+%%%  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+%%%  \begin{tikzpicture}
+%%%    \begin{loglogaxis}[log-log , #1 ]
+%%%      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+%%%      #4
+%%%\end{loglogaxis}
+%%%\end{tikzpicture}
+%%%}
+%%%
+%%%\cs_new_protected:Npn \__mypacks_takesit:nnn #1#2#3
+%%%  {
+%%%    first:#1\par
+%%%    second:#2\par
+%%%    third:#3\par
+%%%  }
+%%%  
+%%%\cs_new:Npn \__mypacks_braced_aux:n #1
+%%%  { \{#1\} }
+%%%    
+%%%\cs_new_protected:Npn \__mypacks_test:n #1
+%%%  {
+%%%%    \seq_set_from_clist:Nn \l_tmpa_seq {#1}
+%%%    \clist_map_inline:nn {#1}
+%%%      {
+%%%        \tl_clear:N \l_tmpa_tl
+%%%        \clist_map_inline:nn {##1}
+%%%          { \tl_gput_right:Nn \l_tmpa_tl { {####1} } }
+%%%        \exp_last_unbraced:NV \__mypacks_takesit:nnn \l_tmpa_tl {}{}{} 
+%%%      }
+%%%  }
+%%%  
+%%%  \cs_new_protected:Npn \__mypacks_addplot:Nnnn #1#2#3#4
+%%%    {
+%%%      \tl_show:n {\addplot[color=#3] gnuplot[id=#2,samples=2000] {#4};}
+%%%      \tl_put_right:Nn #1 {\addplot[color=#3] gnuplot[id=#2,samples=2000] {#4};}
+%%%    }
+%%%  
+%%%  
+%%%\cs_new_protected:Npn \__semipic:nnnN #1#2#3#4
+%%%  {
+%%%    \tl_set:Nn #4
+%%%      {
+%%%        \begin{tikzpicture}
+%%%            \begin{semilogxaxis}[semi-log, #1 ]
+%%%              #2
+%%%              #3
+%%%            \end{semilogxaxis}
+%%%        \end{tikzpicture}   
+%%%      }
+%%%  }  
+%%%\cs_generate_variant:Nn \__semipic:nnnN {nVnN}
+%%%
+%%%\cs_new_protected:Npn \Semilogplot #1#2#3
+%%%  {
+%%%    \tl_clear:N \l_tmpb_tl
+%%%    \clist_map_inline:nn {#2}
+%%%      {
+%%%        \tl_clear:N \l_tmpa_tl
+%%%        \clist_map_inline:nn {##1}
+%%%          { \tl_gput_right:Nn \l_tmpa_tl { {####1} } }
+%%%          \tl_show:N \l_tmpa_tl
+%%%        \exp_last_unbraced:NNV \__mypacks_addplot:Nnnn \l_tmpb_tl \l_tmpa_tl {}{}{}
+%%%      }
+%%%    \__semipic:nVnN {#1}\l_tmpb_tl{#3}\l_tmpa_tl
+%%%    \tl_show:N \l_tmpa_tl
+%%%        
+%%%    \l_tmpa_tl
+%%%    
+%%%  }
+%%%  
+%%%  
+%%%\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
+%%%  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+%%%  \begin{tikzpicture}
+%%%    \begin{semilogxaxis}[semi-log, #1 ]
+%%%      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+%%%      \addlegendentry{AbC}
+%%%      #4
+%%%    \end{semilogxaxis}
+%%%  \end{tikzpicture}
+%%%}
+%%%
+%%%%\NewDocumentCommand{\semilogplotB}{O{}mmmO{}}{
+%%%%  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+%%%%  \begin{tikzpicture}
+%%%%    \begin{semilogxaxis}[semi-log, ytick={#4}, #1 ]
+%%%%      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+%%%%      #5
+%%%%    \end{semilogxaxis}
+%%%%  \end{tikzpicture}
+%%%%}
+%%%
+%%%%\NewDocumentCommand{\semilogphiplotX}{O{}mmO{}}{
+%%%%  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+%%%%  \tl_set:Ne \l__mypacks_tmpi_tl {\__mypacks_ytick{phi}}
+%%%%  \l__mypacks_tmpi_tl\par
+%%%%  
+%%%%  \use:e{\exp_not:N\semilogplotB
+%%%%    [ y~ unit=rad,
+%%%%      #1 ]
+%%%%    {#2}
+%%%%    {#3}
+%%%%    {\l__mypacks_tmpi_tl}
+%%%%    [#4]
+%%%%    }
+%%%%}
+%%%
+%%%
+%%%\cs_new_protected:Npn \__mypacks_plot:Nnnnnn #1#2#3#4#5#6
+%%%  {
+%%%    #1 [ytick={#2},#3] {#4}{#5}[#6]
+%%%  }
+%%%\cs_generate_variant:Nn \__mypacks_plot:Nnnnnn {Nennnn}  
+%%%
+%%%\NewDocumentCommand{\semilogphiplotZ}{O{}mmO{}}{
+%%%  \__mypacks_ytick:Nn \l_tmpa_tl {phi}
+%%% 
+%%%  \__mypacks_plot:Nennnn \semilogplot {\l_tmpa_tl}{y~ unit=rad,#1}{#2}{#3}{#4}
+%%%}
+%%%
+%%%\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
+%%%  \semilogplot
+%%%    [ 
+%%%      y~ unit=rad,
+%%%     ytick={-3.14159265 ~,~ -2.3561945 ~,~ -1.570796 ~,~ -0.785398 ~,~ 0 ~,~ 0.785398 ~,~ 1.570796 ~,~ 2.3561945 ~,~ 3.14159265},
+%%%      #1 
+%%%    ]
+%%%    {#2}
+%%%    {#3}
+%%%    [#4]
+%%%  
+%%%}
+%%%
+%%%\NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
+%%%  \use:e{\exp_not:N\semilogplot
+%%%    [ y~ unit=db,
+%%%      ytick = {-20 ~,~ 0 ~,~ 20 ~,~ 40 ~,~ 60 ~,~ 80},
+%%%      minor~ y~ tick~ num = 3,
+%%%      #1 ]
+%%%    {#2}
+%%%    {#3}
+%%%    [#4]
+%%%    }
+%%%}
+%%%
+%%%
+%%%
+%%%
+%%%\int_new:N \l__mypacks_tmpi_int
+%%%\seq_new:N \l__mypacks_tick_seq
+%%%\fp_new:N  \l__mypacks_tmpi_fp
+%%%\fp_new:N  \l__mypacks_delta_fp
+%%%\tl_new:N  \l__mypacks_nill_tl
+%%%\tl_new:N  \l__mypacks_tmpi_tl
+%%%
+%%%\cs_generate_variant:Nn \fp_set:Nn {Ne}
+%%%\cs_generate_variant:Nn \fp_add:Nn {Ne}
+%%%\cs_generate_variant:Nn \seq_put_right:Nn {Ne}
+%%%
+%%%
+%%%\tl_new:N \l__mypacks_axis_kind_tl
+%%%\tl_new:N \l__mypacks_axiskeys_tl
+%%%\tl_new:N \l__mypacks_Xaxis_kind_tl
+%%%\tl_new:N \l__mypacks_Yaxis_kind_tl
+%%%
+%%%\keys_define:nn {mypacks / axis kind}
+%%%  {
+%%%    linear .usage:n = general ,
+%%%    linear .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_axis_kind_tl {axis}
+%%%        \tl_set:Nn \l__mypacks_axiskeys_tl {linear~ axis}
+%%%        \tl_set:Nn \l__mypacks_Xaxis_kind_tl {linear}
+%%%        \tl_set:Nn \l__mypacks_Yaxis_kind_tl {linear}
+%%%      } ,
+%%%    linear .value_forbidden:n  = true ,
+%%%
+%%%    loglog .usage:n = general ,
+%%%    loglog .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_axis_kind_tl {loglogaxis}
+%%%        \tl_set:Nn \l__mypacks_axiskeys_tl {loglog~ axis}
+%%%        \tl_set:Nn \l__mypacks_Xaxis_kind_tl {log}
+%%%        \tl_set:Nn \l__mypacks_Yaxis_kind_tl {log}
+%%%      } ,
+%%%    loglog .value_forbidden:n  = true ,
+%%%
+%%%    semilog~ x .usage:n = general ,
+%%%    semilog~ x .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_axis_kind_tl {semilogxaxis}
+%%%        \tl_set:Nn \l__mypacks_axiskeys_tl {semilog~ x~ axis}
+%%%        \tl_set:Nn \l__mypacks_Xaxis_kind_tl {log}
+%%%        \tl_set:Nn \l__mypacks_Yaxis_kind_tl {linear}
+%%%      } ,
+%%%    semilog~ x .value_forbidden:n  = true ,
+%%%
+%%%    semilog~ y .usage:n = general ,
+%%%    semilog~ y .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_axis_kind_tl {semilogyaxis}
+%%%        \tl_set:Nn \l__mypacks_axiskeys_tl {semilog~ y~ axis}
+%%%        \tl_set:Nn \l__mypacks_Xaxis_kind_tl {linear}
+%%%        \tl_set:Nn \l__mypacks_Yaxis_kind_tl {log}
+%%%      } ,
+%%%    semilog~ y .value_forbidden:n  = true ,
+%%%
+%%%    default .usage:n = general ,
+%%%    default .meta:n = { linear } ,
+%%%    default .value_forbidden:n  = true ,
+%%%  }
+%%%
+%%%
+%%%
+%%%\keys_define:nn {mypacks / ticks}
+%%%  {
+%%%    min .usage:n = general ,
+%%%    min .tl_set:N = \l__mypacks_min_key_tl ,
+%%%    min .value_required:n  = true ,
+%%%    
+%%%    max .usage:n = general ,
+%%%    max .tl_set:N = \l__mypacks_max_key_tl ,
+%%%    max .value_required:n  = true ,
+%%%
+%%%    delta .usage:n = general ,
+%%%    delta .tl_set:N = \l__mypacks_delta_key_tl ,
+%%%    delta .value_required:n  = true ,
+%%%
+%%%    N .usage:n = general ,
+%%%    N .tl_set:N = \l__mypacks_N_key_tl ,
+%%%    N .value_required:n  = true ,
+%%%
+%%%    units .usage:n = general ,
+%%%    units .tl_set:N = \l__mypacks_units_key_tl ,
+%%%    units .value_required:n  = true ,
+%%%    
+%%%    phi .usage:n = general ,
+%%%    phi .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_min_key_tl {-3.14159265}
+%%%        \tl_set:Nn \l__mypacks_max_key_tl { 3.14159265}
+%%%        \tl_set:Nn \l__mypacks_N_key_tl   { 8 }        
+%%%        \tl_set:Nn \l__mypacks_units_key_tl   { rad }
+%%%      } ,
+%%%    phi .value_forbidden:n  = true ,
+%%%    
+%%%    db .usage:n = general ,
+%%%    db .code:n = 
+%%%      {
+%%%        \tl_set:Nn \l__mypacks_min_key_tl {-20}
+%%%        \tl_set:Nn \l__mypacks_max_key_tl { 80}
+%%%        \tl_set:Nn \l__mypacks_N_key_tl   { 5 }
+%%%        \tl_set:Nn \l__mypacks_units_key_tl   { db }
+%%%      } ,
+%%%    db .value_forbidden:n  = true ,
+%%%    
+%%%    clearing .usage:n = general ,
+%%%    clearing .code:n = 
+%%%      {
+%%%        \tl_clear:N \l__mypacks_min_key_tl
+%%%        \tl_clear:N \l__mypacks_max_key_tl
+%%%        \tl_clear:N \l__mypacks_delta_key_tl
+%%%        \tl_clear:N \l__mypacks_N_key_tl
+%%%      } ,
+%%%    clearing .value_forbidden:n  = true ,
+%%%  }
+%%%
+%%%\cs_new:Npn \__mypacks_ticks:Nnn #1#2#3
+%%%  {
+%%%    \keys_set:nn 
+%%%      {mypacks / ticks}{#3}
+%%%    \bool_lazy_or:nnTF 
+%%%      {\tl_if_blank_p:n {\l__mypacks_min_key_tl}} {\tl_if_blank_p:n {\l__mypacks_max_key_tl}}
+%%%      {ERR}
+%%%      {
+%%%        \tl_if_blank:nTF {\l__mypacks_N_key_tl}
+%%%          {
+%%%            \tl_if_blank:nTF {\l__mypacks_delta_key_tl}
+%%%              {at least one has to be defined
+%%%                \tl_clear:N #1
+%%%              }
+%%%              {
+%%%              }
+%%%          }
+%%%          {
+%%%            \int_zero:N \l__mypacks_tmpi_int
+%%%            \seq_clear:N \l__mypacks_tick_seq
+%%%            \fp_set:Ne \l__mypacks_tmpi_fp {\l__mypacks_min_key_tl}
+%%%            \fp_set:Ne \l__mypacks_delta_fp { (\l__mypacks_max_key_tl - \l__mypacks_min_key_tl) / \l__mypacks_N_key_tl}
+%%%            \seq_put_right:Ne \l__mypacks_tick_seq {\fp_use:N \l__mypacks_tmpi_fp}
+%%%            \int_while_do:nNnn
+%%%              {\l__mypacks_tmpi_int} < {\l__mypacks_N_key_tl}
+%%%              {
+%%%                \fp_add:Nn  \l__mypacks_tmpi_fp {\l__mypacks_delta_fp}
+%%%                \seq_put_right:Ne \l__mypacks_tick_seq {\fp_use:N \l__mypacks_tmpi_fp}
+%%%                \int_incr:N \l__mypacks_tmpi_int
+%%%              }
+%%%            \tl_set:Ne #1 {\seq_use:Nn \l__mypacks_tick_seq {~,~}}
+%%%          }
+%%%      }
+%%%  }
+%%%\cs_generate_variant:Nn \__mypacks_ticks:Nnn { NVn }  
+%%%
+%%%\tl_new:N \graphTL
+%%%
+%%%\cs_new_protected:Npn   \__mypacks_begintry:nnnn #1#2#3#4
+%%%  {
+%%%    \tl_show:n {#1}
+%%%    \tl_show:n {#2}
+%%%    \tl_show:n {#3}
+%%%    \tl_show:n {#4}
+%%%  
+%%%    \tl_set:Nn \graphTL {
+%%%        \begin{tikzpicture}
+%%%          \begin{#1}
+%%%            [ #2 ]
+%%%            \addplot [red] gnuplot [#3] {2*x+3};
+%%%            #4
+%%%          \end{#1}
+%%%        \end{tikzpicture}   
+%%%        }
+%%%  }
+%%%  
+%%%\cs_generate_variant:Nn \__mypacks_begintry:nnnn {eeee}
+%%%
+%%%\tl_new:N \l__mypacks_Xmin_tl
+%%%\tl_new:N \l__mypacks_Xmax_tl
+%%%\tl_new:N \l__mypacks_Xunits_tl
+%%%\tl_new:N \l__mypacks_Xticks_tl
+%%%\tl_new:N \l__mypacks_Ymin_tl
+%%%\tl_new:N \l__mypacks_Ymax_tl
+%%%\tl_new:N \l__mypacks_Yunits_tl
+%%%\tl_new:N \l__mypacks_Yticks_tl
+%%%
+%%%\cs_new_protected:Npn \__mypacks_graphplot:nnnnnn #1#2#3#4#5#6
+%%%  {
+%%%    \keys_set:nn {mypacks / axis kind}{default,#1}
+%%%    \__mypacks_ticks:NVn \l__mypacks_Xticks_tl \l__mypacks_Xaxis_kind_tl {#3}
+%%%    \tl_set:Ne \l__mypacks_Xmin_tl {\l__mypacks_min_key_tl}
+%%%    \tl_set:Ne \l__mypacks_Xmax_tl {\l__mypacks_max_key_tl}
+%%%    \tl_set:Ne \l__mypacks_Xunits_tl {\l__mypacks_units_key_tl}
+%%%    
+%%%    \__mypacks_ticks:NVn \l__mypacks_Yticks_tl \l__mypacks_Yaxis_kind_tl {#4}
+%%%    \tl_set:Ne \l__mypacks_Ymin_tl {\l__mypacks_min_key_tl}
+%%%    \tl_set:Ne \l__mypacks_Ymax_tl {\l__mypacks_max_key_tl}
+%%%    \tl_set:Ne \l__mypacks_Yunits_tl {\l__mypacks_units_key_tl}
+%%%    
+%%%    % This shall set, for instance, \l__mypacks_plots_tl as a collection of \addplot.... ;
+%%%    %\keys_set:Nn {mypacks / functions} {default,#5} 
+%%%%    
+%%%\tl_show:N \l__mypacks_axis_kind_tl
+%%%\tl_show:N \l__mypacks_axiskeys_tl
+%%%\tl_show:N \l__mypacks_Xmin_tl
+%%%\tl_show:N \l__mypacks_Xmax_tl
+%%%\tl_show:N \l__mypacks_Xunits_tl
+%%%\tl_show:N \l__mypacks_Xticks_tl
+%%%\tl_show:N \l__mypacks_Ymin_tl
+%%%\tl_show:N \l__mypacks_Ymax_tl
+%%%\tl_show:N \l__mypacks_Yunits_tl
+%%%\tl_show:N \l__mypacks_Yticks_tl
+%%%
+%%%  \__mypacks_begintry:eeee
+%%%    {\l__mypacks_axis_kind_tl}
+%%%    {
+%%%      \l__mypacks_axiskeys_tl, 
+%%%      ymin=\l__mypacks_Ymin_tl, 
+%%%      ymax=\l__mypacks_Ymax_tl, 
+%%%      xmin=\l__mypacks_Xmin_tl, 
+%%%      xmax=\l__mypacks_Xmax_tl, 
+%%%      #2 
+%%%    }
+%%%    {
+%%%      domain=\l__mypacks_Xmin_tl : \l__mypacks_Xmax_tl
+%%%    }
+%%%    {#6}
+%%%    
+%%%
+%%%%%    % to finish it
+%%%%      {
+%%%%        \begin{tikzpicture}
+%%%%          \begin{\l__mypacks_axis_kind_tl}
+%%%%            [
+%%%%              \l__mypacks_axiskeys_tl, 
+%%%%              ymin=\l__mypacks_Ymin_tl, 
+%%%%              ymax=\l__mypacks_Ymax_tl, 
+%%%%              xmin=\l__mypacks_Xmin_tl, 
+%%%%              xmax=\l__mypacks_Xmax_tl, 
+%%%%              #2 
+%%%%            ]
+%%%%            \addplot [red] gnuplot [domain=\l__mypacks_Xmin_tl : \l__mypacks_Xmax_tl] {2*x+3};
+%%%%            #6
+%%%%          \end{\l__mypacks_axis_kind_tl}
+%%%%        \end{tikzpicture}   
+%%%%      }
+%%%  }
+%%%
+%%%
+%%%\NewDocumentCommand{\graphplots}{mmmmmm}
+%%%  {
+%%%    \__mypacks_graphplot:nnnnnn {#1}{#2}{#3}{#4}{#5}{#6}
+%%%  }
+%%%
+%%%
+%%%
+%%%%
+%%%% how to convert a clist in a list of parameters (braced parameters)
+%%%%
+%%%
+%%%%    function .usage:n = general ,
+%%%%    function .code:n = 
+%%%%      {
+%%%%
+%%%%        \tl_clear:N \l__tikzfxgraph_functions_tl
+%%%%        \clist_map_inline:nn {#1}
+%%%%          {
+%%%%            \tl_clear:N \l_tmpa_tl
+%%%%            \clist_map_inline:nn {##1}
+%%%%              { \tl_gput_right:Nn \l_tmpa_tl { {####1} } }
+%%%%              \tl_show:N \l_tmpa_tl
+%%%%            \exp_last_unbraced:NNV \__tikzfxgraph_addplot:Nnnn \l__tikzfxgraph_functions_tl \l_tmpa_tl {}{}{}
+%%%%          }
+%%%%      
+%%%%      } ,
+%%%%    function .value_required:n = true ,

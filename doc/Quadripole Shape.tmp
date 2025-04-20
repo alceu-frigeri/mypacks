@@ -1,0 +1,6 @@
+\begin{tikzpicture}
+\draw (0,0) coordinate(A) \showcoord(A)<45:0.2> ++(6,0) coordinate(B) \showcoord(B)<45:0.2> ++(2,2) coordinate(C)  \showcoord(C)<45:0.2> ;
+
+\draw (A) node[Quad,anchor=1+,outer x fit to={A}{B}](){};
+\draw (B) node[Quad,anchor=1+,outer x fit to={B}{C}](){};
+\end{tikzpicture}

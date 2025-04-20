@@ -1,0 +1,151 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass[a4paper,10pt]{article}
+\usepackage[no alias,xtrakeys=H]{tikzquests}
+\usepackage[times]{mypacks}
+\usepackage{tikzquads}
+\usepackage{EletronicaI}
+\usepackage{CircuitosI}
+\usepackage{CircuitosII}
+\usepackage{randomcircuits}
+
+\showcoordstrue
+
+
+
+\defQuestion{QuadA}{
+	
+	\draw (0,0) \ncoord(ref) node(nref){} to[R=\Ra] ++(2,0) \ncoord(A) node(nA){} to[R=\Rb] ++(2,0) \ncoord(B) node(nB){}
+  (A) to[R=\Rc] ++(0,-2) \ncoord(C) node(nC){} -- (nC -| nB)
+  (C) -- (nC -| nref)
+  (nref)
+ node[Quad,red,anchor=inner 1+,fit inner x 2+ to={nB},draw,height ext=20pt,I1=$I_{1x}$,Z22=$5\Omega$,Z21=5,alt](qz){\small$Q_1$}
+ ;
+}
+
+
+
+
+
+\begin{document}
+
+\makeatletter
+x axis:\pgfkeysearchvalueof{\tikzquads@@PGKeysPath}{x axis}{\mcX}
+\mcX
+
+\pgfkeysearchvalueof{\tikzquads@@PGKeysPath}{half base width}{\macXX}
+%base widht:\macXX
+%\show\macXX
+
+tip len:\pgfkeysearchvalueof{\tikzquads@@PGKeysPath}{tip len}{\yy}
+\pgfkeysearchvalueof{\tikzquads@@QuadKeysPath,\tikzquads@@PGKeysPath}{half base width}{\XX}
+
+\begin{tikzpicture}
+  \draw(0,0) -- ++(\XX,0);
+\end{tikzpicture}
+
+
+\makeatother
+%
+%\edef\ASDX{\SValueOf{PGKeys}{x axis}}
+%
+%\ASDX
+%
+%\show\ASDX
+%
+%\edef\ASS{\ASDX}
+%
+%\show\ASS
+%%\pgfkeysearch{}
+%%
+%\DiagSearchValueOf{PGKeys}{x axis}
+%
+%%\SearchValueOf[\asd]{PGKeys}{x axis}
+%
+%
+%\ExplSyntaxOn
+%:\__tikzquads_keysearch_T:nn {/tikz/tikzquads/PseudoGraph/x~ axis}{\asd}:
+%\ExplSyntaxOff
+%
+%\show\asd
+%
+%aa{\asd}aa
+%
+%\expandafter\show\csname pgfk@/tikz/tikzquads/PseudoGraph/x axis\endcsname
+%
+%\expandafter\show\csname pgfk@/tikz/tikzquads/QuadKeys/inner ext\endcsname
+%
+%
+%
+%{\pgfkeysvalueof{/tikz/tikzquads/PseudoGraph/x axis}}
+%
+%\tikzQuestion{QuadA}
+\begin{tikzpicture}
+	\draw (0,0) \ncoord(ref)  to[R=\Ra,anchor=west] ++(2,0) \ncoord(A)  to[R=\Rb] ++(2,0) \ncoord(B)
+  (A) to[R=\Rc] ++(0,-3) \ncoord(C) node(nC){} \pincoord(pD)-- (nC -| nB)
+  (C) -- (nC -| nref)
+  (B) to[R=\Rx] ++(2,2) to[R=\Ry] ++(2,2) \ncoord(X)
+  (C) to[R=\Rz] ++(0,-3) \ncoord(D) to[R=\Rs] ++(2,0) \ncoord(S) node(nS){}
+  (D) to[R=\Rt] ++(-3,0) \ncoord(T)
+  (nC -| nB) \ncoord(R)
+  (B) ++(2.12132,-2.12132) \ncoord(SS)
+  (R) ++(1,0) \ncoord(RR)
+%  (B)
+% node[Quad,red,anchor=inner 2+,height ext=20pt,I1=$I_{1x}$,Z22=$5\Omega$,Z21=5,inner x fit to={B}{ref}](qz){\small$Q_1$}
+  (B)
+ %node[Quad,anchor=inner 1+,red,height ext=20pt,I1=$I_{1x}$,Z22=$5\Omega$,Z21=5,inner x fit to={B}{X},y fit to={A}{C}](qz){\small$Q_1$}
+% node[QW,anchor=1+,draw,height ext=20pt,I1=$I_{1x}$,Z22=$5\Omega$,Z21=5,red,outer x fit to={B}{X},y fit to={A}{C}](qz){\small$Q_1$}
+%
+%
+ to[ToQuad,anchor=1+, y fit to={B}{SS},round sources,name=Qto] (X)%++(8,0)
+ %
+ %
+ (Qto.2+) -- (Qto.2-)
+ %
+ %
+% (somename.1+) -- (somename.1-)
+ (D) to[R=\Rw,] ++(0,-3) \ncoord(W) node(nW){};
+ \draw[densely dotted]
+ %(T) node[Quad,anchor=1+,outer x fit to={T}{S}](){} (S)
+% (T) to[to path={node[Quad,outer x fit to={\tikztostart}{\tikztotarget}](){.}}] (S)
+  (S) ++(8,0) \ncoord(Sx) 
+  (S) node[Quad Y,anchor=inner 1+,tip len=6,Y22=\Ra*2+\Rb,alt,inner x fit to={S}{Sx},round sources](){} 
+%  (S) node[Quad Z,anchor=inner 1+,Z22=\Ra*2+\Rb,inner x fit to={S}{Sx}](){} 
+  %node[Quad,anchor=inner 1+,height ext+=10pt,I1=$I_{1x}$,Z22=$5\Omega$,Z21=5,inner x fit to={T}{S},y fit to={D}{W},blue](qw){\small$Q_2$}
+  (W) to[to path={node[H Res shape,draw](){}}] ++(2,0)
+ ;
+ 
+% \draw (W) -- ++(0,-8) \ncoord(ZZ) ++(3,-3) \ncoord(ZK)
+% (ZZ)to[ToNorton,anchor=1+] (ZK);
+% \draw (W) ++(3,-3) node[V Res shape](vr){}
+% (vr.north) \ncoord(North)
+% (vr.north east) \ncoord(NorthEast)
+% (vr.east) \ncoord(East)
+% (vr.south east) \ncoord(SouthEast)
+% (vr.south) \ncoord(South)
+% (vr.south west) \ncoord(SouthWest)
+% (vr.west) \ncoord(West)
+% (vr.north west) \ncoord(NorthWest)
+% ;
+\draw (R) \pincoord(Rpin) (RR) \pincoord(pinRR,magenta,-90,8) %\Ngenpincoord{pinRR}{green}{-90}{6}
+(pinRR) -- (R) \pincoord(pinZ,green,135)
+(RR) -- (nRR |- nB) -- (B) \pincoord(pinB,brown)
+;
+ 
+ \draw (W) 
+ ++(3,-2) node[PG linear load line shape,/tikz/tikzquads/PseudoGraph,first quadrant,draw](pg-graph){}
+ ++(3,0) node[PG linear load line shape,/tikz/tikzquads/PseudoGraph,second quadrant,draw](pg-graph){} 
+ ++(3,0) node[PG linear load line shape,/tikz/tikzquads/PseudoGraph,third quadrant,draw](pg-graph){} 
+% ++(3,0) node[PG linear load line shape,/tikz/tikzquads/PseudoGraph,quadrant=fourth,draw](pg-graph){} 
+ ++(3,0) node[PG load line,fourth quadrant,x axis=$V_x$,y axis=$I_x$,x val=$Val_x$,y val=\footnotesize$Val_y$](pg-graph){} 
+ ;
+ 
+ \draw (ref) node[Black Box,anchor=1+,outer x fit to={ref}{B}]{};
+\end{tikzpicture}
+
+
+
+
+
+\end{document}

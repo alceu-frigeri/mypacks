@@ -1,0 +1,382 @@
+\NeedsTeXFormat{LaTeX2e}
+\def\democodeversion{0.1}
+
+\makeatletter
+\ProvidesPackage{democode}%
+        [2029/02/29 LaTeX/TeX democode  version \democodeversion]
+				
+\RequirePackage[nohyperref,nomulticol,noindex,]{doc}
+\RequirePackage[tikz,xcolor]{mdframed}
+\RequirePackage[loadHyperref=false,createIndexEntries=false,applyLayout=false]{doctools}
+\RequirePackage{scontents}
+
+\colorlet{lightcyan}{white!96!cyan}
+\colorlet{lightgray}{white!97!black}
+\definecolor{grayblack}{rgb}{0.8,0.8,0.8}
+
+\colorlet{darkgreen}{green!45!black!100}
+\colorlet{darkblue}{blue!40!black!100}
+\colorlet{darkred}{red!45!black!100}
+
+%\def\demo@rulecolor{black}
+\def\demo@rulecolor{gray}
+%\def\demo@rulecolorTikZ{grayblack}
+\def\demo@rulecolorTikZ{gray}
+
+\def\demo@lststringcolor{darkred}
+\def\demo@lstcommentcolor{darkgreen}
+\def\demo@lstkeywordcolor{darkblue}
+
+\DeclareKeys[democode]{
+  indent.usage = general,
+  indent.code  = {\demo@titleindent} ,
+  raggedleft.usage = general,
+  raggedleft.code  = {\demo@titleraggedleft} ,
+  raggedright.usage = general,
+  raggedright.code  = {\demo@titleraggedright} ,
+
+  intext.usage = general,
+  intext.code  = {\demo@intext} ,
+  TikZ.usage = general,
+  TikZ.code  = {\demo@TikZ} ,
+
+  framed.usage = general,
+  framed.code  = {\demo@framed} ,
+  nonframed.usage = general,
+  nonframed.code  = {\demo@nonframed} ,
+
+  break.usage = general,
+  break.code  = {\demo@break} ,
+  nobreak.usage = general,
+  nobreak.code  = {\demo@nobreak} ,
+
+  cyangray.usage = general,
+  cyangray.code  = {\demo@colorsquemecyangray} ,
+  graygray.usage = general,
+  graygray.code  = {\demo@colorsquemegraygray} ,
+  white.usage = general,
+  white.code  = {\demo@colorsquemewhite} ,
+
+  titledefault.usage = general,
+  titledefault.code = {\demo@titleindent} ,
+  codedefault.usage = general,
+  codedefault.code = {\demo@intext} ,
+  framedefault.usage = general,
+  framedefault.code = {\demo@framed} ,
+  breakdefault.usage = general,
+  breakdefault.code = {\demo@break} ,
+  colordefault.usage = general,
+  colordefault.code = {\demo@colorsquemewhite} ,
+  default.usage = general,
+  default.code = {\SetKeys[democode]{titledefault,codedefault,framedefault,breakdefault,colordefault}} ,
+}
+
+\NewDocumentCommand{\SetDemoCode}{m}{\SetKeys[democode]{#1}}
+  
+\def\demo@colorsquemecyangray{%
+  \def\demo@codebackcolorTikZ{lightcyan}%
+  \def\demo@resultbackcolorTikZ{lightcyan}%
+  \def\demo@codebackcolor{lightgray}%
+  \def\demo@resultbackcolor{lightgray}%
+  \def\demo@codebackcolorTikZ{red}%
+  \def\demo@resultbackcolorTikZ{blue}%
+  \def\demo@codebackcolor{green}%
+  \def\demo@resultbackcolor{lightgray}%
+}
+\def\demo@colorsquemegraygray{%
+  \def\demo@codebackcolorTikZ{lightgray}%
+  \def\demo@resultbackcolorTikZ{lightgray}%
+  \def\demo@codebackcolor{lightgray}%
+  \def\demo@resultbackcolor{lightgray}%
+}
+\def\demo@colorsquemewhite{%
+  \def\demo@codebackcolorTikZ{white}%
+  \def\demo@resultbackcolorTikZ{white}%
+  \def\demo@codebackcolor{white}%
+  \def\demo@resultbackcolor{white}%
+}
+
+\def\demo@titleindent{%
+	\def\demo@titledefaultallign{\indent}%
+	\def\tittleallign{\indent}%
+  \def\demo@TikZpos{0.44}%
+  \def\trailchar{:}%
+}
+
+\def\demo@titleraggedleft{%
+	\def\demo@titledefaultallign{\indent}%
+	\def\tittleallign{\raggedleft}%
+  \def\demo@TikZpos{0.44}%
+  \def\trailchar{}%
+}
+
+\def\demo@titleraggedright{%
+	\def\demo@titledefaultallign{\indent}%
+	\def\tittleallign{\raggedright}%
+  \def\demo@TikZpos{0}%
+  \def\trailchar{:}%
+}
+
+\def\demo@intext{%
+  \def\demo@codestyle{codestyle}%
+  \def\demo@resultstyle{resultstyle}%
+  \def\demo@baseskip{0.75}%
+}
+\def\demo@TikZ{%
+  \def\demo@codestyle{codestyleTikZ}%
+  \def\demo@resultstyle{resultstyleTikZ}%
+  \def\demo@baseskip{}%
+}
+
+\def\demo@framed{%
+  \def\demo@topline{true}%
+  \def\demo@toplineTikZ{true}%
+	\def\demo@leftline{true}%
+	\def\demo@rightline{true}%
+  \def\demo@rulecolorTikZ{black}%
+}
+
+\def\demo@nonframed{%
+  \def\demo@topline{false}%
+  \def\demo@toplineTikZ{true}%
+	\def\demo@leftline{false}%
+	\def\demo@rightline{false}%
+  \def\demo@rulecolorTikZ{grayblack}%
+}
+
+\def\demo@break{\def\demo@bodynobreak{false}}
+\def\demo@nobreak{\def\demo@bodynobreak{true}}
+
+\def\demo@linewidth{0.75pt}
+
+
+\mdfdefinestyle{resultstyleTikZ}{%
+  linecolor=\demo@rulecolorTikZ,%
+  linewidth=4pt,%\demo@linewidth,%
+  skipabove=0.65\baselineskip,
+  skipbelow=0.5\baselineskip,
+  leftmargin =-3.5pt,
+  rightmargin=-3.5pt,
+  innerleftmargin=0.2pt,%3pt,
+  innerrightmargin=0.2pt,%3pt,
+  needspace=3\baselineskip,
+  backgroundcolor=\demo@resultbackcolorTikZ,%
+  frametitlebackgroundcolor=white,%\demo@resultbackcolorTikZ,%
+  usetwoside=false,
+	innertopmargin = 0pt,%1pt,%3pt,
+	innerbottommargin = 0pt,%2pt,
+	roundcorner = 0pt,%2pt,
+	frametitle={\demo@tikztitle{\demo@title[]{\demo@resultprefix}}},
+	frametitleaboveskip=-0.6\baselineskip,
+	frametitlebelowskip=0pt,
+  frametitlealignment = \tittleallign,
+	leftline = \demo@leftline,
+	rightline = \demo@rightline,
+	nobreak = \demo@bodynobreak,
+	innerlinewidth = 0pt,
+	outerlinewidth = 3pt,
+	middlelinewidth = 3pt,
+	innerlinecolor = magenta,%
+	outerlinecolor = teal,%
+	middlelinecolor = blue,%	
+	frametitlerule =  true,%
+  frametitlerulewidth = 3pt,
+}
+
+\mdfdefinestyle{codestyleTikZ}{%
+  style=resultstyleTikZ,%
+  backgroundcolor=brown,%\demo@codebackcolorTikZ,%
+	frametitlebackgroundcolor=white,%\demo@codebackcolorTikZ,%
+	innertopmargin = 0pt,%2.1pt,
+	innerbottommargin = 0pt,
+  frametitle={\demo@tikztitle{\demo@title[]{\demo@codeprefix}}},%
+}
+
+\mdfdefinestyle{resultstyle}{
+  style=resultstyleTikZ,
+  linecolor=\demo@rulecolor,%
+  backgroundcolor=\demo@resultbackcolor,%
+	frametitle={{\demo@title{\demo@resultprefix}}},
+	frametitlebackgroundcolor=white,%\color{\demo@codebackcolor},%
+	frametitlerule = true,
+	frametitlerulewidth = \demo@linewidth,%
+	frametitleaboveskip=3pt,%-\baselineskip,
+	frametitlebelowskip=2pt,%0pt,
+	innertopmargin = 1pt,%2.1pt,
+	topline = \demo@topline,
+}
+
+\mdfdefinestyle{codestyle}{
+  style=resultstyle,
+	innertopmargin = 0pt,%2.1pt,
+  backgroundcolor=\demo@codebackcolor,%
+  frametitle=\demo@title{\demo@codeprefix},
+}
+
+\lstloadlanguages{[LaTeX]TeX}
+\lstdefinestyle{codestyle}{
+  style=lstDemoStyleLaTeXCode,%
+  numbers=none,%
+	backgroundcolor=\color{\demo@codebackcolor},%
+  rulecolor=\color{\demo@rulecolor},%
+  stringstyle=\color{\demo@lststringcolor},
+  keywordstyle=\bf\color{\demo@lstkeywordcolor},
+  commentstyle=\color{\demo@lstcommentcolor},
+  framerule=0pt,%0.4pt,
+	nolol=true,
+	frame=none,
+	aboveskip=0pt,%-2pt, %\medskipamount, % define the space above and 
+  belowskip=0pt, %\medskipamount, % below displayed listings.
+	basicstyle=\footnotesize\ttfamily , % Standardschrift
+}
+
+%\lstdefinestyle{codestyleTikZ}{
+%  style=codestyle,%
+%	backgroundcolor=\color{\demo@codebackcolorTikZ},%
+%}
+
+\newcommand{\demo@codeprefix}{\LaTeX Code\trailchar}
+\newcommand{\demo@resultprefix}{Resulting Output\trailchar}
+\newcommand{\demo@codefile}{democode}
+
+
+\newcommand{\demo@tikztitle}[1]{\tikz[baseline=(current bounding box.east),outer sep=0pt,xshift=1cm,thin,color=\demo@rulecolorTikZ]  \draw  (0,0) (\demo@TikZpos,0) node[anchor=west,rectangle,rounded corners,fill=white,draw] at (\demo@TikZpos,0) {#1} node[anchor=west,rectangle,rounded corners,color=black] at (\demo@TikZpos,0) {#1};}
+
+\newcommand{\demo@title}[2][\demo@titledefaultallign]{{\textmd{\hspace{0pt}#1\emph{\footnotesize #2}}}}
+
+
+%%%
+%%% Using scontents package !!!!
+%%%
+\newenvsc{storecode}
+\let\verbatimsc\@undefined
+\let\endverbatimsc\@undefined
+\lstnewenvironment{verbatimsc}{\lstset{style=codestyle}}{}
+
+\NewDocumentCommand{\DisplayCode}{O{}m}{%
+  {%
+	  \SetDemoCode{#1}%
+    \begin{mdframed}[style=\demo@codestyle]\typestored{#2}\end{mdframed}%
+	}%
+}
+
+\NewDocumentCommand{\DemoCode}{O{}m}{%
+  {%
+	  \SetDemoCode{#1}%
+    \begin{mdframed}[style=\demo@codestyle]\end{mdframed}\vspace*{-\demo@baseskip\baselineskip}%
+    \begin{mdframed}[style=\demo@resultstyle]\getstored{#2}\end{mdframed}%
+	}%
+}
+%%%
+%%% Using scontents package !!!!
+%%%
+
+
+
+%%%
+%%% OLD "kind of mixed TeX" implementantion
+%%%
+\newenvironment{democode}{\begingroup\csname filecontents*\endcsname[overwrite,nosearch]{\demo@codefile}}
+  { \csname endfilecontents*\endcsname\endgroup
+		\mdframed[style=\demo@codestyle]
+    \lstinputlisting[style=codestyle]{\demo@codefile}
+    \endmdframed\vspace*{-\demo@baseskip\baselineskip}
+    \mdframed[style=\demo@resultstyle]
+    \hspace{0pt}
+    \input{\demo@codefile}
+		\endmdframed
+ }
+\newenvironment{displaycode}{\begingroup\csname filecontents*\endcsname[overwrite,nosearch]{\demo@codefile}}
+  { \csname endfilecontents*\endcsname\endgroup
+		\mdframed[style=\demo@codestyle]
+    \lstinputlisting[style=codestyle]{\demo@codefile}
+    \endmdframed
+ }
+%%%
+%%% OLD "kind of mixed TeX" implementantion
+%%%
+
+
+%%%
+%%% Direct file input !!!!
+%%%
+\NewDocumentCommand{\InputDemoCode}{m}{\mdframed[style=\demo@codestyle]
+    \lstinputlisting[style=codestyle]{#1}
+    \endmdframed\vspace*{-\demo@baseskip\baselineskip}
+    \mdframed[style=\demo@resultstyle]
+    \hspace{0pt}
+    \input{#1}
+		\endmdframed}
+		
+\NewDocumentCommand{\InputDisplayCode}{m}{\mdframed[style=\demo@codestyle]\lstinputlisting[style=codestyle]{#1}\endmdframed}
+%%%
+%%% Direct file input !!!!
+%%%
+
+
+
+
+\newcommand{\DescSkip}{\vskip 0.5\baselineskip}
+
+\newcommand{\DescMacro}[3][]{\DescribeMacro{#2}\forcsvlist{\oarg}{#1}\,\forcsvlist{\marg}{#3}\par}%
+\newcommand{\PrtUseMacro}[3][]{{\texttt{\small\string #2}}\,\forcsvlist{\oarg[]}{#1}\,\forcsvlist{\marg[]}{#3}}%
+
+\newcommand{\DescKey}[3][none]{\DescSkip{\texttt{\small\string #2=}}\,\forcsvlist{\marg}{#3},\if\relax\detokenize{#1}\relax\par\else\hfill {\small\texttt{Default:~\meta{#1}}}\par\fi}%
+
+\newcommand{\DescKeyVoid}[2][none]{\DescSkip{\texttt{\small\string #2}}\if\relax\detokenize{#1}\relax\par\else\hfill {\small\texttt{Default:~\meta{#1}}}\par\fi}%
+
+\newcommand{\PrtUseKey}[3][]{{\texttt{\small\string #2=}}\,\forcsvlist{\oarg[]}{#1}\,\forcsvlist{\marg[]}{#3}}%
+
+\def\@keyoptiontab#1:#2:#3{\texttt{\small\string #1} & #2\\}
+\def\keyoptiontab#1{\@keyoptiontab#1::\relax}
+
+\def\keyvaluestr{Valor}
+\def\keyvaluemeanstr{Significado}
+
+\newcommand{\DescKeyOptions}[1]{\par{~\hfil\begin{tabular}{cc}\keyvaluestr & \keyvaluemeanstr\\\hline\forcsvlist{\keyoptiontab}{#1}\\[-1em]\hline\end{tabular}\hfill}\par}
+
+	
+
+\ifcsdef{oarg}{\csundef{orag}}
+\newcommand{\oarg}[2][meta]{{\small\texttt{[\csname #1\endcsname{#2}]}}}
+\ifcsdef{marg}{\csundef{marg}}
+\newcommand{\marg}[2][meta]{{\small\texttt{\{\csname #1\endcsname{#2}\}}}}
+
+\newcommand{\marginnote}[1]{\marginpar{{\scriptsize\hfill#1}}}
+
+
+\SetKeys[democode]{default}
+
+\reversemarginpar
+\setlength\parindent{0pt}
+
+
+\def\MacroFont{%
+	\fontencoding\encodingdefault%
+  \fontfamily\ttdefault%
+  \fontseries\mddefault%
+  \fontshape\shapedefault%
+  \small%
+}%
+
+
+
+%%%
+%%% from https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
+\lstset{literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+	{ã}{{\~{a}}}1 {õ}{{\~{o}}}1
+	{Ã}{{\~{A}}}1 {Õ}{{\~{O}}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+\endinput

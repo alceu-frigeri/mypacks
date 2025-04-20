@@ -1,0 +1,51 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass[a4paper,10pt]{article}
+\RequirePackage{expl3}
+\RequirePackage{l3benchmark}
+
+\ExplSyntaxOn
+\fp_new:N \l__benchy_tmp_fp
+\cs_new:Npn \__benchy_core:nN #1#2
+  {
+    \fp_zero:N \l__benchy_tmp_fp
+    \prg_replicate:nn { 10 }
+      {
+        \benchmark_silent:n {#1}
+        \fp_add:Nn \l__benchy_tmp_fp { \g_benchmark_ops_fp }
+      }
+    \fp_set:Nn #2 { \l__benchy_tmp_fp / 10 }
+  }
+\cs_new:Npn \benchy_put:nN #1
+  {
+    \__benchy_core:nN
+      {
+        \tl_clear:N \l_tmpa_tl
+        \prg_replicate:nn { #1 } { \tl_put_right:Nn \l_tmpa_tl { .......... } }
+      }
+  }
+\cs_new:Npn \benchy_build:nN #1
+  {
+    \__benchy_core:nN
+      {
+        \tl_build_begin:N \l_tmpa_tl
+        \prg_replicate:nn { #1 } { \tl_build_put_right:Nn \l_tmpa_tl { .......... } }
+        \tl_build_end:N \l_tmpa_tl
+      }
+  }
+\cs_new:Npn \benchy:n #1
+  {
+    \benchy_build:nN {#1} \l_tmpa_fp
+    \benchy_put:nN {#1} \l_tmpb_fp
+    \typeout{#1,\fp_to_scientific:N\l_tmpa_fp,\fp_to_scientific:N\l_tmpb_fp}
+  }
+
+\typeout{}
+\typeout{n,build,put}
+\benchy:n 1
+\benchy:n 5
+\int_step_inline:nnnn { 10 } { 10 } { 20 } { \benchy:n {#1} }
+\typeout{}
+
+\stop 

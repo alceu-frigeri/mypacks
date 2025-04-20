@@ -1,0 +1,152 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass[a4paper,10pt]{article}
+\usepackage[times]{mypacks}
+\usepackage[no alias,xtrakeys=H,xtraidx=x,undef color=green]{tikzquests}
+\usepackage{tikzquads}
+\usepackage{tikzdotncross}
+%\usepackage{xcolor}
+%\usepackage{EletronicaI}
+\usepackage{CircuitosI}
+%\usepackage{CircuitosII}
+\usepackage{randomcircuits}
+\usepackage{ifthen}
+%\usetikzlibrary{knots}
+\usetikzlibrary{intersections}
+
+
+\newcommand{\XYZ}{some thing}
+\defQuestion*{\XYZ}{"some question"}
+\defQuestion{C.I:1a:QXx}{%
+  \draw (0,0) \ncoord(ref) to[I,l=\Ia] ++(0,4) \ncoord(A) to[R=\Ra] ++(2,0) \ncoord(B)
+  (B) to[V,l=\QuestVal{Beta}] ++(0,-2) \ncoord(C) node(nC){}
+  (B) -- ++(2,0) \ncoord(Bb) to[R=\Rxa] ++(0,-2) \ncoord(Cc) -- (C) 
+  ;
+}[some comment]
+
+\defQuestion{C.I:1a:QX}{%
+  \draw (0,0) \ncoord(ref) to[I,l=\QuestVal{Ia}] ++(0,4) \ncoord(A) to[R=\QuestVal{Ra}] ++(2,0) \ncoord(B)
+  (B) to[V,l=\QuestVal{Beta}] ++(0,-2) \ncoord(C) node(nC){}
+  (B) -- ++(2,0) \ncoord(Bb) to[R=\QuestVal{Rxa}] ++(0,-2) \ncoord(Cc) -- (C) 
+  ;
+}[some remarks]
+
+
+\defQuestion{sample 2}{%
+\begin{knot}[draft mode=crossings,clip width=5]
+		\strand
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) \ncoord(V)
+      to[R=\Ra] ++(2,0) 
+      to[C] ++(2,0) \dotcoord(B) 
+      -- ++(1,0) node[npn,anchor=B] (T1){}
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (B) to[R=\Rg] ++(0,3) \ncoord(C)
+		(T1.E) to[R,l=\Rc] (T1.E |- A) -- (A)
+		(T1.C) to[R,l_=\Rd] (T1.C |- C) -- (C -| A) -- ++(-2,0) \ncoord(X) to[V,l=\Vbc] (X |- A) -- (A)
+    (T1.C) -- ++(1,0) node[ocirc]{} \ncoord(k) to[open,v=\Vo] (k |- A) node[ocirc]{} -- (A)
+		 ;
+\end{knot}
+}
+
+
+\defQuestion{sample}{%
+		\draw
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) \ncoord(V)
+      to[R=\Ra] ++(2,0) 
+      to[C] ++(2,0) \ncoord(B) 
+      -- ++(1,0) node[pnp,anchor=B] (T1){}
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (B) to[R=\Rg] ++(0,3) \ncoord(C)
+		(T1.C) to[R,l=\Rc] (T1.C |- A) -- (A)
+		(T1.E) to[R,l_=\Rd] (T1.E |- C) -- (C -| A) -- ++(-2,0) \ncoord(X) to[V,l=\Vbc] (X |- A) -- (A)
+    (T1.C) -- ++(1,0) node[ocirc]{} \ncoord(k) to[open,v=\Vo] (k |- A) node[ocirc]{} -- (A)
+		 ;
+}
+
+\showcoordstrue
+\begin{document}
+
+
+\begin{tikzpicture}
+  \path 
+    (0,0) coordinate(X) 
+    (1,1) coordinate(A) node[minimum size=4.3pt,inner sep=0pt](nA){}
+    (2,2) coordinate(B) node[minimum size=4.3pt,inner sep=0pt](nB){}
+    (3,3) coordinate(Y)
+    ;
+  \draw[rotate=45] 
+    (A) +(-7pt/2,0) arc[start angle=180,end angle=0,radius=7pt/2]
+    (B) +(-7pt/2,0) arc[start angle=180,end angle=0,radius=7pt/2]
+    ;
+    
+    % Case (1)
+  %\draw (X) -- (nA) -- (nB) -- (Y) ;
+  
+    % Case (2)
+  %\foreach \x/\y in {X/nA,nA/nB,nB/Y} {\draw (\x) -- (\y);}
+
+    % Case (3)
+  \draw (X) \foreach \x in {nA,nB,Y} { -- (\x)};
+  
+  
+\end{tikzpicture}
+
+
+%\show\ncoord
+\begin{tikzpicture}
+      %% This is the reference, named, path
+      %%
+  		\draw[name path=base circ]
+		(0,0) \ncoord(A) to[V,invert,l=$v_i(t)$] ++(0,2) -- ++(0,1)
+      to[R=$R_i$] ++(2,0) 
+      to[C] ++(1,0) \pincoord(B1) ++(1,0) \ncoord(B)
+       ++(1,0) node[pnp,anchor=B] (T1){}
+		(A) -- (A -| B)  to[R=$R_{b_2}$] ++(0,2) \ncoord(Bb) (B) ++(0,1) \ncoord(Cb) to[R=$R_{b_1}$] ++(0,2) \ncoord(C)
+		(T1.C) to[R,l=$R_c$] (T1.C |- A) -- (A)
+		(T1.E) to[R,l_=$R_e$] (T1.E |- C) -- (C -| A) -- ++(-2,0) \ncoord(X) to[V,l=$V_{cc}$] (X |- A) -- (A)
+    (T1.C) -- ++(1,0) node[ocirc]{} \ncoord(k) to[open,v=$v_o(t)$] (k |- A) node[ocirc]{} -- (A)
+    (Bb) -- (Cb);
+    ;
+    %% These are just a few, marked, coords (they could be part of the previous path
+    %%
+  \path (T1.E)  ++(1,0)      \pincoord(X1) -- ++(-10,2)     \pincoord(X2)
+        (X1) ++(0,-1)        \dotpincoord(X1b) (X2) ++(0,-1)   \pincoord(X2b) 
+        (T1.C)  ++(0.5,-0.5) \odotpincoord(X1a) (T1.C) ++(-9,0) \pincoord(X2a)
+        (T1.B) \pincoord(B2,blue,225)
+  ;
+  %% And that's all, a few crossing lines
+  %%
+  \pathcross{B1}{T1.B}{base circ}[4pt]
+  \pathcross*{X1}{X2}{base circ}[3pt]
+  \pathcross[sec]{X2a}{X1a}{base circ}[6pt]
+\end{tikzpicture}
+
+
+%\tikzQuestion{sample}
+%
+%\tikzQuestion{sample 2}
+%
+%\defQuestion*{Testbeta}{
+%supondo $\beta \approx \QuestVal{Beta}$ e \QuestVal{Ra} determine: \ftikzQuestion(0.25){C.I:1a:QX}
+%}[that's some nice feature]
+%
+%
+%test:\textQuestion{\XYZ}
+%
+%
+%\textQuestion{Testbeta}[Beta={400}]
+%
+%\textQuestion{Testbeta}[Beta={\ensuremath{500_2^3}},Ra=100]
+%
+%\textQuestion{Testbeta}
+%
+%\ftikzQuestion(0.25){C.I:1a:QX}[Ra raw=\ensuremath{R_5},Rxa*=R_8]
+
+\ftikzQuestion(0.25){C.I:ext:Q3}
+
+
+\begin{equation}
+\frac{u_{o_{_1}}}{u_{i_{_1}}} = \left( \left. \frac{u_{o_{_1}}}{u_{i_{_1}}} \right|_{u_{i_{_2}}=0} \right) * 
+\frac{1 + \frac{\left. \frac{u_{o_{_2}}}{u_{i_{_2}}} \right|_{u_{o_{_1}}=0}}{-\left. \frac{u_{o_{_2}}}{u_{i_{_2}}} \right|_{ext}}}{1 + \frac{\left. \frac{u_{o_{_2}}}{u_{i_{_2}}} \right|_{u_{i_{_1}}=0}}{-\left. \frac{u_{o_{_2}}}{u_{i_{_2}}} \right|_{ext}} }
+\end{equation}
+
+\end{document}

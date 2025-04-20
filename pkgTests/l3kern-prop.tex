@@ -1,0 +1,128 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass{article}
+
+\ExplSyntaxOn
+
+
+
+%%% This below is the 'part of the real code' where I got the issue.
+%%% starray defines a rather large set of interconnected properties, 
+%%% some fields of it might (as in the case below) be other properties list
+
+%%% \usepackage{starray}
+%%%
+%%%
+%%%      \starray_new:n {activity}
+%%%    \starray_def_from_keyval:nn {activity}
+%%%      {
+%%%        chkmarked = ,    %%% This shall be a prop list of   marked itens
+%%%        chkunmarked = ,  %%% This shall be a prop list of unmarked itens
+%%%        chkref = ,       %%% This shall be a prop list of ref      itens
+%%%      }
+%%%      
+%%%      \NewDocumentCommand{\NewActivity}{m} {
+%%%          \starray_new_term:nn {activity}{#1}
+%%%          \starray_gset_prop:nnV {activity}{checkmarked}\c_empty_prop
+%%%          \starray_gset_prop:nnV {activity}{checkunmarked}\c_empty_prop
+%%%          \starray_gset_prop:nnV {activity}{checkref}\c_empty_prop
+%%%      }
+%%%      
+%%%      
+%%%      \prop_new:N \l__ufrgscca_check_prop
+%%%      \prop_new:N \l__ufrgscca_checkA_prop
+%%%      \prop_new:N \l__ufrgscca_checkB_prop
+%%%      \prop_new:N \l__ufrgscca_checkref_prop
+%%%      
+%%%      \NewDocumentCommand{\checkdef}{mmm}{
+%%%        \starray_get_prop:nnN {activity}{chkmarked}\l__ufrgscca_check_prop
+%%%        \prop_gput:Nnn \l__ufrgscca_check_prop {#1}{\__ufrgscca_checkedbox:~\ #3}
+%%%        \starray_gset_prop:nnV {activity}{chkmarked}\l__ufrgscca_check_prop
+%%%      
+%%%        \starray_get_prop:nnN {activity}{chkunmarked}\l__ufrgscca_check_prop
+%%%        \prop_gput:Nnn \l__ufrgscca_check_prop {#1}{\__ufrgscca_uncheckedbox:~\ #3}
+%%%        \starray_gset_prop:nnV {activity}{chkunmarked}\l__ufrgscca_check_prop
+%%%        
+%%%        \starray_get_prop:nnN {activity}{chkref}\l__ufrgscca_check_prop
+%%%        \prop_gput:Nnn \l__ufrgscca_check_prop {#2}{#1}
+%%%        \starray_gset_prop:nnV {activity}{chkref}\l__ufrgscca_check_prop
+%%%      }
+%%%
+
+%%%%%%%
+%%%%%%% This is a minimal working example
+
+\prop_new:N \l__ufrgscca_check_prop
+\prop_new:N \l__ufrgscca_checkA_prop
+\prop_new:N \l__ufrgscca_checkB_prop
+\prop_new:N \l__ufrgscca_checkref_prop
+
+\prop_new:N \l__test_activity_prop
+\prop_put_from_keyval:Nn \l__test_activity_prop
+  {
+    chkmarked = ,    %%% This shall be a prop list of   marked itens
+    chkunmarked = ,  %%% This shall be a prop list of unmarked itens
+    chkref = ,       %%% This shall be a prop list of ref      itens
+  }
+
+\prop_put:NnV \l__test_activity_prop {chekmarked} \c_empty_prop
+\prop_put:NnV \l__test_activity_prop {chekunmarked} \c_empty_prop
+\prop_put:NnV \l__test_activity_prop {chekref} \c_empty_prop
+
+\tl_new:N \l__prop_tl
+
+\cs_new_protected:Npn \__test_get_prop:nnN #1#2#3
+  {
+    \prop_get:cnNF {#1}{#2}#3 {\tl_set:Nn #3 {}}
+  }
+
+\cs_new_protected:Npn \__test_put_prop:nnn #1#2#3
+  {
+    \prop_put:cnn {#1}{#2}{#3}
+  }
+\cs_generate_variant:Nn \__test_put_prop:nnn {nnV}
+
+\cs_new_protected:Npn \__ufrgscca_checkedbox: 
+  {  $\checkmark$  }
+
+\cs_new_protected:Npn \__ufrgscca_uncheckedbox: 
+  {  $\square$  }
+
+\NewDocumentCommand{\Tcheckdef}{mmm}{
+  \__test_get_prop:nnN {l__test_activity_prop}{chkmarked}\l__ufrgscca_check_prop
+  \prop_gput:Nnn \l__ufrgscca_check_prop {#1}{\__ufrgscca_checkedbox:~\ #3}
+  \__test_put_prop:nnV {l__test_activity_prop}{chkmarked}\l__ufrgscca_check_prop
+
+  \__test_get_prop:nnN {l__test_activity_prop}{chkunmarked}\l__ufrgscca_check_prop
+  \prop_gput:Nnn \l__ufrgscca_check_prop {#1}{\__ufrgscca_uncheckedbox:~\ #3}
+  \__test_put_prop:nnV {l__test_activity_prop}{chkunmarked}\l__ufrgscca_check_prop
+
+  \__test_get_prop:nnN {l__test_activity_prop}{chkref}\l__ufrgscca_check_prop
+  \prop_gput:Nnn \l__ufrgscca_check_prop {#2}{#1}
+  \__test_put_prop:nnV {l__test_activity_prop}{chkref}\l__ufrgscca_check_prop
+}
+
+%\prop_show:N \l__prop_tl
+
+
+\ExplSyntaxOff
+
+
+\Tcheckdef{Lx1Cx2}{xOKorientador}{Aprov. p/Aval.}
+\Tcheckdef{Lx2Cx2}{tcc}{TCC p/ Banca}
+
+
+%\NewActivity{tccI}
+%\checkdef{L1C2}{OKorientador}{Aprov. p/Aval.}
+%\checkdef{L2C2}{tcc}{TCC p/ Banca}
+%
+%\NewActivity{tccII}
+%\checkdef{L1C1}{tcc-part}{Rel. Parcial}
+%\checkdef{L2C1}{partOK}{Aprov. Rel. Parcial}
+
+
+\begin{document}
+
+so it is...
+\end{document}

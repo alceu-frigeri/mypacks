@@ -63,9 +63,484 @@
 %%% End of cut-n-paste
 %%%%%%%
 
+\RequirePackage{etoolbox}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+
+
+\keys_define:nn {ctikzext }
+  {
+    showframe .usage:n = load ,
+    showframe .bool_set:N = \l__ctikzext_showframe_bool ,
+
+    showlabels .usage:n = load ,
+    showlabels .bool_set:N = \l__ctikzext_showlabels_bool ,
+
+    english .usage:n = load ,
+    english .bool_set:N = \l__ctikzext_english_bool ,
+
+    noalias .usage:n = load ,
+    noalias  .bool_set:N = \l__ctikzext_noalias_bool ,
+
+    beamer .usage:n = load ,
+    beamer  .bool_set:N = \l__ctikzext_beamer_bool ,
+    
+    xpacks .usage:n = load ,
+    xpacks  .bool_set:N = \l__ctikzext_xpacks_bool ,
+    
+    times .usage:n = load ,
+    times  .bool_set:N = \l__ctikzext_times_bool ,
+    
+    xtrakeys .usage:n = general ,
+    xtrakeys .tl_set:N = \l__ctikzext_xtrakeys_tl ,
+    xtrakeys .value_required:n  = true ,
+  }
+\ProcessKeyOptions [ ctikzext ]
+
+\makeatletter
+\tl_if_empty:NTF \l__ctikzext_xtrakeys_tl
+  {
+    \def\ctikzext@@xtratkey{}
+  }
+  {
+    \exp_args:NNe\def\ctikzext@@xtratkey{,\l__ctikzext_xtrakeys_tl}
+  }
+
+
+\makeatother
+
+
+\RequirePackage{xcolor}
+
+\bool_if:NTF \l__ctikzext_beamer_bool
+  {}
+  { %these have problems with beamer
+    \RequirePackage[a4paper,margin=15mm,right=15mm,marginparwidth=0cm,asymmetric,top=2.5cm,bottom=1.5cm]{geometry}
+    \RequirePackage[calcwidth]{titlesec}
+    \RequirePackage{listings}
+    \definecolor{lstgray}{rgb}{0.965,0.965,0.965}%
+    \lstset{basicstyle=\ttfamily\small,%
+      columns=fullflexible,%
+      keepspaces=true,%
+      frame=tb,%
+      inputencoding=latin1,%
+      %  inputencoding=utf8,%
+      extendedchars=true,%
+      backgroundcolor=\color{lstgray},%
+    	breaklines=true,%
+      %	xleftmargin=7pt,%
+      %	xrightmargin=7pt%
+    }%
+    %%%
+    %%% from https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
+    \lstset{literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    	{ã}{{\~{a}}}1 {õ}{{\~{o}}}1
+    	{Ã}{{\~{A}}}1 {Õ}{{\~{O}}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\EUR}}1 {£}{{\pounds}}1
+    }
+  }
+
+
+\bool_if:NT \l__ctikzext_showframe_bool
+  {
+    \RequirePackage{showframe}
+  }
+
+\bool_if:NT \l__ctikzext_showlabels_bool
+  {
+    \RequirePackage{showlabels}
+  }
+
+\bool_if:NTF \l__ctikzext_english_bool
+  {
+    \RequirePackage[english]{babel}
+  }
+  {
+    \RequirePackage[brazilian]{babel}
+  }
+
+
+\bool_if:NT \l__ctikzext_xpacks_bool
+  {
+    \RequirePackage{longtable}%
+    \RequirePackage{fancyhdr}
+    \RequirePackage{csquotes}
+    \RequirePackage[position=above,font=small,labelfont=bf,textfont=md,textfont+=sl,width=.80\textwidth]{caption}
+    \RequirePackage{subcaption}
+    \RequirePackage{url}% Para imprimir corretamente URLs
+    \RequirePackage{multirow,bigdelim}
+  }
+\bool_if:NTF \l__ctikzext_times_bool
+  { \RequirePackage{mathptmx} }
+  { \RequirePackage{lmodern} }
+
+
+\RequirePackage{enumerate}% Para poder enumerar com letras ao inves de numeros
+
+\RequirePackage{keyval,graphicx}  % Para importar figuras
+\RequirePackage{amsmath, amsthm, amssymb, amsfonts}
+\RequirePackage{mathrsfs}
+\RequirePackage{mathtools}
+\RequirePackage{empheq}
+\RequirePackage{cases}
+\RequirePackage{extarrows}
+\RequirePackage{mathfixs}
+
+\RequirePackage{steinmetz}
+
+
+%
+% pgf/tikz packages can't be loaded in an Expl3 code regim 
+%
+\ExplSyntaxOff
+
+\RequirePackage[american,siunitx,cuteinductors,smartlabels,arrowmos,EFvoltages,betterproportions]{circuitikz}
+%%\RequirePackage{pgffor}
+\usetikzlibrary{fit,math,calc,fpu}
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{shapes.geometric} %needed for the triangle
+\usetikzlibrary{shapes.misc} %needed for the triangle
+\usetikzlibrary{graphs,3d}
+\usetikzlibrary{datavisualization,datavisualization.formats.functions}
+\usetikzlibrary[commutative-diagrams]  %% oriented graphs.
+
+\NewDocumentCommand{\pgfmathparseFPU}{+m}{%
+  \begingroup%
+  \pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}%
+  \pgfmathparse{#1}%
+  \pgfmathsmuggle\pgfmathresult%
+  \endgroup%
+  }
+
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{pgfplots.units}
+
+\ExplSyntaxOn
+
+\keys_define:nn {ctikzext / cab}
+  {
+    class .usage:n = general ,
+    class .tl_set:N = \l__ctikzext_class_tl ,
+    class .value_required:n  = true ,
+    class .initial:n         = {nome disciplina} ,
+
+    classcode .usage:n = general ,
+    classcode .tl_set:N = \l__ctikzext_code_tl ,
+    classcode .value_required:n  = true ,
+    classcode .initial:n         = {ENG-code} ,
+    
+    exam .usage:n = general ,
+    exam .tl_set:N = \l__ctikzext_exam_tl ,
+    exam .value_required:n  = true ,
+    exam .initial:n         = {XX Verificação de Aproveitamento} ,
+    
+    
+    semester .usage:n = general ,
+    semester .tl_set:N = \l__ctikzext_semester_tl ,
+    semester .value_required:n  = true ,
+    semester .initial:n         = {202x / y} ,
+    
+    simplegrad .usage:n = general ,
+    simplegrad .bool_set:N = \l__ctikzext_simplegrad_bool ,
+
+    duo .usage:n = general ,
+    duo .bool_set:N = \l__ctikzext_duo_bool ,
+  }
+
+\NewDocumentCommand{\cab}{m}
+  {
+   \keys_set:nn{ctikzext / cab}{#1}
+   \newpage
+   \begin{center}
+     {
+       \sc\large Universidade ~\ Federal\ ~ do\ ~ Rio\ ~ Grande\ ~ do\ ~ Sul\\
+       Escola\ ~ de\ ~ Engenharia\ ~ /\ ~ DELAE \\
+       \l__ctikzext_code_tl \ ~-\ ~\l__ctikzext_class_tl\\ 
+       \l__ctikzext_exam_tl \ ~-\ ~ \l__ctikzext_semester_tl\\[2ex]
+     }
+     \bool_if:nT {\l__ctikzext_simplegrad_bool}
+       {
+         \__ctikzext_simplecab:
+       }
+       
+     Nome:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots
+
+     \bool_if:nT {\l__ctikzext_duo_bool}
+       {\\[-3ex]Dupla:\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\vspace{10mm}
+Cartão:\ldots\ldots\ldots\ldots\ldots\ldots}
+   \end{center}
+  }
+  
+
+\cs_new:Npn \__ctikzext_simplecab:
+  {
+    \fbox{%
+          \footnotesize%
+      	  \begin{minipage}{.6\textwidth}%
+            Assinalar~ um~ “\textbf{X}”,~ no~ tipo~ de~ correção~ a~ ser~ realizada.
+      			  \begin{description}%
+       	        \item[(~\ )~ Simplificada]~	Será~ atribuída~ uma~ nota~ igual~ a~ $3$~ –--~ independente~ do~ que~ estiver~ escrito~ na~ prova.
+       	        \item[(~\ )~ Completa]~	Todas~ as~ questões~ serão~ corrigidas~ e~ a~ nota~ será~ dada~ pela~ soma~ dos~ pontos~ obtidos~ em~ cada~ questão.~ Neste~ caso,~ a~ nota~ estará~ no~ intervalo~ $[0;10]$.
+              \end{description}
+          \end{minipage}%
+      	}\\[3ex]%
+  }
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+%%
+%% For once, spaces (pgf/tikz) and then ':' 
+%%
+\ExplSyntaxOff
+\def\normalcoord(#1){coordinate(#1)  node(n-#1){}}
+\newcommand{\normalcoords}{\let\coord=\normalcoord}
+\newcommand{\showcoords}{\let\coord=\showcoord}
+\let\coord=\normalcoord
+
+
+\def\genpincoord[#1,#2](#3){%
+  coordinate(#3) node(n-#3){}%
+  node[circle, #1,  inner sep=1.2pt, outer sep=0pt, radius=1pt, fill=#1!20!white, fill opacity=0.2, draw opacity=0.4, draw,
+    pin={[#1, overlay, inner sep=0pt, outer sep=1pt, font=\tiny, pin distance=4pt,
+    pin edge={#1, overlay}]#2:#3}](pin-#3){}%
+  }
+      
+\def\pincoord(#1){\genpincoord[blue,-45](#1)}
+\def\showcoord(#1){\genpincoord[red,45](#1)}
+\ExplSyntaxOn
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+\prop_new:N \l__ctikzext_questions_prop
+\NewDocumentCommand{\defQuestion}{m+m}
+  {
+    \prop_put:Nnn {\l__ctikzext_questions_prop}{#1}{#2}
+  }
+\NewDocumentCommand{\defQuestionAlias}{mm}
+  {
+    \bool_if:NF \l__ctikzext_noalias_bool
+      {
+        \prop_put:Nnn {\l__ctikzext_questions_prop}{#1}{\prop_item:Nn \l__ctikzext_questions_prop {#2}}
+      }
+  }
+  
+\tl_new:N \l__ctikzext_quest_tl  
+\NewDocumentCommand{\ftikzQuestion}{O{0.66}mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+    		\begin{figure}[!htb]
+    			\begin{center}
+    				\resizebox{#1\textwidth}{!}{
+    				\begin{tikzpicture}
+              \__ctikzext_pgfkeys:n{#3}
+    					\l__ctikzext_quest_tl
+    				\end{tikzpicture}}
+    			\end{center}
+    		\end{figure}    
+      }
+      {
+    		\begin{figure}[!htb]
+    			\begin{center}
+            Invalid~key:~#2
+    			\end{center}
+    		\end{figure}           
+      }
+  }  
+  
+\NewDocumentCommand{\tikzQuestion}{O{0.66}mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+				\resizebox{#1\textwidth}{!}{
+				\begin{tikzpicture}
+          \__ctikzext_pgfkeys:n{#3}
+  				\l__ctikzext_quest_tl
+				\end{tikzpicture}}
+      }
+      {
+        Invalid~key:~#2
+      }
+  }  
+\NewDocumentCommand{\rawQuestion}{mO{}}
+  {
+    \prop_get:NnNTF \l__ctikzext_questions_prop {#2} \l__ctikzext_quest_tl
+      {
+        \__ctikzext_pgfkeys:n{#2}
+ 				\l__ctikzext_quest_tl
+      }
+      {
+        Invalid~key:~#2
+      }
+  }
+
+\NewDocumentCommand{\Questionslist}{}
+  {
+    \seq_gclear_new:N \l__ctikzext_questions_seq
+    \prop_map_inline:Nn \l__ctikzext_questions_prop
+      {
+        \seq_put_right:Nn \l__ctikzext_questions_seq {##1}
+      }
+%      \seq_show:N \l__ctikzext_questions_seq
+    \seq_sort:Nn \l__ctikzext_questions_seq
+      {
+        \str_compare:eNeTF { ##1 } > { ##2 }
+          { \sort_return_swapped: }
+          { \sort_return_same: }
+      }
+%      \seq_show:N \l__ctikzext_questions_seq
+    \begin{description}
+      \seq_map_inline:Nn \l__ctikzext_questions_seq
+        {
+          \item[\raisebox{3em}{##1}] \tikzQuestion[0.33]{##1}
+        }    
+    \end{description}
+  }
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+%\ExplSyntaxOff
+%
+
+
+\pgfplotsset{width=0.7\textwidth}
+
+\NewDocumentCommand{\loglogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{loglogaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.8\textwidth,
+      height=0.4\textwidth,
+      log~ basis~ y=10,
+      x~ unit=rad/s,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+\end{loglogaxis}
+\end{tikzpicture}
+}
+
+
+\NewDocumentCommand{\semilogplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \begin{tikzpicture}
+    \begin{semilogxaxis}[
+      /pgfplots/log~ identify~ minor~ tick~ positions=true,
+      grid=both,
+      tick~ align=outside,
+      width=0.9\textwidth,
+      height=0.4\textwidth,
+      x~ unit=rad/s,
+      %      minor tick = 5,
+      minor~ y~ tick~ num = 1,
+      xlabel=$\omega$,
+      axis~ line~ style={color=blue,very~ thick},
+      axis~ x~ line=bottom,
+      axis~ y~ line=left,
+      #1 ]
+      \addplot[color=red] gnuplot[id=#2,samples=2000] {#3};
+      #4
+    \end{semilogxaxis}
+  \end{tikzpicture}
+}
+
+\NewDocumentCommand{\semilogphiplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=rad,
+      ytick={-3.14159265,-2.3561945,-1.570796,-0.785398,0,0.785398,1.570796,2.3561945,3.14159265},
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+\NewDocumentCommand{\semilogdbplot}{O{}mmO{}}{
+  % Preamble: \pgfplotsset{width=7cm,compat=1.16}
+  \semilogplot
+    [ y~ unit=db,
+      ytick = {-20,0,20,40,60,80},
+      minor~ y~ tick~ num = 3,
+      #1 ]
+    {#2}
+    {#3}
+    [#4]
+}
+
+
+\cs_new:Npn \__ctikzext_pgfkeys:n #1
+  { \pgfkeys{/Zval, #1} }
 
 \ExplSyntaxOff
+
+
 \makeatletter
+
+%
+%\newcommand{\ctikzext@@SetDef}[2][]{%
+\NewDocumentCommand{\ctikzext@@SetDef}{O{}m}{%
+  \pgfkeys{%
+	  /Zval, default/.append style={/Zval/#2, default},%
+	  /Zval/#2/.is family, /Zval/#2, default/.style={},%
+		keyset/.code={\pgfkeysalso{%
+		  default/.append style = {##1=#2_{#1{##1}}},%
+			##1/.code={\csedef{#2##1}{$####1$}}%
+		}},%
+		setaux/.code={\pgfkeysalso{keyset/.list/.expanded={##1a,##1b,##1c,##1d,##1e,##1f,##1g,##1h,##1i,##1j,##1k,##1l,##1m,##1n,##1o,##1p,##1q,##1r,##1s,##1t,##1u,##1v,##1w,##1x,##1y,##1z}}},%
+		setaux/.list/.expanded={,a,b,c,d,e,f,g}%
+	}%
+}%
+%
+
+
+\AtBeginDocument{\ctikzext@@KeysDef}
+
+\NewDocumentCommand{\ctikzext@@KeysDef}{}{%
+  \pgfkeys{/Zval/.is family, /Zval, default/.style={},%
+	  defset/.code={\ctikzext@@SetDef{##1}},%
+		defset/.list/.expanded={R,L,C,Z,K,T,Q,EQ,X,Y,D,M,N,A,B,U\ctikzext@@xtratkey},%
+		defset/.code={\ctikzext@@SetDef[f_]{##1}},%
+		defset/.list/.expanded={V,I},%
+		default%
+	}%
+}%
+
+
 
 \newtoggle{ctikzext@@toggle@inverted}
 \newtoggle{ctikzext@@toggle@generic}
@@ -76,17 +551,13 @@
 \newtoggle{ctikzext@@toggle@roundsources}
 %
 %
+%
 \def\ctikzext@@KeysPath{/tikz/QuadKeys}
 \pgfkeys{\ctikzext@@KeysPath/.is family}
 \newcommand{\ctikzext@@ValueofQuadKey}[1]{\pgfkeysvalueof{\ctikzext@@KeysPath/#1}}
+%\newcommand{\ctikzext@@QuadKey}[1]{\pgfkeys{\ctikzext@@KeysPath,#1}}
 \newcommand{\ctikzext@@QuadGetAnchor}[2]{\pgfkeys{\ctikzext@@KeysPath,#1={#2}}}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% re-mapping 'anchors names' in case of a 90 degree (clockwise) rotation
-%%%            assuming the element should always be 90 degree rotated.
-%%%
-%%%%%%%%%%%%%%%%%%%
 \def\ctikzext@@RPath{/tikz/QuadKeys/Anchor +90 Rotation}
 \pgfkeys{\ctikzext@@RPath/.is family}
 \pgfkeys{\ctikzext@@RPath,
@@ -103,12 +574,6 @@
 
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% re-mapping 'anchors names' in case of an auto 90 degree (clockwise) rotation
-%%%            assuming the rotation was conditional (and original anchors were thought in the original position.)
-%%%
-%%%%%%%%%%%%%%%%%%%
 \def\ctikzext@@AutoRPath{/tikz/QuadKeys/Anchor Auto +90 Rotation}
 \pgfkeys{\ctikzext@@AutoRPath/.is family}
 \pgfkeys{\ctikzext@@AutoRPath,
@@ -125,11 +590,6 @@
 
 
 %
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% re-mapping 'anchors names' in case of an 'invert' key
-%%%
-%%%%%%%%%%%%%%%%%%%
 \def\ctikzext@@TPath{/tikz/QuadKeys/Translation}
 \pgfkeys{\ctikzext@@TPath/.is family}
 \pgfkeys{\ctikzext@@TPath,
@@ -143,11 +603,6 @@
 %%%
 %%% pgf hackery, well, extention   
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% pgf hackery, well, extention: allowing composit names
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfkeys{/pgf/text/.cd,
     top left/.style={/pgf/text/.cd,top,left},
     top right/.style={/pgf/text/.cd,top,right},
@@ -156,11 +611,6 @@
 }   
     
 %
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% User Shapes as styles. Note that 'QuadKeys' assure that following keys are in the correct tree.
-%%%
-%%%%%%%%%%%%%%%%%%%
 \tikzset{Quad compact/.style={Quad shape,QuadKeys,half base width=\pgf@circ@Rlen}}
 \tikzset{BB/.style={BB shape,QuadKeys,half base width=\pgf@circ@Rlen}}
 \tikzset{Black Box/.style={BB shape,QuadKeys,half base width=\pgf@circ@Rlen}}
@@ -175,23 +625,12 @@
 %%
 %% These DO work, but be careful: the node gets a name only if <name> key is defined.
 %%
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% User shapes/keys which can be used in a to[]
-%%%                  These DO work, but be careful: the node gets a name only if <name> key is defined.
-%%%
-%%%%%%%%%%%%%%%%%%%
 \tikzset{ToQuad/.style={to path={node[Quad,outer x fit={\tikztostart}{\tikztotarget}](\ctikzext@@ValueofQuadKey{name}){}},QuadKeys}}
 \tikzset{ToQuad Z/.style={to path={node[Quad Z,outer x fit={\tikztostart}{\tikztotarget}](\ctikzext@@ValueofQuadKey{name}){}},QuadKeys}}
 \tikzset{ToQuad Y/.style={to path={node[Quad Y,outer x fit={\tikztostart}{\tikztotarget}](\ctikzext@@ValueofQuadKey{name}){}},QuadKeys}}
 \tikzset{ToQuad G/.style={to path={node[Quad G,outer x fit={\tikztostart}{\tikztotarget}](\ctikzext@@ValueofQuadKey{name}){}},QuadKeys}}
 \tikzset{ToQuad H/.style={to path={node[Quad H,outer x fit={\tikztostart}{\tikztotarget}](\ctikzext@@ValueofQuadKey{name}){}},QuadKeys}}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Main keys definition
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfkeys{\ctikzext@@KeysPath,
     %.unknown/.code={\let\searchname=\pgfkeyscurrentname%
     %                \pgfkeysalso{/tikz/\searchname=#1}},
@@ -331,57 +770,86 @@
     defaults,
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Coordinates for a Quadripole
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@QuadPoints}{
-	\tikzmath{
-		real \x,\y;
-    \x{center}=0;
-    \y{center}=0;
-		\x{right}=0 + \ctikzext@@ValueofQuadKey{half base width};
-		\y{top}=0 +( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
-		%
-		\x{left}=0 - \ctikzext@@ValueofQuadKey{half base width};
-		\y{bottom}=0 -( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
-		%
-		\y{innerbottom}=0 - \ctikzext@@ValueofQuadKey{half base height};
-		\y{innertop}=0 + \ctikzext@@ValueofQuadKey{half base height};
-		%
-		\y{outerbottom}=\y{bottom} - 0.5*\ctikzext@@ValueofQuadKey{outer ext};
-		\y{outertop}=\y{top} + 0.5*\ctikzext@@ValueofQuadKey{outer ext};
-		%
-		\x{outerleft}=\x{left} - \ctikzext@@ValueofQuadKey{outer ext};
-		\x{innerleft}=\x{left} + \ctikzext@@ValueofQuadKey{inner ext};
-		%
-		\x{outerright}=\x{right} + \ctikzext@@ValueofQuadKey{outer ext};
-		\x{innerright}=\x{right} - \ctikzext@@ValueofQuadKey{inner ext};
-    %
-		\x{refC}=0 - 0.4*\ctikzext@@ValueofQuadKey{half base width};
-    \x{refB}=(\x{innerleft}+\x{refC})/2; %center point for Res shape
-    \x{refA}=(2*\x{innerleft}+\x{refC})/3; %'center' point for Y.Res shape
-		%
-		\y{Tbottom}=\y{bottom} + 0.65ex;
-		\x{Tinnerleft}=\x{innerleft} ;
-		\y{Tinnerbottom}=\y{innerbottom} + 0.95ex;
-		\x{Tinnerright}=\x{innerright};
-    \x{Tcenter}=0;
-    %
-		\y{Ttop}=\y{top} - 0.65ex;
-		\y{Tinnertop}=\y{innertop} - 0.95ex;
-	}
+		\tikzmath{
+			real \x,\y;
+      \x{center}=0;
+      \y{center}=0;
+			\x{right}=0 + \ctikzext@@ValueofQuadKey{half base width};
+			\y{top}=0 +( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
+			%
+			\x{left}=0 - \ctikzext@@ValueofQuadKey{half base width};
+			\y{bottom}=0 -( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
+			%
+			\y{innerbottom}=0 - \ctikzext@@ValueofQuadKey{half base height};
+			\y{innertop}=0 + \ctikzext@@ValueofQuadKey{half base height};
+			%
+			\y{outerbottom}=\y{bottom} - 0.5*\ctikzext@@ValueofQuadKey{outer ext};
+			\y{outertop}=\y{top} + 0.5*\ctikzext@@ValueofQuadKey{outer ext};
+			%
+			\x{outerleft}=\x{left} - \ctikzext@@ValueofQuadKey{outer ext};
+			\x{innerleft}=\x{left} + \ctikzext@@ValueofQuadKey{inner ext};
+			%
+			\x{outerright}=\x{right} + \ctikzext@@ValueofQuadKey{outer ext};
+			\x{innerright}=\x{right} - \ctikzext@@ValueofQuadKey{inner ext};
+      %
+			\x{refC}=0 - 0.4*\ctikzext@@ValueofQuadKey{half base width};
+      \x{refB}=(\x{innerleft}+\x{refC})/2; %center point for Res shape
+      \x{refA}=(2*\x{innerleft}+\x{refC})/3; %'center' point for Y.Res shape
+			%
+			\y{Tbottom}=\y{bottom} + 0.65ex;
+			\x{Tinnerleft}=\x{innerleft} ;
+			\y{Tinnerbottom}=\y{innerbottom} + 0.95ex;
+			\x{Tinnerright}=\x{innerright};
+      \x{Tcenter}=0;
+      %
+			\y{Ttop}=\y{top} - 0.65ex;
+			\y{Tinnertop}=\y{innertop} - 0.95ex;
+		}
 }
 
 
 
+\newcommand{\ctikzext@@BBPoints}{
+		\tikzmath{
+			real \x,\y;
+      \x{center}=0;
+      \y{center}=0;
+			\x{right}=0 + \ctikzext@@ValueofQuadKey{half base width};
+			\y{top}=0 +( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
+			%
+			\x{left}=0 - \ctikzext@@ValueofQuadKey{half base width};
+			\y{bottom}=0 -( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
+			%
+			\y{innerbottom}=0 - \ctikzext@@ValueofQuadKey{half base height};
+			\y{innertop}=0 + \ctikzext@@ValueofQuadKey{half base height};
+			%
+			\y{outerbottom}=\y{bottom} - 0.5*\ctikzext@@ValueofQuadKey{outer ext};
+			\y{outertop}=\y{top} + 0.5*\ctikzext@@ValueofQuadKey{outer ext};
+			%
+			\x{outerleft}=\x{left} - \ctikzext@@ValueofQuadKey{outer ext};
+			\x{innerleft}=\x{left} + \ctikzext@@ValueofQuadKey{inner ext};
+			%
+			\x{outerright}=\x{right} + \ctikzext@@ValueofQuadKey{outer ext};
+			\x{innerright}=\x{right} - \ctikzext@@ValueofQuadKey{inner ext};
+      %
+			\x{refC}=0 + 0.3*\ctikzext@@ValueofQuadKey{half base width};
+      \x{refB}=(\x{innerleft}+\x{refC})/2; %center point for Res shape
+      \x{refA}=(2*\x{innerleft}+\x{refC})/3; %'center' point for Y.Res shape
+			%
+			\y{Tbottom}=\y{bottom} + 0.65ex;
+			\x{Tinnerleft}=\x{innerleft} ;
+			\y{Tinnerbottom}=\y{innerbottom} + 0.95ex;
+			\x{Tinnerright}=\x{innerright};
+      \x{Tcenter}=0;
+      %
+			\y{Ttop}=\y{top} - 0.65ex;
+			\y{Tinnertop}=\y{innertop} - 0.95ex;
+		}
+}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% if <key value>, #1, is zero, #2 is executed, otherwise #3.
-%%%
-%%%%%%%%%%%%%%%%%%%
+
+
 \newcommand{\ctikzext@@CondDraw}[3]{
 	\IfDecimal{\ctikzext@@ValueofQuadKey{#1}}{
 		\ifnumequal{0+\ctikzext@@ValueofQuadKey{#1}}{0}{%
@@ -392,11 +860,6 @@
 	}{#3}
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% if <key value>, #1, is zero, a in place line is drawn, otherwise shape #2 is draw.
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@Zdraw}[5]{
   \ctikzext@@CondDraw{#1}{%
 		\pgfnode{Shadow #2}{#3}{}{\tikz@fig@name-#1}{\pgfusepath{discard}}
@@ -408,13 +871,6 @@
   }
 }
 
-
-
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Draws a Z side (impedance in series with a Voltage source
-%%%
-%%%%%%%%%%%%%%%%%%%
 
 \newtoggle{ctikzext@@toggle@auxA}
 \newtoggle{ctikzext@@toggle@auxB}
@@ -497,27 +953,23 @@
 			}
 		}
 %
-    \ctikzext@@QuadGetAnchor{#2 N anchor}{ctikzext@@NanchorB}
-    \ctikzext@@QuadGetAnchor{#1 T anchor}{ctikzext@@TanchorA}
-    \ctikzext@@QuadGetAnchor{#2 T anchor}{ctikzext@@TanchorB}
- 		\ifboolexpr{togl{ctikzext@@toggle@alternate} and togl{ctikzext@@toggle@auxB}}{%
-      \ctikzext@@QuadGetAnchor{#1 N anchor}{ctikzext@@NanchorAx}
-      \ctikzext@@AutoRotateAnchor{\ctikzext@@NanchorAx}{ctikzext@@NanchorA}
-    }{%
-      \ctikzext@@QuadGetAnchor{#1 N anchor}{ctikzext@@NanchorA}
-    }
-    {       
-    	\pgftransformresetnontranslations
-    	\ctikzext@@CondDraw{#1}{}{\pgftext[\ctikzext@@TanchorA,at={\pgfpointanchor{\tikz@fig@name-#1}{\ctikzext@@NanchorA}}]{\ctikzext@@ValueofQuadKey{#1}}}
-    	\ctikzext@@CondDraw{#2}{}{\pgftext[\ctikzext@@TanchorB,at={\pgfpointanchor{\tikz@fig@name-#2}{\ctikzext@@NanchorB}}]{\ctikzext@@ValueofQuadKey{#2}\ctikzext@@ValueofQuadKey{#3}}}
-    }
+        \ctikzext@@QuadGetAnchor{#2 N anchor}{ctikzext@@NanchorB}
+        \ctikzext@@QuadGetAnchor{#1 T anchor}{ctikzext@@TanchorA}
+        \ctikzext@@QuadGetAnchor{#2 T anchor}{ctikzext@@TanchorB}
+     		\ifboolexpr{togl{ctikzext@@toggle@alternate} and togl{ctikzext@@toggle@auxB}}{%
+          \ctikzext@@QuadGetAnchor{#1 N anchor}{ctikzext@@NanchorAx}
+          \ctikzext@@AutoRotateAnchor{\ctikzext@@NanchorAx}{ctikzext@@NanchorA}
+        }{%
+          \ctikzext@@QuadGetAnchor{#1 N anchor}{ctikzext@@NanchorA}
+        }
+        {       
+        	\pgftransformresetnontranslations
+        	\ctikzext@@CondDraw{#1}{}{\pgftext[\ctikzext@@TanchorA,at={\pgfpointanchor{\tikz@fig@name-#1}{\ctikzext@@NanchorA}}]{\ctikzext@@ValueofQuadKey{#1}}}
+        	\ctikzext@@CondDraw{#2}{}{\pgftext[\ctikzext@@TanchorB,at={\pgfpointanchor{\tikz@fig@name-#2}{\ctikzext@@NanchorB}}]{\ctikzext@@ValueofQuadKey{#2}\ctikzext@@ValueofQuadKey{#3}}}
+        }
+%
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% if <key value>, #1, is zero, nothing is drawn, otherwise shape #2 is draw.
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@Ydraw}[3]{
   \ctikzext@@CondDraw{#1}{%
     \pgfnode{Shadow #2}{#3}{}{\tikz@fig@name-#1}{\pgfusepath{discard}}
@@ -525,12 +977,6 @@
     \pgfnode{#2}{#3}{}{\tikz@fig@name-#1}{\pgfusepath{stroke}}
   }
 }
-
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Draws a Y side (impedance in paralel with a Currente source
-%%%
-%%%%%%%%%%%%%%%%%%%
 
 % #1 Isource UP/DWN
 % #2->y11/y22 (res)
@@ -577,7 +1023,6 @@
 			\pgfpathlineto{\pgfpoint{#5\x{innerleft}}{\y{innerbottom}}}
 			\pgfusepath{stroke}
 		}
-%
     {
 			\pgftransformshift{\pgfpoint{#5\x{21}}{0}}
       \ctikzext@@Ydraw{#3}{#1}{center}
@@ -592,24 +1037,20 @@
 			\pgfpathlineto{\pgfpoint{#5\x{innerleft}}{\y{innerbottom}}}
 			\pgfusepath{stroke}
 		}
-    \ctikzext@@QuadGetAnchor{#2 N anchor}{ctikzext@@NanchorAx}
-    \ctikzext@@QuadGetAnchor{#3 N anchor}{ctikzext@@NanchorB}
-    \ctikzext@@QuadGetAnchor{#2 T anchor}{ctikzext@@TanchorA}
-    \ctikzext@@QuadGetAnchor{#3 T anchor}{ctikzext@@TanchorB}
-    \ctikzext@@RotateAnchor{\ctikzext@@NanchorAx}{ctikzext@@NanchorA}
-    {
-    	\pgftransformresetnontranslations
-    	\ctikzext@@CondDraw{#2}{}{\pgftext[\ctikzext@@TanchorA,at={\pgfpointanchor{\tikz@fig@name-#2}{\ctikzext@@NanchorA}}]{\ctikzext@@ValueofQuadKey{#2}}}
-    	\ctikzext@@CondDraw{#3}{}{\pgftext[\ctikzext@@TanchorB,at={\pgfpointanchor{\tikz@fig@name-#3}{\ctikzext@@NanchorB}}]{\ctikzext@@ValueofQuadKey{#3}\ctikzext@@ValueofQuadKey{#4}}}
-    }
+        \ctikzext@@QuadGetAnchor{#2 N anchor}{ctikzext@@NanchorAx}
+        \ctikzext@@QuadGetAnchor{#3 N anchor}{ctikzext@@NanchorB}
+        \ctikzext@@QuadGetAnchor{#2 T anchor}{ctikzext@@TanchorA}
+        \ctikzext@@QuadGetAnchor{#3 T anchor}{ctikzext@@TanchorB}
+        \ctikzext@@RotateAnchor{\ctikzext@@NanchorAx}{ctikzext@@NanchorA}
+        {
+        	\pgftransformresetnontranslations
+        	\ctikzext@@CondDraw{#2}{}{\pgftext[\ctikzext@@TanchorA,at={\pgfpointanchor{\tikz@fig@name-#2}{\ctikzext@@NanchorA}}]{\ctikzext@@ValueofQuadKey{#2}}}
+        	\ctikzext@@CondDraw{#3}{}{\pgftext[\ctikzext@@TanchorB,at={\pgfpointanchor{\tikz@fig@name-#3}{\ctikzext@@NanchorB}}]{\ctikzext@@ValueofQuadKey{#3}\ctikzext@@ValueofQuadKey{#4}}}
+        }
+
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Coordinates for a Resistor
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@ResPoints}{
 		\tikzmath{
 			real \x,\y;
@@ -632,11 +1073,6 @@
 		}
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Base Anchors for a Resistor like shape
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@ResBaseAnchors}[1]{
 	\anchor{center}{\centerpoint}
 	\savedanchor\centerpoint{%
@@ -690,11 +1126,7 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Resistor shape. either zig-zag or generic/european
-%%%
-%%%%%%%%%%%%%%%%%%%
+
 \pgfdeclareshape{Res shape}{
   \ctikzext@@ResBaseAnchors{\ctikzext@@ResPoints}
 	\behindbackgroundpath{
@@ -722,17 +1154,18 @@
 		}
     \pgfusepath{stroke}
   \end{pgfscope}
+%    \pgfsetlinewidth{\orglinewidth}
 	}
 	\backgroundpath{}
 }
 
 
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Shadow Res shape => do nothing but defines anchors
+%%%%%%%%%%%
+%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Shadow Res shape => do nothing but defines anchors
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfdeclareshape{Shadow Res shape}{
 	\inheritsavedanchors[from=Res shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -742,97 +1175,35 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% a simple arrow tip, can be a simple triangle or a bezier based one.
-%%%          back of the tip at the 'starting point'
-%%%
-%%%%%%%%%%%%%%%%%%%
-\newcommand{\ctikzext@@arrowtipat}[3]{
-  { 
-    \pgftransformshift{\pgfpoint{#2}{#3}}
-    \pgftransformscale{\ctikzext@@ValueofQuadKey{tip len}}
-    \pgftransformrotate{#1}%\pgfsetlinewidth{\ctikzext@@ValueofQuadKey{thickness}\pgflinewidth}
-    \iftoggle{ctikzext@@toggle@beziertip}{   
-        %% bezier version  
-        \pgfsetroundcap\pgfsetbeveljoin%\pgfsetlinewidth{\ctikzext@@ValueofQuadKey{thickness}\pgflinewidth}
-        \pgfpathmoveto{\pgfpoint{1}{0}}
-        \pgfpathcurveto{\pgfpoint{0.3}{0.125}}{\pgfpoint{0.3}{0.125}}{\pgfpoint{0}{0.4}}
-        \pgfpathcurveto{\pgfpoint{0.15}{0}}{\pgfpoint{0.15}{0}}{\pgfpoint{0}{-0.4}}
-        \pgfpathcurveto{\pgfpoint{0.3}{-0.125}}{\pgfpoint{0.3}{-0.125}}{\pgfpoint{1}{0}}
-    }{  %% simple triangle version
-        \pgfsetroundcap
-        \pgfpathmoveto{\pgfpoint{1}{0}}
-        \pgfpathlineto{\pgfpoint{0}{0.45}}
-        \pgfpathlineto{\pgfpoint{0}{-0.45}}
-        \pgfpathlineto{\pgfpoint{1}{0}}
-    }
-  }
-}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% a simple, centered at point of reference, 'plus' sign... it could be a \pgftext... but, that way it is more controlable.
-%%%
-%%%%%%%%%%%%%%%%%%%
-\newcommand{\ctikzext@@plussignat}[3][\ctikzext@@ValueofQuadKey{plussign len}]{%
-  {
-			\pgftransformshift{\pgfpoint{#2}{#3}}
-      \pgftransformscale{#1}
-			\pgfpathmoveto{\pgfpoint{-1}{0}}
-			\pgfpathlineto{\pgfpoint{1}{0}}
-			\pgfpathmoveto{\pgfpoint{0}{-1}}
-			\pgfpathlineto{\pgfpoint{0}{1}}    
-  }
-}
-
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% a simple, centered at point of reference, 'minus' sign... it could be a \pgftext... but, that way it is more controlable.
-%%%
-%%%%%%%%%%%%%%%%%%%
-\newcommand{\ctikzext@@minussignat}[3][\ctikzext@@ValueofQuadKey{minussign len}]{%
-  {
-			\pgftransformshift{\pgfpoint{#2}{#3}}
-      \pgftransformscale{#1}
-			\pgfpathmoveto{\pgfpoint{-1}{0}}
-			\pgfpathlineto{\pgfpoint{1}{0}}
-  }
-}
-
-
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Coordinates for a (base) Source
-%%%
-%%%%%%%%%%%%%%%%%%%
 \newcommand{\ctikzext@@SourcePoints}{
-	\tikzmath{
-		real \x,\y;
-    \x{center}=0;
-    \y{center}=0;
-    \x{left}=-\ctikzext@@ValueofQuadKey{source radius};
-    \x{right}=\ctikzext@@ValueofQuadKey{source radius};
-		\y{top}=+\ctikzext@@ValueofQuadKey{source radius};
-		\y{bottom}=-\ctikzext@@ValueofQuadKey{source radius};
-    %
-    \x{Tcenter}=0;
-    \y{Tcenter}=0;
-		\y{Tmiddletop}=+cos(45)*(\ctikzext@@ValueofQuadKey{source radius}+\ctikzext@@ValueofQuadKey{outer sep});
-		\y{Tmiddlebottom}=-\y{Tmiddletop};
-		%
-		\x{Tmiddleright}=+cos(45)*(\ctikzext@@ValueofQuadKey{source radius}+\ctikzext@@ValueofQuadKey{outer sep});
-		\x{Tmiddleleft}=-\x{Tmiddleright};
-	}
+		\tikzmath{
+			real \x,\y;
+      \x{center}=0;
+      \y{center}=0;
+      \x{left}=-\ctikzext@@ValueofQuadKey{source radius};
+      \x{right}=\ctikzext@@ValueofQuadKey{source radius};
+			\y{top}=+\ctikzext@@ValueofQuadKey{source radius};
+			\y{bottom}=-\ctikzext@@ValueofQuadKey{source radius};
+      %
+      \x{Tcenter}=0;
+      \y{Tcenter}=0;
+			\y{Tmiddletop}=+cos(45)*(\ctikzext@@ValueofQuadKey{source radius}+\ctikzext@@ValueofQuadKey{outer sep});
+			\y{Tmiddlebottom}=-\y{Tmiddletop};
+			%
+			\x{Tmiddleright}=+cos(45)*(\ctikzext@@ValueofQuadKey{source radius}+\ctikzext@@ValueofQuadKey{outer sep});
+			\x{Tmiddleleft}=-\x{Tmiddleright};
+		}
 }
 
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Base Anchors for a Source like shape
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Base source shape
+%%%%%%%%%%%
+%%%%%%%%%%%
+
 \newcommand{\ctikzext@@SourceBaseAnchors}[1]{
 	\savedanchor\centerpoint{
 		\pgfpoint{0}{0}
@@ -885,11 +1256,6 @@
 	}
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Base shape for a source like shape
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfdeclareshape{Base source shape}{
   \ctikzext@@SourceBaseAnchors{\ctikzext@@SourcePoints}
 	\backgroundpath{}
@@ -898,11 +1264,12 @@
 	}
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Voltage source shape. either round or diamond
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Vsource shape
+%%%%%%%%%%%
+%%%%%%%%%%%
+
 \pgfdeclareshape{Vsource shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -931,12 +1298,12 @@
 	}
 }
 
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Shadow Vsource shape => do nothing but defines anchors
+%%%%%%%%%%%
+%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Shadow Vsource shape => do nothing but defines anchors
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfdeclareshape{Shadow Vsource shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -945,12 +1312,12 @@
 	\backgroundpath{}
 }
 
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% IsourceDOWN shape
+%%%%%%%%%%%
+%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% currente source shape, arrow pointing down. either round or diamond
-%%%
-%%%%%%%%%%%%%%%%%%%
 \pgfdeclareshape{IsourceDOWN shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -979,11 +1346,12 @@
 		\end{pgfscope}
 	}}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Shadow IsourceDOWN shape => do nothing but defines anchors
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Shadow IsourceDOWN shape => do nothing but defines anchors
+%%%%%%%%%%%
+%%%%%%%%%%%
+
 \pgfdeclareshape{Shadow IsourceDOWN shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -993,11 +1361,12 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% currente source shape, arrow pointing up. either round or diamond
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% IsourceUP shape
+%%%%%%%%%%%
+%%%%%%%%%%%
+
 \pgfdeclareshape{IsourceUP shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -1027,11 +1396,12 @@
 	}
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Shadow IsourceUP shape => do nothing but defines anchors
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Shadow IsourceUP shape => do nothing but defines anchors
+%%%%%%%%%%%
+%%%%%%%%%%%
+
 \pgfdeclareshape{Shadow IsourceUP shape}{
 	\inheritsavedanchors[from=Base source shape]
 	\foreach \anchor in {north,north west,north east,center,west,east,
@@ -1041,11 +1411,35 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Base Anchors for a Quadripole like shape
-%%%
-%%%%%%%%%%%%%%%%%%%
+\newcommand{\ctikzext@@arrowtipat}[3]{
+  { 
+    \pgftransformshift{\pgfpoint{#2}{#3}}
+    \pgftransformscale{\ctikzext@@ValueofQuadKey{tip len}}
+    \pgftransformrotate{#1}%\pgfsetlinewidth{\ctikzext@@ValueofQuadKey{thickness}\pgflinewidth}
+    \iftoggle{ctikzext@@toggle@beziertip}{   
+        %% bezier version  
+        \pgfsetroundcap\pgfsetbeveljoin%\pgfsetlinewidth{\ctikzext@@ValueofQuadKey{thickness}\pgflinewidth}
+        \pgfpathmoveto{\pgfpoint{1}{0}}
+        \pgfpathcurveto{\pgfpoint{0.3}{0.125}}{\pgfpoint{0.3}{0.125}}{\pgfpoint{0}{0.4}}
+        \pgfpathcurveto{\pgfpoint{0.15}{0}}{\pgfpoint{0.15}{0}}{\pgfpoint{0}{-0.4}}
+        \pgfpathcurveto{\pgfpoint{0.3}{-0.125}}{\pgfpoint{0.3}{-0.125}}{\pgfpoint{1}{0}}
+    }{  %% simple triangle version
+        \pgfsetroundcap
+        \pgfpathmoveto{\pgfpoint{1}{0}}
+        \pgfpathlineto{\pgfpoint{0}{0.45}}
+        \pgfpathlineto{\pgfpoint{0}{-0.45}}
+        \pgfpathlineto{\pgfpoint{1}{0}}
+    }
+  }
+}
+
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Quad
+%%%%%%%%%%%
+%%%%%%%%%%%
+
+
 \newcommand{\ctikzext@@QuadBaseAnchors}[1]{
 	\savedanchor\centerpoint{
 		\pgfpoint{0}{0}
@@ -1071,18 +1465,18 @@
 		#1
 		\pgfpoint{\x{Tinnerright}}{\y{Tbottom}}
 	}
-	\anchor{near bottom left}{\nearbottomleft}
-	\savedanchor{\nearbottomleft}{%
+	\anchor{lower left}{\lowerleft}
+	\savedanchor{\lowerleft}{%
 		#1
 		\pgfpoint{\x{Tinnerleft}}{\y{Tinnerbottom}}
 	}
-	\anchor{near bottom center}{\nearbottomcenter}%
-	\savedanchor{\nearbottomcenter}{%
+	\anchor{lower center}{\lowercenter}%
+	\savedanchor{\lowercenter}{%
 		#1
 		\pgfpoint{0}{\y{Tinnerbottom}}
 	}
-	\anchor{near bottom right}{\nearbottomright}%
-	\savedanchor{\nearbottomright}{%
+	\anchor{lower right}{\lowerright}%
+	\savedanchor{\lowerright}{%
 		#1
 		\pgfpoint{\x{Tinnerright}}{\y{Tinnerbottom}}
 	}
@@ -1101,18 +1495,18 @@
 		#1
 		\pgfpoint{\x{Tinnerright}}{-\y{Tbottom}}
 	}
-	\anchor{near top left}{\neartopleft}%
-	\savedanchor{\neartopleft}{%
+	\anchor{upper left}{\upperleft}%
+	\savedanchor{\upperleft}{%
 		#1
 		\pgfpoint{\x{Tinnerleft}}{-\y{Tinnerbottom}}
 	}
-	\anchor{near top center}{\neartopcenter}%
-	\savedanchor{\neartopcenter}{%
+	\anchor{upper center}{\uppercenter}%
+	\savedanchor{\uppercenter}{%
 		#1
 		\pgfpoint{0}{-\y{Tinnerbottom}}
 	}
-	\anchor{near top right}{\neartopright}%
-	\savedanchor{\neartopright}{%
+	\anchor{upper right}{\upperright}%
+	\savedanchor{\upperright}{%
 		#1
 		\pgfpoint{\x{Tinnerright}}{-\y{Tinnerbottom}}
 	}
@@ -1179,11 +1573,7 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the Quadripole Base shape itself. Just a box with the external currents and voltages marked.
-%%%
-%%%%%%%%%%%%%%%%%%%
+
 \pgfdeclareshape{Quad shape}{
 %
   \ctikzext@@QuadBaseAnchors{\ctikzext@@QuadPoints}
@@ -1296,17 +1686,36 @@
 }
 
 
+\newcommand{\ctikzext@@plussignat}[3][\ctikzext@@ValueofQuadKey{plussign len}]{%
+  {
+			\pgftransformshift{\pgfpoint{#2}{#3}}
+      \pgftransformscale{#1}
+			\pgfpathmoveto{\pgfpoint{-1}{0}}
+			\pgfpathlineto{\pgfpoint{1}{0}}
+			\pgfpathmoveto{\pgfpoint{0}{-1}}
+			\pgfpathlineto{\pgfpoint{0}{1}}    
+  }
+}
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the Z Quadripole shape itself.
-%%%
-%%%%%%%%%%%%%%%%%%%
+\newcommand{\ctikzext@@minussignat}[3][\ctikzext@@ValueofQuadKey{minussign len}]{%
+  {
+			\pgftransformshift{\pgfpoint{#2}{#3}}
+      \pgftransformscale{#1}
+			\pgfpathmoveto{\pgfpoint{-1}{0}}
+			\pgfpathlineto{\pgfpoint{1}{0}}
+  }
+}
+
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% QuadZ
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{Quad Z shape}{
 	\inheritsavedanchors[from=Quad shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,2+,1-,2-, inner 1+, inner 2+, inner 1-, inner 2-}{%
 		\inheritanchor[from=Quad shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad shape]
@@ -1320,16 +1729,16 @@
 
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the Y Quadripole shape itself.
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% QuadY
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{Quad Y shape}{
 	\inheritsavedanchors[from=Quad shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,2+,1-,2-, inner 1+, inner 2+, inner 1-, inner 2-}{%
 		\inheritanchor[from=Quad shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad shape]
@@ -1342,16 +1751,16 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the H Quadripole shape itself.
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% QuadH
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{Quad H shape}{
 	\inheritsavedanchors[from=Quad shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,2+,1-,2-, inner 1+, inner 2+, inner 1-, inner 2-}{%
 		\inheritanchor[from=Quad shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad shape]
@@ -1363,16 +1772,16 @@
 	}
 }
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the G Quadripole shape itself.
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% QuadG
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{Quad G shape}{
 	\inheritsavedanchors[from=Quad shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,2+,1-,2-, inner 1+, inner 2+, inner 1-, inner 2-}{%
 		\inheritanchor[from=Quad shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=Quad shape]
@@ -1385,60 +1794,35 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the BB (Black Box) is just a 'single sided' Quad
-%%%
-%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Coordinates for a Black Box
-%%%
-%%%%%%%%%%%%%%%%%%%
-\newcommand{\ctikzext@@BBPoints}{
-	\tikzmath{
-		real \x,\y;
-    \x{center}=0;
-    \y{center}=0;
-		\x{right}=0 + \ctikzext@@ValueofQuadKey{half base width};
-		\y{top}=0 +( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
-		%
-		\x{left}=0 - \ctikzext@@ValueofQuadKey{half base width};
-		\y{bottom}=0 -( \ctikzext@@ValueofQuadKey{half base height} +  \ctikzext@@ValueofQuadKey{height ext});
-		%
-		\y{innerbottom}=0 - \ctikzext@@ValueofQuadKey{half base height};
-		\y{innertop}=0 + \ctikzext@@ValueofQuadKey{half base height};
-		%
-		\y{outerbottom}=\y{bottom} - 0.5*\ctikzext@@ValueofQuadKey{outer ext};
-		\y{outertop}=\y{top} + 0.5*\ctikzext@@ValueofQuadKey{outer ext};
-		%
-		\x{outerleft}=\x{left} - \ctikzext@@ValueofQuadKey{outer ext};
-		\x{innerleft}=\x{left} + \ctikzext@@ValueofQuadKey{inner ext};
-		%
-		\x{outerright}=\x{right} + \ctikzext@@ValueofQuadKey{outer ext};
-		\x{innerright}=\x{right} - \ctikzext@@ValueofQuadKey{inner ext};
-    %
-		\x{refC}=0 + 0.3*\ctikzext@@ValueofQuadKey{half base width};
-    \x{refB}=(\x{innerleft}+\x{refC})/2; %center point for Res shape
-    \x{refA}=(2*\x{innerleft}+\x{refC})/3; %'center' point for Y.Res shape
-		%
-		\y{Tbottom}=\y{bottom} + 0.65ex;
-		\x{Tinnerleft}=\x{innerleft} ;
-		\y{Tinnerbottom}=\y{innerbottom} + 0.95ex;
-		\x{Tinnerright}=\x{innerright};
-    \x{Tcenter}=0;
-    %
-		\y{Ttop}=\y{top} - 0.65ex;
-		\y{Tinnertop}=\y{innertop} - 0.95ex;
+
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Just a 'handy' macro for a parallel connection (needs a recent kernel, thought)
+%%%%%%%%%%%
+%%%%%%%%%%%
+\NewDocumentCommand{\QuadParConnect}{smmm}{
+	\ifstrequal{#4}{1}{\def\ctikzext@@Qsig{-}}{\def\ctikzext@@Qsig{}}
+  \IfBooleanTF{#1}{
+    \draw
+			(#3.#4+) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0) |- (#2.#4+)
+      (#3.#4-) to[out=90,in=90] ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext},0) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0)  |- (#2.#4-)
+      ;
+	}{
+		\draw 
+			(#3.#4-) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0) |- (#2.#4-)
+      (#2.#4+) to[out=90,in=90] ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext},0) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0)  |- (#3.#4+)
+    ;
 	}
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% the base shape for a 'black box' dipole. Just the box plus the external current/voltage marked
-%%%
-%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Black Box
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{BB shape}{
   \ctikzext@@QuadBaseAnchors{\ctikzext@@BBPoints}
 	\behindbackgroundpath{
@@ -1494,16 +1878,16 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% A 'Thevenin' circuit inside a black box.
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Thevenin
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{TheveninBB shape}{
 	\inheritsavedanchors[from=BB shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,1-, inner 1+, inner 1-}{%
 		\inheritanchor[from=BB shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=BB shape]
@@ -1515,16 +1899,16 @@
 }
 
 
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% A 'Norton' circuit inside a black box.
-%%%
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%% Norton
+%%%%%%%%%%%
+%%%%%%%%%%%
 \pgfdeclareshape{NortonBB shape}{
 	\inheritsavedanchors[from=BB shape]
 	\foreach \anchor in {north,center,west,east,south,north west,north east,south west, south east,
-	text,bottom left,bottom right,bottom center, near bottom left, near bottom right, near bottom center,
-	top left,top right,top center, near top left, near top right, near top center,
+	text,bottom left,bottom right,bottom center, lower left, lower right, lower center,
+	top left,top right,top center, upper left, upper right, upper center,
 	1+,1-, inner 1+, inner 1-}{%
 		\inheritanchor[from=BB shape]{\anchor}}
 	\inheritbehindbackgroundpath[from=BB shape]
@@ -1535,26 +1919,4 @@
 	}
 }
 
-
-
-%%%%%%%%%%%%%%%%%%%
-%%%
-%%% Just a 'handy' macro for a parallel connection (needs a recent kernel, thought)
-%%% Both Quadripoles are assumed to be a top each other (x center aligned, same width)
-%%%
-%%%%%%%%%%%%%%%%%%%
-\NewDocumentCommand{\QuadParConnect}{smmm}{
-	\ifstrequal{#4}{1}{\def\ctikzext@@Qsig{-}}{\def\ctikzext@@Qsig{}}
-  \IfBooleanTF{#1}{
-    \draw
-			(#3.#4+) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/4,0) |- (#2.#4+)
-      (#3.#4-) to[out=90,in=90] ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/4,0)  |- (#2.#4-)
-      ;
-	}{
-		\draw 
-			(#3.#4-) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/4,0) |- (#2.#4-)
-      (#2.#4+) to[out=90,in=90] ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/2,0) -- ++(\ctikzext@@Qsig\ctikzext@@ValueofQuadKey{outer ext}/4,0)  |- (#3.#4+)
-    ;
-	}
-}
 

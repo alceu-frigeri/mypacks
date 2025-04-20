@@ -1,0 +1,218 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass[a4paper,10pt]{article}
+%\usepackage[no alias,xtrakeys={X,D,H},oldkeys,in review]{tikzquests}
+\usepackage[times]{mypacks}
+%\usepackage{tikzquads}
+%\usepackage{EletronicaI}
+\usepackage{CircuitosI}
+%\usepackage{CircuitosII}
+
+%\usepackage{randomcircuits}
+%\usepackage{ifthen}
+
+\showcoordstrue
+
+%%\newcommand{\abc}[1]{how it goes:\ifthenelse{\equal{#1}{((a))}}{equal:.#1.}{not:.#1.}}
+%%\newcommand{\xxx}[1]{\yyy{(#1)}}
+%%\newcommand{\yyy}[1]{\zzz{#1}}
+%%\newcommand{\zzz}[1]{(#1)}
+%%
+
+\defNewRepository{new repo}
+
+
+\defQuestion[new repo]{Qb}{
+	\draw (0,0) \ncoord(A) to[R=\Ra] ++(0,2) \ncoord(B) -- ++(0,1.5) \ncoord(C) to[R=\Rb,i=$I_2(t)$] ++(3,0) \ncoord(I)
+	(B) to[L=\La] ++(3.5,0) \ncoord(D) to[open] (D |- A) to[V=\Vi] (D) to[C=\Ca] ++(2,0) \ncoord(E)
+	-- (E |- I) \ncoord(F) -- (I)
+	(F) -- (F |- A) 
+	(E) to[R=\Rd] ++(2,0) \ncoord(J) to[I=\Ii] (J |- A)
+	(F) to[R=\Rc] ++(2,0) \ncoord(G) -- (J)
+	(G) -- ++(2.5,0) \ncoord(H) to[R=\Re] (H |- A) -- (A)
+	 ;	
+}[That's just a sample, for testing. Some long comment/remark, or something alike. for reference.]
+
+%\SelectRepository{default}
+
+\defQuestion{QuadA}{
+	\draw (3,2)node[Thevenin,anchor=1+,I1=$I_{1x}$,invert](x){\small$Q_{th}$};
+	\draw[green](x.1+)--(x.1-);
+	\draw (x.1+)node[Norton,anchor=1+,I1=$I_{1y}$,outer marks,inner marks,thickness=1,control sources](b){\small$Q_N$};
+	\draw (x.1+)--(b.1+);
+	\draw[red] (x.1-)--(b.1+);
+	
+
+	\draw (x.south)node[Quad Z,anchor=north,red,height ext=20pt,I1=$I_{1x}$,outer marks,inner marks,tip type=bezier, alt](qz){};%,Z22=$5\Omega$,Z21=5](qz){\small$Q_1$};
+	
+		\draw (qz.2+)node[Quad Y,anchor=1+,green,I1=$I_{1x}$,tip type=bezier](qy){\small$Q_2$};
+		\draw (qz.south)node[Quad H,outer marks,anchor=north, blue, I1=$i_{b}$](qh){};%, H11=$h_{ie}$, H12=0, H22=$h_{oe}$, H21=$h_{fe}$, alt, V1=$V_{be}$, V2=$V_{ce}$, I2=$i_c$](qh){\small$Q_1$};
+	\draw (qh.2+)node[Quad G,anchor=1+,red,I1=$I_{1x}$](qg){\small$Q_2$};
+	%\draw (qz-v1.north) -- (qz-v2.north);
+	%half base width=\pgf@circ@Rlen
+	\draw (qh.south)node[Quad Z,anchor=north,invert,Z11=0,Z22=0,I1=$I_{1x}$](qqz){\small$Q_1$};
+	\draw (qqz.south)node[Quad Z,anchor=north,I1=$I_{1x}$,invert](qqqz){\small$Q_2$};
+%\draw (qqqz.north west) \ncoord(north west) (qqqz.north) \ncoord(north) (qqqz.north east) \ncoord(north east)
+%(qqqz.south west) \ncoord(south west)  (qqqz.south) \ncoord(south) (qqqz.south east) \ncoord(south east)
+%(qqqz.west) \ncoord(west) (qqqz.east) \ncoord(east) 
+%(qqqz.1+) \ncoord(1+)  (qqqz.1-) \ncoord(1-) 
+%(qqqz.2+) \ncoord(2+) (qqqz.2-) \ncoord(2-) 
+%(qqqz.inner 1+) \ncoord(inner 1+) (qqqz.inner 1-) \ncoord(inner 1-) 
+%(qqqz.inner 2+) \ncoord(inner 2+) (qqqz.inner 2-) \ncoord(inner 2-) 
+%(qqqz.bottom left) \ncoord(bottom left) (qqqz.bottom center) \ncoord(bottom center) (qqqz.bottom right) \ncoord(bottom right)
+%(qqqz.near bottom left) \ncoord(near bottom left) (qqqz.near bottom center) \ncoord(near bottom center) (qqqz.near bottom right) \ncoord(near bottom right)
+%(qqqz.top left) \ncoord(top left) (qqqz.top center) \ncoord(top center) (qqqz.top right) \ncoord(top right)
+%(qqqz.near top left) \ncoord(near top left) (qqqz.near top center) \ncoord(near top center) (qqqz.near top right) \ncoord(near top right)
+%;
+	%\draw (qqz.south) node[Quad Y,anchor=north](qqy){\small$Q_2$};
+
+	%\QuadParConnect*{qz}{qh}{1}
+	%\QuadParConnect{qy}{qg}{2}
+
+\QuadParConnect[left,up]{qz}{qh}
+\QuadParConnect[right,up]{qy}{qg}
+
+\QuadParConnect[left,down, swapped sides]{qqz}{qqqz}
+\QuadParConnect[right,down, swapped sides]{qqz}{qqqz}
+
+	%\draw (qz-Y1) -- ++(-1,0);
+}
+
+\defQuestion[new repo]{QuadB}{
+	\draw (0,0) node[Quad,draw](q){Q}
+	(q.center) node{$	\begin{matrix}
+	I_1 &=& V_1/12 - V_2/4\\
+	I_2 &=& V_1/6 + V_2/12
+	\end{matrix}
+$}
+	;
+}
+
+\defQuestion{QuadC}{
+	\draw (0,0) \ncoord(A) node[ocirc]{} -- ++(2,0) \ncoord(X) to[R=12] ++(0,1.5) \ncoord(Y) -- ++(-2,0) node[ocirc]{} \ncoord(B)
+	(X) -- ++(2,0) node[ocirc]{} \ncoord(C) 
+	(Y) -- ++(2,0) node[ocirc]{} ;
+%	\draw (0,0) node[Quad,anchor=inner 1-,half base width=2.2cm,base height=0.75cm](q){Q}
+%		;
+  \draw (A) node[Quad,anchor=inner 1-,inner x fit to={A}{C},y fit to={Y}{X}](q){Q}
+  ;
+}
+
+\defQuestion{QuadD}{
+	\draw (0,0) \ncoord(A)  -- ++(2,0) \ncoord(X) to[R=12] ++(0,1.5) \ncoord(Y) -- ++(-2,0)  \ncoord(B)
+	(X) -- ++(2,0)  \ncoord(C) 
+	(Y) -- ++(2,0) ;
+	\draw (0,0) node[Quad,anchor=inner 1-,half base width=2.2cm,half base height=0.75cm](q){Q}
+		;
+}
+
+\defQuestion{C.I:1a:Q5}{%
+  \draw (0,0) \ncoord(ref) to[I,l=\Ia] ++(0,4) \ncoord(A) to[R=\Ra] ++(2,0) \ncoord(B)
+  (B) to[V,l=\Va] ++(0,-2) \ncoord(C) node(nC){}
+  (B) -- ++(2,0) \ncoord(Bb) to[R=\Rb] ++(0,-2) \ncoord(Cc) -- (C) 
+  (Bb) to[R=\Rc] ++(2,0) \ncoord(D) node(nD){} to[R=\Rd] (nD |- nC) \ncoord(E) to[V,l=\Vb] (Cc)
+  (D) -- ++(2,0) \ncoord(Dd) node(nDd){} to[V,invert,l=\Vc]  (nDd |- nC) \ncoord(F) node(nF){} -- (E) 
+  (Dd) to[R=\Rf] ++(2,0) to[I,l=\Ib] ++(0,-4) \ncoord(G) node(nG){} -| (F)
+  (nG -| nF) to[I,l=\Ic] ++(-2,0) to[V,l=\Vd] ++(-2,0) to[R,l_=\Hg] ++(-2,0) \ncoord(H) -- (C)
+  (H) -- (ref) -- ++(0,-2) to[R=\Rh] ++(2,0) \ncoord(I) 
+  (I) -- ++(0,1) to[R,l_=\Ri] ++(2,0) -- ++(0,-1)
+  (I) -- ++(0,-1) to[R=\Rj] ++(2,0) -- ++(0,1) -| (G)
+  ;
+}
+\defQuestionAlias{c1a}{C.I:1a:Q5}
+
+
+\defQuestion{C.I:1a:Q6a}{%
+  \draw (0,0) \ncoord(ref) node(nref){} to[R,l_=\Rd] ++(6,0) \ncoord(D) node(nD){}
+  (ref) -- ++(0,-1)  to[R,l_=\Ra] ++(3,0) \ncoord(A) to[R,l_=\Rb] ++(3,0) \ncoord(B) node(nB){} -- (D)
+  (A) to[R=\Rc] ++(0,-2) \ncoord(C) node(nC){} -- (nC -| nref)
+  (C) -- (nC -| nB)
+  (ref) node[Quad,anchor=inner 1+,half base width=3.2cm,half base height=1.5cm,I1=$I_{a1}$,I2=$I_{a2}$,V1=$V_{a1}$,V2=$V_{a2}$](q1){Qa}
+ ;
+}
+
+
+\defQuestion{C.I:1a:Q6}{
+  \draw (0,0) \ncoord(ref) \pincoord(pref) node(nref){} 
+%  to[R,l_=\Ra] ++(3,0) \ncoord(A) to[R,l_=\Rb] ++(3,0) \ncoord(B) node(nB){}
+%  (A) to[R=\Rc] ++(0,-2) \ncoord(C) node(nC){} -- (nC -| nref)
+%  (C) -- (nC -| nB)
+  (ref) node[Quad,anchor=inner 1+,half base width=3.2cm,half base height=1cm,I1=$I_{a1}$,I2=$I_{a2}$,V1=$V_{a1}$,V2=$V_{a2}$](q1){Qa}
+  %(nC -| nref) ++(0,-2) 
+  (q1.inner 1-) ++(0,-2)
+%  node[Quad,anchor=inner 1+,half base width=3.2cm,base height=1cm](q2){Q2}
+  node[Quad H,anchor=inner 1+,half base width=3.2cm,half base height=1cm,H11=\Kaa,H12=\Kab,H21=\Kba,H22=\Kbb,I1=$I_{b1}$,I2=$I_{b2}$,V1=$V_{b1}$,V2=$V_{b2}$](q2){Qb}
+   (q1.1-) -- (q2.1+) (q1.2-) -- (q2.2+)
+  (q1.1+) -- ++(-1,0) \ncoord(QeqV1a) node(nQeqV1a){} -- ++(-1,0) \ncoord(D) node(nD){} to[R=\Rd] (nD |- q2.1-)
+  (D) -- ++(-1.5,0) \ncoord(E) node(nE){} to[R=\Re] ++(0,-2) to[V,l=\Va] (nE |- q2.1-)
+  (E) -- ++(-1.5,0) \ncoord(F) node(nF){} to[I,l=\Ia] (nF |- q2.1-) -- (q2.1-)
+  (q1.2+) -- ++(1,0) \ncoord(QeqV2a) node(nQeqV2a){} -- ++(1,0) \ncoord(G) node(nG){} to[R=\Rf] ++(0,-3) \ncoord(G2) to[R=\Rf] (nG |- q2.2-)
+  (G) -- ++(1.5,0) \ncoord(H) node(nH){} to[I,l=\Ib,invert] ++(0,-3) \ncoord(G1) to[R=\Rg] (nH |- q2.2-)
+  (H) -- ++(2,0) \ncoord(I) node(nI){} to[R=\Rh] ++(0,-3) \ncoord(H1) to[I,l=\Ib,invert] (nI |- q2.2-) -- (q2.2-)
+  (G1) -- (H1)
+  (G2) to[open,v=$V_z$] (G1)
+  (QeqV1a) to[open,v=\Vx] (nQeqV1a |- q2.1-) 
+  (QeqV2a) to[open,v=\Vy] (nQeqV2a |- q2.2-) 
+%  (q2.center) node{$	\begin{matrix}
+%	V_1 &=& h_{11}I_1 + h_{12}V_2\\
+%	I_2 &=& h_{21}I_1 + h_{22}V_2
+%	\end{matrix} $}
+
+%  (q1.1+) ++(-0.4,0.75) \ncoord(Ext1) 
+%  (q2.1-) ++(-0.4,-0.75) \ncoord(Ext2) 
+%  (q2.2-) ++(0.4,-0.75) \ncoord(Ext3)
+%  (q1.2+) ++(0.4,0.75) \ncoord(Ext4)
+%   (Ext1) -- (Ext2) -- (Ext3) -- (Ext4) -- (Ext1)
+%  (Ext2) node[anchor=north west](nExt2){Quadripolo Equivalente}
+  ;
+  \draw[dotted]
+  (q1.1+) ++(-0.4,0.75) \ncoord(Ext1) 
+  (q2.1-) ++(-0.4,-0.75) \ncoord(Ext2) 
+  (q2.2-) ++(0.4,-0.75) \ncoord(Ext3)
+  (q1.2+) ++(0.4,0.75) \ncoord(Ext4)
+   (Ext1) -- (Ext2) -- (Ext3) -- (Ext4) -- (Ext1)
+  (Ext2) node[anchor=north west](nExt2){Quadripolo Equivalente}
+  ;
+
+}
+
+
+%\showcoordsfalse
+
+
+\begin{document}
+\cab{classcode={ENG10044},
+    class={Eletrônica Fundamental I - B},
+    semester={2023/2},
+    exam={Exame}}
+%    exam={$1^{a}$ Verificação de Aproveitamento}}
+
+
+
+
+\ftikzQuestion(0.3){C.I:ext:Q3}
+
+
+\ftikzQuestion(0.3)[new repo]{Qb}
+
+
+\tikzQuestion(0.33)[new repo]{QuadB}
+
+\tikzQuestion(0.33){QuadA}
+
+\tikzQuestion(0.33){QuadD}
+%%%%
+%%%%
+%%%%
+\ftikzQuestion(0.25){C.I:1a:Q6a}[Va=10V]
+
+\ftikzQuestion(0.5){C.I:1a:Q6}[Va=10V]
+%%%%
+\newpage
+
+
+
+
+
+\end{document}

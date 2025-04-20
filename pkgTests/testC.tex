@@ -1,0 +1,57 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass{article}
+\RequirePackage{longtable}
+
+\ExplSyntaxOn
+
+\prop_new:N \l__test_prop
+\prop_set_from_keyval:Nn \l__test_prop
+  {
+    dimA = {15mm} ,
+    dimB = {15mm} ,
+    dimC = {15mm} ,
+  }
+\cs_new:Npn \UseConst #1 
+  {
+    \prop_item:Ne \l__test_prop {#1}
+  }
+\prop_new:N \l__form_prop
+
+\NewDocumentCommand{\SetForm}{mm}
+  {
+   \prop_gput:Nnn \l__form_prop {#1}{#2}
+  }
+
+\SetForm {test-table}
+  {
+    \begin{longtable}{p{\UseConst{dimA}}p{\UseConst{dimB}}p{\UseConst{dimC}}}
+      \hline
+      A & B & C \\
+      A2 & B2 & C2 \\
+      \hline
+    \end{longtable}
+  }
+
+\NewDocumentCommand{\UseForm}{m}{\prop_item:Nn \l__form_prop {#1} }
+  
+\begin{document}
+
+\prop_get:NnNT \l__form_prop {test-table} \l_tmpa_tl
+  {
+    \l_tmpa_tl
+  }
+
+\UseForm{test-table}
+
+
+\UseConst{dimA}
+
+\UseConst{dimB}
+
+\UseConst{dimC}
+
+\ExplSyntaxOff
+
+\end{document}

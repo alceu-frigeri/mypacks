@@ -22,8 +22,6 @@ Please be ready to provide an example code showing the bug, if any.
 
 Please do not use the issue page for generic help on how to use the package.
 
-* git: https://github.com/alceu-frigeri/starray
-
 -------------
 Copyright 2023-present by Alceu Frigeri
 

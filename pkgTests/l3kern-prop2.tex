@@ -1,0 +1,55 @@
+% !TEX program = pdflatex
+% !TEX ext =  --interaction=nonstopmode --enable-etex --enable-write18
+% !BIB program = none
+\documentclass{article}
+
+\ExplSyntaxOn
+
+
+
+%%%%%%%
+%%%%%%% This is a minimal working example
+
+\prop_new:N \l__check_prop
+
+\prop_new:N \l__test_prop
+
+\prop_put_from_keyval:Nn \l__test_prop
+  {
+    chkmarked = ,      %%% Though to be a placeholder
+  }
+
+\prop_put:NnV \l__test_prop {chekmarked} \c_empty_prop  %% <== Should be chkmarked
+
+\cs_new_protected:Npn \__get_prop:nnN #1#2#3
+  {
+    \prop_get:cnNF {#1}{#2}#3 {\tl_set:Nn #3 {}}  %% The final nail in the coffin, if the key doesn't exist
+  }
+
+
+%%% Not needed for this MWE
+\cs_new_protected:Npn \__put_prop:nnn #1#2#3
+  {
+    \prop_put:cnn {#1}{#2}{#3}
+  }
+\cs_generate_variant:Nn \__put_prop:nnn {nnV}
+
+
+\NewDocumentCommand{\Tcheckdef}{mmm}{
+  \__get_prop:nnN {l__test_prop}{chkmarked}\l__check_prop  
+%  \prop_show:N \l__check_prop   %% this 'easily' recognizes it
+  \prop_gput:Nnn \l__check_prop {#1}{some:~\ #3}
+  \__put_prop:nnV {l__test_prop}{chkmarked}\l__check_prop
+}
+
+
+
+\ExplSyntaxOff
+
+\Tcheckdef{L1C2}{OK}{Aval.}
+
+
+\begin{document}
+
+so it is...
+\end{document}

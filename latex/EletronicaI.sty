@@ -20,57 +20,257 @@
 \ProvidesPackage{EletronicaI}%
         [2016/10/15 MyCirc  drawing package version 0.1]
 
+\defQuestion{E.I:BandWidth:01}{%
+  \draw 
+  (0,0) \ncoord(G) to[V=\Vi,invert] ++(0,2) to[R=\Za,european] ++(2,0) \ncoord(X) -- ++(0,-1) node[op amp,anchor=-](opamp){}
+  (opamp.out) -- ++(1,0) \ncoord(Y)  to[R,l_=\Zc,european] ++(0,-2) \ncoord(Z)
+  (X) to[R=\Zb,european] ++(2,0) -| (Y) 
+  (Z) -| (opamp.+)
+  (Z) -| (G)
+  (Y) -- ++(1.2,0) node[ocirc]{} \ncoord(Ya)
+  (Z) -- ++(1.2,0) node[ocirc]{} \ncoord(Za)
+  (Ya) to[open,v=\Vo] (Za)
+  ;
+}
 
-
-\defQuestionAlias{QBAa}{E.I:1a:Q1}
-\defQuestion{E.I:1a:Q1}{%
-		\draw
-		(0,0) node[pnp,anchor=B](pnp){}
-		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=$V_o$] ++(0,-2) node(nG){} \coord(G)
-		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-		(pnp.B) -- ++(-0.5,0) node(nB){} \coord(B) to[R=\Rc] (nB |- nG)
-		(B) to[zD] (nX -| nB)
-		(G) -- ++(-3,0) node(nZ){} to[V=\Vi] (nZ |- nX) -- (X)
-
-		;
+\defQuestion{E.I:BandWidth:02a}{%
+  \draw 
+  (0,2) \ncoord(Aa) to[R,l_=\Zb,european] ++(2,0) \ncoord(Ba)
+  (0,0) \ncoord(Ab) -- ++(2,0) \ncoord(Bb)
+  
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (Aa) node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to={Aa}{Ab}](Qa){}
+  ;
 }
 
 
-\defQuestionAlias{QBAaa}{E.I:1a:Q1a}
+\defQuestion{E.I:BandWidth:02b}{%
+  \draw 
+  (0,2) \ncoord(Aa)
+  (0,0) \ncoord(Ab)
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (0,0) node[Quad Y,y fit to={Aa}{Ab},european,Y11=\Yb,Y22=\Yb,Y12=-\Yb,Y21=-\Yb](Qa){}
+  ;
+}
+
+\defQuestion{E.I:BandWidth:03a}{%
+  \draw 
+  (0,2) \ncoord(Aa)
+  (0,0) \ncoord(Ab)
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (0,0) node[op amp,anchor=-](opamp){}
+  ;
+}
+
+\defQuestion{E.I:BandWidth:03b}{%
+  \draw 
+  (0,2) \ncoord(Aa)
+  (0,0) \ncoord(Ab)
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (0,0) node[Quad Z,y fit to={Aa}{Ab},european,alt,raw sources,V1=\Vx,V2=\Vo,Z11=\Zi,Z22=\Zo,Z12=0,Z21=-Ad(s)\Vx](Qa){}
+  ;
+}
+
+\defQuestion{E.I:BandWidth:03bb}{%
+  \draw 
+  (0,2) \ncoord(Aa)
+  (0,0) \ncoord(Ab)
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (0,0) node[Quad G,y fit to={Aa}{Ab},european,alt,V1=\Vx,V2=\Vo,G11=\Zi,G22=\Zo,G12=0,G21=-Ad(s)](Qa){}
+  ;
+}
+
+\defQuestion{E.I:BandWidth:03c}{%
+  \draw 
+  (0,2) \ncoord(Aa)
+  (0,0) \ncoord(Ab)
+  %node[Quad,anchor=inner 1+,inner x fit to={Aa}{Ba},y fit to=(Aa)(Ab)](Qa){}
+  (0,0) node[Quad Y,y fit to={Aa}{Ab},european,V1=\Vx,V2=\Vo,Y11=\Yi,Y22=\Yo,Y12=0,Y21=Ad(s)\Yo](Qa){}
+  ;
+}
+
+\defQuestion{E.I:BandWidth:01b}{%
+  \draw 
+  (0,0) \ncoord(G) to[I,l=\Ii] ++(0,2) \ncoord(X)
+  (G)  -- ++(1.5,0) \ncoord(Ga) to[R=\Ya,european] ++(0,2)
+  (Ga) -- ++(1.5,0) \ncoord(Gb) to[R=\Yi,european] ++(0,2)
+  (Gb) -- ++(1.5,0) \ncoord(Gc) to[R=\Yb,european] ++(0,2)
+  (Gc) -- ++(2.5,0) \ncoord(Gd) to[I,l=\Ia,invert] ++(0,2) \ncoord(Xa)-- (X)
+  (Gd) -- ++(1,0) \ncoord(Gda) node[ocirc]{}
+  (Xa) -- ++(1,0) \ncoord(Xaa) node[ocirc]{}
+  (Xaa) to[open,v=\Va] (Gda)
+  
+  
+  (Gd) -- ++(4.5,0) \ncoord(Ge) to[I,l=\Ib,invert] ++(0,2) \ncoord(Y)
+  (Ge) -- ++(1.5,0) \ncoord(Gf) to[R=\Yb,european] ++(0,2)
+  (Gf) -- ++(1.5,0) \ncoord(Gg) to[R=\Yo,european] ++(0,2)
+  (Gg) -- ++(3,0) \ncoord(Gh) to[I,l=\Ic,invert] ++(0,2)
+  (Gh) -- ++(1.5,0) \ncoord(Gi) to[R=\Yc,european] ++(0,2) -- (Y)
+
+  (Ge) -- ++(-2.5,0) \ncoord(Gea) node[ocirc]{}
+  (Y)  -- ++(-2.5,0) \ncoord(Yaa) node[ocirc]{}
+  (Yaa) to[open,v=\Vb] (Gea)
+  
+  ;
+}
+
+\defQuestion{E.I:BandWidth:04}{%
+  \draw (0,0) to[I,invert,l_=\Ia] ++(0,2)
+  (0,0) -- ++(-1,0) \ncoord(X) node[ocirc]{}
+  (0,2) -- ++(-1,0) \ncoord(Y) node[ocirc]{}
+  (Y) to[open,v=\Va] (X)
+  ;
+}
+
+
+\defQuestion{E.I:EET:01}{%
+  \draw[rotate=45] 
+    (0,0) ++(-2,0) ++(0,0.5)  node[ocirc](ui1+){} -- ++(0.5,0) \ncoord(Ui1+)
+    (0,0) ++(-2,0) ++(0,-0.5) node[ocirc](ui1-){} -- ++(0.5,0) \ncoord(Ui1-)
+    (ui1+) ++(-0.3,-0.5) node[red](){\Va};
+    \draw[->,rotate=45,red] (ui1+) ++(0,-0.5) -- ++(0.35,0);
+    
+  \draw[rotate=-45] 
+    (0,0) ++(-2,0) ++(0,0.5)  node[ocirc](ui2+){} -- ++(0.5,0) \ncoord(Ui2+)
+    (0,0) ++(-2,0) ++(0,-0.5) node[ocirc](ui2-){} -- ++(0.5,0) \ncoord(Ui2-)
+    (ui2+) ++(-0.3,-0.5) node[red](){\Vb};
+    \draw[->,rotate=-45,red] (ui2+) ++(0,-0.5) -- ++(0.35,0);
+
+  \draw[rotate=45] 
+    (0,0) ++(2,0) ++(0,0.5)  node[ocirc](uo1+){} -- ++(-0.5,0) \ncoord(Uo1+)
+    (0,0) ++(2,0) ++(0,-0.5) node[ocirc](uo1-){} -- ++(-0.5,0) \ncoord(Uo1-)
+    (uo1+) ++(0.3,-0.5) node[blue](){\Vc};
+    \draw[<-,rotate=45,blue] (uo1+) ++(0,-0.5) -- ++(-0.35,0);
+
+  \draw[rotate=-45] 
+    (0,0) ++(2,0) ++(0,0.5)  node[ocirc](uo2+){} -- ++(-0.5,0) \ncoord(Uo2+)
+    (0,0) ++(2,0) ++(0,-0.5) node[ocirc](uo2-){} -- ++(-0.5,0) \ncoord(Uo2-)
+    (uo2+) ++(0.3,-0.5) node[blue](){\Vd};
+    \draw[<-,rotate=-45,blue] (uo2+) ++(0,-0.5) -- ++(-0.35,0);
+    
+%  \draw decorate[decoration={snake}] {(0,0) circle (2.58)};
+  \draw [decoration={snake},line join=round] 
+    (Ui1+) edge[decorate,bend left=45] (Ui2-);
+  \draw [decoration={snake},line join=round] 
+    (Ui2-) edge[decorate] (Ui2+);
+  \draw [decoration={snake},line join=round] 
+    (Ui2+) edge[decorate,bend left=45] (Uo1+);
+  \draw [decoration={snake},line join=round] 
+    (Uo1+) edge[decorate] (Uo1-);
+  \draw [decoration={snake},line join=round] 
+    (Uo1-) edge[decorate,bend left=45] (Uo2+);
+  \draw [decoration={snake},line join=round] 
+    (Uo2+) edge[decorate] (Uo2-);
+  \draw [decoration={snake},line join=round] 
+    (Uo2-) edge[decorate,bend left=45] (Ui1-);
+  \draw [decoration={snake},line join=round] 
+    (Ui1-) edge[decorate] (Ui1+);
+    
+  \draw (0,0) node{\Ta}; 
+}
+
+\defQuestion{E.I:EET:02}{%
+  \draw[rotate=45] 
+    (0,0) ++(-2,0) ++(0,0.5)  node[ocirc](ui1+){} -- ++(0.5,0) \ncoord(Ui1+)
+    (0,0) ++(-2,0) ++(0,-0.5) node[ocirc](ui1-){} -- ++(0.5,0) \ncoord(Ui1-)
+    (ui1+) ++(-0.3,-0.5) node[red](){\Va};
+    \draw[->,rotate=45,red] (ui1+) ++(0,-0.5) -- ++(0.35,0);
+    
+  \draw[rotate=-45] 
+    (0,0) ++(-2,0) ++(0,0.5)  node[ocirc](ui2+){} -- ++(0.5,0) \ncoord(Ui2+)
+    (0,0) ++(-2,0) ++(0,-0.5) node[ocirc](ui2-){} -- ++(0.5,0) \ncoord(Ui2-)
+    (ui2+) ++(-0.3,-0.33) node[blue](){\Vd}
+    (ui2-) ++(-0.3,0.33) node[red](){\Vb}
+    ;
+    \draw[->,rotate=-45,red] (ui2-) ++(0,0.2) -- ++(0.35,0);
+    \draw[<-,rotate=-45,blue] (ui2+) ++(0,-0.2) -- ++(0.35,0);
+    
+
+  \draw[rotate=45] 
+    (0,0) ++(2,0) ++(0,0.5)  node[ocirc](uo1+){} -- ++(-0.5,0) \ncoord(Uo1+)
+    (0,0) ++(2,0) ++(0,-0.5) node[ocirc](uo1-){} -- ++(-0.5,0) \ncoord(Uo1-)
+    (uo1+) ++(0.3,-0.5) node[blue](){\Vc};
+    \draw[<-,rotate=45,blue] (uo1+) ++(0,-0.5) -- ++(-0.35,0);
+
+  \draw[rotate=-45] 
+    (0,0) ++(2,0) ++(0,0.5)  node(uo2+){} ++(-0.5,0) \ncoord(Uo2+)
+    (0,0) ++(2,0) ++(0,-0.5) node(uo2-){} ++(-0.5,0) \ncoord(Uo2-)
+    %(uo2+) ++(0,-0.5) node(){\Vd}
+    ;
+    
+%  \draw decorate[decoration={snake}] {(0,0) circle (2.58)};
+  \draw [decoration={snake},line join=round] 
+    (Ui1+) edge[decorate,bend left=45] (Ui2-);
+  \draw [decoration={snake},line join=round] 
+    (Ui2-) edge[decorate] (Ui2+);
+  \draw [decoration={snake},line join=round] 
+    (Ui2+) edge[decorate,bend left=45] (Uo1+);
+  \draw [decoration={snake},line join=round] 
+    (Uo1+) edge[decorate] (Uo1-);
+  \draw [decoration={snake},line join=round] 
+    (Uo1-) edge[decorate,bend left=45] (Uo2+);
+  \draw [decoration={snake},line join=round] 
+    (Uo2+) edge[decorate] (Uo2-);
+  \draw [decoration={snake},line join=round] 
+    (Uo2-) edge[decorate,bend left=45] (Ui1-);
+  \draw [decoration={snake},line join=round] 
+    (Ui1-) edge[decorate] (Ui1+);
+    
+  \draw (0,0) node{\Ta};
+  
+%\draw decorate[decoration={snake}] {(0,0) ellipse (2 and 1)};
+%\draw (sneak) node(NN){center};
+}
+
+
+\defQuestion{E.I:1a:Q1}{%
+		\draw
+		(0,0) node[pnp,anchor=B](pnp){}
+		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=$V_o$] ++(0,-2) node(nG){} \ncoord(G)
+		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \ncoord(X)
+		(pnp.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[R=\Rc] (nB |- nG)
+		(B) to[zD] (nX -| nB)
+		(G) -- ++(-3,0) node(nZ){} to[V=\Vi] (nZ |- nX) -- (X)
+		;
+}
+\defQuestionAlias{QBAa}{E.I:1a:Q1}
+
+
 \defQuestion{E.I:1a:Q1a}{%
 		\draw
 		(0,0) node[pnp,anchor=B](pnp){}
-		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=\Vo,f>^=\Io] ++(0,-2) node(nG){} \coord(G)
-		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-		(pnp.B) -- ++(-0.5,0) node(nB){} \coord(B) to[R,l_=\Rc] (nB |- nG)
+		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=\Vo,f>^=\Io] ++(0,-2) node(nG){} \ncoord(G)
+		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \ncoord(X)
+		(pnp.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[R,l_=\Rc] (nB |- nG)
 		(B) to[zD] (nX -| nB)
 		(G) -- ++(-4,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
 		;
 }
+\defQuestionAlias{QBAaa}{E.I:1a:Q1a}
 
-\defQuestionAlias{QBAab}{E.I:1a:Q1b}
 \defQuestion{E.I:1a:Q1b}{%
 		\draw
 		(0,0) node[pnp,anchor=B](pnp){}
-		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=$V_o$,i=$I_o$] ++(0,-2) node(nG){} \coord(G)
-		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-		(pnp.B) -- ++(-0.5,0) node(nB){} \coord(B) to[R=\Rc] (nB |- nG)
+		(pnp.C) -- ++(0.5,0) to[R=\Ra,v=$V_o$,i=$I_o$] ++(0,-2) node(nG){} \ncoord(G)
+		(pnp.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \ncoord(X)
+		(pnp.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[R=\Rc] (nB |- nG)
 		(B) to[R=\Rd] (nX -| nB)
 		(G) -- ++(-4,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
 		;
 }
+\defQuestionAlias{QBAab}{E.I:1a:Q1b}
 
 \defQuestion{E.I:1a:Q1c}{%
 		\draw
 		(0,0) node[npn,anchor=B](npn){T1}
-		(npn.E) to[R=\Rc] ++(0,-2) node(nG){} \coord(G)
+		(npn.E) to[R=\Rc] ++(0,-2) node(nG){} \ncoord(G)
 		(npn.C) -- ++(1.5,0) node[pnp,anchor=B](pnp){T2}
 		(pnp.C)  to[R=\Ra,v=$V_o$,i=$I_o$] (pnp.C |- nG) -- (G)
-		(pnp.E)   ++(0,2) node(nX){} \coord(X) to[R=\Rb,v=\Vy] (pnp.E)
+		(pnp.E)   ++(0,2) node(nX){} \ncoord(X) to[R=\Rb,v=\Vy] (pnp.E)
 
 		(npn.C |- nX) to[R,l=\Rd] (npn.C)
 
-		(npn.B) -- ++(-0.5,0) node(nB){} \coord(B) to[zD,invert] (nB |- nG)
+		(npn.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[zD,invert] (nB |- nG)
 		(B) to[R=\Re] (nX -| nB)
 		(G) -- ++(-3,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
 		;
@@ -79,16 +279,34 @@
 \defQuestion{E.I:1a:Q1d}{%
 		\draw
 		(0,0) node[pnp,anchor=B](pnp){T1}
-		(pnp.E) to[R=\Rc] ++(0,+2) node(nX){} \coord(X)
+		(pnp.E) to[R=\Rc] ++(0,+2) node(nX){} \ncoord(X)
 		(pnp.C) -- ++(+1.5,0) node[npn,anchor=B](npn){T2}
 		(X) -- (npn.C |- nX)   to[R=\Ra,v=$V_o$,i=$I_o$] (npn.C)
-		(npn.E)   to[R=\Rb,v=\Vy] ++(0,-2) node(nG){} \coord(G)
+		(npn.E)   to[R=\Rb,v=\Vy] ++(0,-2) node(nG){} \ncoord(G)
 
 		(pnp.C) to[zD,invert] (pnp.C |- nG)
 
-		(pnp.B) -- ++(-0.5,0) node(nB){} \coord(B) to[zD] (nB |- nX)
-		(B) to[R=\Re] (nG -| nB) \coord(Y)
+		(pnp.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[zD] (nB |- nX)
+		(B) to[R=\Re] (nG -| nB) \ncoord(Y)
 		(G) -- (Y) -- ++(-2,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
+		;
+}
+
+
+\defQuestion{E.I:1a:Q1da}{%
+		\draw
+		(0,0) node[pnp,anchor=B](pnp){T1}
+		(pnp.E) to[R=\Rc] ++(0,+2) node(nX){} \ncoord(X)
+		(pnp.C) -- ++(+1,0) node[ocirc](Oa){}
+%		(X) -- (npn.C |- nX)   to[R=\Ra,v=$V_o$,i=$I_o$] (npn.C)
+%		(npn.E)   to[R=\Rb,v=\Vy] ++(0,-2) node(nG){} \ncoord(G)
+
+		(pnp.C) to[zD,invert,i=$I_o$] ++(0,-2) \ncoord(G) -- ++(+1,0) node[ocirc](Ob){}
+
+		(pnp.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[zD] (nB |- nX)
+		(B) to[R=\Re] (nG -| nB) \ncoord(Y)
+		(G) -- (Y) -- ++(-2,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
+        (Oa) to[open,v=$V_o$] (Ob)
 		;
 }
 
@@ -96,11 +314,11 @@
 \defQuestion{E.I:1a:Q1e}{%
 		\draw
 		(0,0) node[npn,anchor=B](npn){T1}
-		(npn.E) to[R,l_=\Rc] ++(0,-2) node(nG){} \coord(G)
-    (npn.C) ++(0,2) node(nX){} \coord(X) to[R,l_=\Ra, v^=\Vo, f_=\Io] (npn.C)
+		(npn.E) to[R,l_=\Rc] ++(0,-2) node(nG){} \ncoord(G)
+    (npn.C) ++(0,2) node(nX){} \ncoord(X) to[R,l_=\Ra, v^=\Vo, f_=\Io] (npn.C)
 
 
-		(npn.B) -- ++(-0.5,0) node(nB){} \coord(B) to[zD,invert] (nB |- nG)
+		(npn.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[zD,invert] (nB |- nG)
 		(B) to[R=\Rb] (nX -| nB)
 		(G) -- ++(-3,0) node(nZ){} to[V=\Vi,invert] (nZ |- nX) -- (X)
 
@@ -111,15 +329,15 @@
 \defQuestion{E.I:1a:Q1f}{%
 		\draw
 		(0,0) node[npn,anchor=B](npn){T1}
-		(npn.E) to[R=\Rc] ++(0,-2) node(nX){} \coord(X)
+		(npn.E) to[R=\Rc] ++(0,-2) node(nX){} \ncoord(X)
 		(npn.C) -- ++(+1.5,0) node[pnp,anchor=B](pnp){T2}
 		(pnp.C)    to[R=\Ra,v=$V_o$,i=$I_o$] (pnp.C |- nX) -- (X)
-		(pnp.E)   to[R=\Rb] ++(0,2) node(nG){} \coord(G)
+		(pnp.E)   to[R=\Rb] ++(0,2) node(nG){} \ncoord(G)
 
 		(npn.C) to[zD] (npn.C |- nG)
 
-		(npn.B) -- ++(-0.5,0) node(nB){} \coord(B) to[zD,invert] (nB |- nX)
-		(B) to[R=\Rd] (nG -| nB) \coord(Y)
+		(npn.B) -- ++(-0.5,0) node(nB){} \ncoord(B) to[zD,invert] (nB |- nX)
+		(B) to[R=\Rd] (nG -| nB) \ncoord(Y)
 		(G) -- (Y) -- ++(-2,0) node(nZ){} to[V_=\Vi] (nZ |- nX) -- (X)
 		;
 }
@@ -128,36 +346,36 @@
 
 
 
-\defQuestionAlias{QBAb}{E.I:1a:Q2}
 \defQuestion{E.I:1a:Q2}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi] ++(0,2) to[R=\Ra] ++(2,0) \coord(X) to[open] ++(2,0)  node(nA){} \coord(A) to[R=\Rb] (nA |- gnd)
-		(A) to[R=\Rc] ++(2,0)  \coord(B) node(nB){} to[zD] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (ref)
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(X) to[open] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb] (nA |- gnd)
+		(A) to[R=\Rc] ++(2,0)  \ncoord(B) node(nB){} to[zD] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (ref)
 		(A) to[zD] (X)
 		(A) -- ++(0,1) node(nD){} to[zD] (nD -| nC) -- (C)
 		;
 
 }
+\defQuestionAlias{QBAb}{E.I:1a:Q2}
 
 
-\defQuestionAlias{QBAba}{E.I:1a:Q2a}
 \defQuestion{E.I:1a:Q2a}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(X) to[open] ++(2,0)  node(nA){} \coord(A) to[R=\Rb] (nA |- gnd)
-		(A) to[R=\Rc] ++(2,0)  \coord(B) node(nB){} to[zD,invert] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (ref)
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(X) to[open] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb] (nA |- gnd)
+		(A) to[R=\Rc] ++(2,0)  \ncoord(B) node(nB){} to[zD,invert] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (ref)
 		(A) to[zD] (X)
 		(A) -- ++(0,1) node(nD){} to[zD] (nD -| nC) -- (C)
 		;
 
 }
+\defQuestionAlias{QBAba}{E.I:1a:Q2a}
 
 \defQuestion{E.I:1a:Q2b}{%
 			\draw
-		(0,0) node(gnd){}  \coord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da] ++(2,0)  node(nA){} \coord(A) to[R=\Rb] (nA |- gnd)
-		(A) to[R=\Rc] ++(2,0)  \coord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+		(0,0) node(gnd){}  \ncoord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb] (nA |- gnd)
+		(A) to[R=\Rc] ++(2,0)  \ncoord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
 		(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
 		%(A) to[zD] (X)
 		(A) -- ++(0,2) node(nD){} to[D=\Db] (nD -| nC) -- (C)
@@ -167,9 +385,9 @@
 
 \defQuestion{E.I:1a:Q2c}{%
 			\draw
-		(0,0) node(gnd){}  \coord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da] ++(2,0)  node(nA){} \coord(A) to[R=\Rb] (nA |- gnd)
-		(A) to[R=\Rc] ++(2,0)  \coord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+		(0,0) node(gnd){}  \ncoord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb] (nA |- gnd)
+		(A) to[R=\Rc] ++(2,0)  \ncoord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
 		%(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
 		%(A) to[zD] (X)
 		(A) -- ++(0,2) node(nD){} to[D=\Db] (nD -| nC) -- (C)
@@ -179,9 +397,9 @@
 
 \defQuestion{E.I:1a:Q2d}{%
 			\draw
-		(0,0) node(gnd){}  \coord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da,invert] ++(2,0)  node(nA){} \coord(A) to[R=\Rb] (nA |- gnd)
-		(A) to[R=\Rc] ++(2,0)  \coord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+		(0,0) node(gnd){}  \ncoord(gnd) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) to[D=\Da,invert] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb] (nA |- gnd)
+		(A) to[R=\Rc] ++(2,0)  \ncoord(B) node(nB){} to[zD=\Dc,invert] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
 		(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
 		%(A) to[zD] (X)
 		(A) -- ++(0,2) node(nD){} to[D=\Db,invert] (nD -| nC) -- (C)
@@ -192,10 +410,10 @@
 
 \defQuestion{E.I:1a:Q2e}{%
 			\draw
-		(0,0) node(gnd){}  \coord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(Ab) to[D=\Da] ++(2,0)  node(nA){} \coord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
-		(A) -- ++(2,0) node(nAa){} \coord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
-		(Aa) to[D=\Dc,invert] ++(2,0)  \coord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
-		(B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+		(0,0) node(gnd){}  \ncoord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(Ab) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
+		(A) -- ++(2,0) node(nAa){} \ncoord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
+		(Aa) to[D=\Dc,invert] ++(2,0)  \ncoord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
+		(B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
 		%(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
 		(C) to[V=\Vb] (nC |- gnd) -- (gnd)
 		%(A) to[zD] (X)
@@ -206,10 +424,10 @@
 
 \defQuestion{E.I:1a:Q2f}{%
     \draw
-    (0,0) node(gnd){}  \coord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(Ab) to[D=\Da] ++(2,0)  node(nA){} \coord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
-    (A) -- ++(2,0) node(nAa){} \coord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
-    (Aa) to[D=\Dc,invert] ++(2,0)  \coord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
-    (B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+    (0,0) node(gnd){}  \ncoord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(Ab) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
+    (A) -- ++(2,0) node(nAa){} \ncoord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
+    (Aa) to[D=\Dc,invert] ++(2,0)  \ncoord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
+    (B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
     %(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
     (C) to[V=\Vb] (nC |- gnd) -- (gnd)
     ;
@@ -219,10 +437,10 @@
 
 \defQuestion{E.I:1a:Q4f}{%
     \draw
-    (0,0) node(gnd){}  \coord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(Ab) to[D=\Da] ++(2,0)  node(nA){} \coord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
-    (A) -- ++(2,0) node(nAa){} \coord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
-    (Aa) to[D=\Dc,invert] ++(2,0)  \coord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
-    (B) to[R=\Rd] ++(2,0) \coord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+    (0,0) node(gnd){}  \ncoord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(Ab) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
+    (A) -- ++(2,0) node(nAa){} \ncoord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
+    (Aa) to[D=\Dc,invert] ++(2,0)  \ncoord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
+    (B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
     %(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
     (C) to[V=\Vb] (nC |- gnd) -- (gnd)
     (Aa) -- ++(0,2) node(nAA){} to[R=\Rc] (nAA -| nC) -- (C)
@@ -231,43 +449,69 @@
 }
 
 
-\defQuestionAlias{QBAd}{E.I:1a:Q4}
+\defQuestion{E.I:1a:Q4g}{%
+    \draw
+    (0,0) node(gnd){}  \ncoord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(Ab) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
+    (A) -- ++(2,0) node(nAa){} \ncoord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
+    (Aa) to[D=\Dc] ++(2,0)  \ncoord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
+    (B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+    %(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
+    (C) to[V=\Vb] (nC |- gnd) -- (gnd)
+    %(Aa) -- ++(0,2) node(nAA){} to[R=\Rc] (nAA -| nC) -- (C)
+    ;
+
+}
+
+\defQuestion{E.I:1a:Q4ga}{%
+    \draw
+    (0,0) node(gnd){}  \ncoord(gnd) to[V=\Va,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(Ab) to[D=\Da] ++(2,0)  node(nA){} \ncoord(A) to[R=\Rb,v=$V_o$] (nA |- gnd)
+    (A) -- ++(2,0) node(nAa){} \ncoord(Aa) to[zD=\Dd,invert] (nAa |- gnd)
+    (Aa) to[D=\Dc,invert] ++(2,0)  \ncoord(B) node(nB){} %to[zD=\Dc,invert] (nB |- gnd)
+    (B) to[R=\Rd] ++(2,0) \ncoord(C) node(nC){} %node[ocirc]{} to[open,v=$V_o$] (nC |- gnd)  node[ocirc]{}-- (gnd)
+    %(B) -- ++(0,1) node(nD){} to[zD=\Dd] (nD -| nC) -- (C)
+    (C) to[V=\Vb,invert] (nC |- gnd) -- (gnd)
+    %(Aa) -- ++(0,2) node(nAA){} to[R=\Rc] (nAA -| nC) -- (C)
+    ;
+
+}
+
 \defQuestion{E.I:1a:Q4}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,4) to[R=\Ra] ++(2,0) \coord(X)
-		to[R=\Rb] ++(2,0)  \coord(Y)
-		to[R=\Rc] ++(2,0)  \coord(Z) node(nZ){}
-		to[V=\Vb,invert] (nZ |- gnd)  \coord(A) -- (ref)
-		(X) to[D,l=\Da] ++(0,-2) \coord(B)
-		(Y) to[D,invert,l=\Db] ++(0,-2) \coord(C) -- (B)
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,4) to[R=\Ra] ++(2,0) \ncoord(X)
+		to[R=\Rb] ++(2,0)  \ncoord(Y)
+		to[R=\Rc] ++(2,0)  \ncoord(Z) node(nZ){}
+		to[V=\Vb,invert] (nZ |- gnd)  \ncoord(A) -- (ref)
+		(X) to[D,l=\Da] ++(0,-2) \ncoord(B)
+		(Y) to[D,invert,l=\Db] ++(0,-2) \ncoord(C) -- (B)
 		++(1,0) node(nD){} to[R=\Rd,v=$V_o$] (nD |- gnd)
 
 		;
 
 }
+\defQuestionAlias{QBAd}{E.I:1a:Q4}
 
 
-\defQuestionAlias{QBAdb}{E.I:1a:Q4b}
 \defQuestion{E.I:1a:Q4b}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(X) node(nX){}
-		to[D,l=\Da] ++(2,0)  \coord(Y) node(nY){}
-		to[D,l=\Db] ++(2,0)  \coord(Z) node(nZ){}
-		to[R=\Rc] ++(2,0) \coord(W) node(nW){}
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(X) node(nX){}
+		to[D,l=\Da] ++(2,0)  \ncoord(Y) node(nY){}
+		to[D,l=\Db] ++(2,0)  \ncoord(Z) node(nZ){}
+		to[R=\Rc] ++(2,0) \ncoord(W) node(nW){}
 		(W) to[V=\Vb] (nW |- gnd) -- (ref)
 		(Y) to[R=\Rb] (nY |- gnd)
 		(X) -- ++(0,1) node(nR){} to[R=\Rd] (nR -| nZ) -- (Z)
 		;
 
 }
+\defQuestionAlias{QBAdb}{E.I:1a:Q4b}
 
 %\defQuestionAlias{QBAdc}{E.I:1a:Q4c}
 \defQuestion{E.I:1a:Q4c}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(X) node(nX){}
-		to[D,l=\Da] ++(2,0)  \coord(Y) node(nY){}
-		to[D,l=\Db,invert] ++(2,0)  \coord(Z) node(nZ){}
-		to[R=\Rb] ++(2,0) \coord(W) node(nW){}
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(X) node(nX){}
+		to[D,l=\Da] ++(2,0)  \ncoord(Y) node(nY){}
+		to[D,l=\Db,invert] ++(2,0)  \ncoord(Z) node(nZ){}
+		to[R=\Rb] ++(2,0) \ncoord(W) node(nW){}
 		(W) to[V=\Vb] (nW |- gnd) -- (ref)
 		(Y) to[R=\Rc] (nY |- gnd)
 		;
@@ -278,11 +522,11 @@
 
 \defQuestion{E.I:1a:Q4d}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \coord(X) node(nX){}
-		to[D,l=\Da] ++(2,0)  \coord(Y) node(nY){}
-		-- ++(2,0) \coord(K) node(nK){}
-		to[D,l=\Db] ++(2,0)  \coord(Z) node(nZ){}
-		to[R=\Rc] ++(2,0) \coord(W) node(nW){}
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(X) node(nX){}
+		to[D,l=\Da] ++(2,0)  \ncoord(Y) node(nY){}
+		-- ++(2,0) \ncoord(K) node(nK){}
+		to[D,l=\Db] ++(2,0)  \ncoord(Z) node(nZ){}
+		to[R=\Rc] ++(2,0) \ncoord(W) node(nW){}
 		(W) to[V=\Vb] (nW |- gnd) -- (ref)
 		(Y) to[R=\Rb,v=$V_o$] (nY |- gnd)
 		(K) to[zD,l=\Dc,invert] (nK |- gnd)
@@ -294,9 +538,9 @@
 
 \defQuestion{E.I:1a:Q4e}{%
 			\draw
-		(0,0) node(gnd){}  \coord(ref) to[V=\Vi,invert] ++(0,2)
-		to[D,l=\Da] ++(2,0)  \coord(Y) node(nY){} to[R=\Ra] ++(2,0) \coord(X) node(nX){}
-		to[D,l=\Db,invert] ++(2,0)  \coord(Z) node(nZ){}
+		(0,0) node(gnd){}  \ncoord(ref) to[V=\Vi,invert] ++(0,2)
+		to[D,l=\Da] ++(2,0)  \ncoord(Y) node(nY){} to[R=\Ra] ++(2,0) \ncoord(X) node(nX){}
+		to[D,l=\Db,invert] ++(2,0)  \ncoord(Z) node(nZ){}
 		(Z) to[V=\Vb] (nZ |- gnd) -- (ref)
 		(Y) to[R,l_=\Rb] (nY |- gnd)
 		(X) to[R=\Rc] (nX |- gnd)
@@ -306,63 +550,63 @@
 
 
 
-\defQuestionAlias{QBAc}{E.I:1a:Q3}
 \defQuestion{E.I:1a:Q3}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
 		(opampB.out) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(C) node(nC){} to[R=\Rf]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		(C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
 		 ;
 }
+\defQuestionAlias{QBAc}{E.I:1a:Q3}
 
-\defQuestionAlias{QBAca}{E.I:1a:Q3a}
 \defQuestion{E.I:1a:Q3a}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
-		(opampB.out) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampB.out) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(C) node(nC){} to[R=\Rf]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		(C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
     (opampB.+) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) -- (opampB.out)
 		 ;
 }
+\defQuestionAlias{QBAca}{E.I:1a:Q3a}
 
 
-\defQuestionAlias{QBAcb}{E.I:1a:Q3b}
 \defQuestion{E.I:1a:Q3b}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) node(nC){} -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) node(nC){} -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
-		(opampB.out) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampB.out) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(nC -| nXb) \coord(Z) -- (opampB.+)
+		(nC -| nXb) \ncoord(Z) -- (opampB.+)
 		(Z) -- ++(-1,0) to[R=\Rf] ++(0,-2) node[ground]{}
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
     (opampB.+) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) -- (opampB.out)
 		 ;
 }
+\defQuestionAlias{QBAcb}{E.I:1a:Q3b}
 
 
 
 \defQuestion{E.I:1a:Q3c}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
 		(opampB.out) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(C) node(nC){} to[D,l=\Da]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		(C) node(nC){} to[D,l=\Da]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
 		 ;
 }
@@ -370,13 +614,13 @@
 
 \defQuestion{E.I:1a:Q3d}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
-		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) \coord(YX) -- (opampA.out)
+		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) \ncoord(YX) -- (opampA.out)
 		(opampB.out) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		%(C) node(nC){} to[D,l=\Da]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		%(C) node(nC){} to[D,l=\Da]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 		(YX) node(nC){} to[D,l=\Da]  (nC -| opampB.-) -- (opampB.-)
 		(opampB.+) to[R=\Rg] ++(0,-2) node[ground]{}
 	 ;
@@ -386,30 +630,30 @@
 
 \defQuestion{E.I:1a:Q3e}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  -- ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  -- ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
-		(opampB.out) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampB.out) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(C) node(nC){} to[R=\Ra]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		(C) node(nC){} to[R=\Ra]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
-    (opampB.+) -- ++(0,-1) node(nXc){} \coord(Xc) to[R=\Rg] (nXc -| nZ) -- (opampB.out)
+    (opampB.+) -- ++(0,-1) node(nXc){} \ncoord(Xc) to[R=\Rg] (nXc -| nZ) -- (opampB.out)
 		(Xc) to[R=\Rf] (nXc |- A) node[ground]{}
 		 ;
 }
 
 \defQuestion{E.I:1a:Q3f}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){} to[R=\Rh] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){} to[R=\Rh] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
 		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
 		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
 		(opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
-		(opampB.out) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampB.out) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-		(C) node(nC){} to[R=\Ra]  (nC -| nXb) \coord(Z) -- (opampB.+)
+		(C) node(nC){} to[R=\Ra]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
-    (opampB.+) -- ++(0,-1) node(nXc){} \coord(Xc) to[R=\Rg] (nXc -| nZ) -- (opampB.out)
+    (opampB.+) -- ++(0,-1) node(nXc){} \ncoord(Xc) to[R=\Rg] (nXc -| nZ) -- (opampB.out)
 		(Xc) to[R=\Rf] (nXc |- A) node[ground]{}
 		 ;
 }
@@ -417,18 +661,18 @@
 
 \defQuestion{E.I:1a:Q3g}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) node(nC){} -- ++(0,+1) to[R,l_=\Ra] ++(2,0) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) node(nC){} -- ++(0,+1) to[R,l_=\Ra] ++(2,0) node[op amp,anchor=+](opampA){}
 		(C) to[R=\Ra] ++(0,-2) node[ground]{}
-		(opampA.-) to[R=\Rh] ++(-2,0) \coord(X) to[R=\Rb] ++(-2,0) node[ground]{}
-		(opampA.out)  to[R=\Ri] ++(2,0) node(nX){} \coord(Y) to[R=\Rc] ++(2,0) \coord(YY) to[R=\Rh] ++(2,0) node[op amp,anchor=-](opampB){}
-		(X) -- ++(0,1.5) node(nY){} to[R=\Rd] (nY -|  nX) node(nQ){} \coord(Q) -| (Y) to[R=\Ri] ++(0,-2) node[ground]{}
-		(opampB.+) to[R=\Ra] ++(-2,0) \coord(XX)
-		(opampB.out) to[R=\Ri] ++ (2,0) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampA.-) to[R=\Rh] ++(-2,0) \ncoord(X) to[R=\Rb] ++(-2,0) node[ground]{}
+		(opampA.out)  to[R=\Ri] ++(2,0) node(nX){} \ncoord(Y) to[R=\Rc] ++(2,0) \ncoord(YY) to[R=\Rh] ++(2,0) node[op amp,anchor=-](opampB){}
+		(X) -- ++(0,1.5) node(nY){} to[R=\Rd] (nY -|  nX) node(nQ){} \ncoord(Q) -| (Y) to[R=\Ri] ++(0,-2) node[ground]{}
+		(opampB.+) to[R=\Ra] ++(-2,0) \ncoord(XX)
+		(opampB.out) to[R=\Ri] ++ (2,0) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(YY)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (nZ)
-		(nC -| nXb) \coord(Z) -- (XX)
+		(nC -| nXb) \ncoord(Z) -- (XX)
 		(Z) -- ++(-1,0) to[R=\Rf] ++(0,-2) node[ground]{}
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
-    (XX) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) \coord(zz) -- (nZ)
+    (XX) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) \ncoord(zz) -- (nZ)
 		(zz) to[R=\Ri] ++(0,-2) node[ground]{}
 		(Q) to[R=\Rd] (nQ -| nZ) -| (nZ)
 		 ;
@@ -436,18 +680,18 @@
 
 \defQuestion{E.I:1a:Q3h}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) node(nC){} -- ++(0,+1) to[R,l_=\Ra] ++(2,0) node[op amp,anchor=+](opampA){}
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) node(nC){} -- ++(0,+1) to[R,l_=\Ra] ++(2,0) node[op amp,anchor=+](opampA){}
 		(C) to[R=\Ra] ++(0,-2) node[ground]{}
-		(opampA.-) to[R=\Rh] ++(-2,0) \coord(X) to[R=\Rb] ++(-2,0) node[ground]{}
-		(opampA.out)  -- ++(2,0) node(nX){} \coord(Y) to[R=\Rc] ++(2,0) \coord(YY) to[R=\Rh] ++(2,0) node[op amp,anchor=-](opampB){}
-		(X) -- ++(0,1.5) node(nY){} to[R=\Rd] (nY -|  nX) node(nQ){} \coord(Q) -| (Y) %to[R=\Ri] ++(0,-2) node[ground]{}
-		(opampB.+) to[R=\Ra] ++(-2,0) \coord(XX)
-		(opampB.out) -- ++ (2,0) \coord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		(opampA.-) to[R=\Rh] ++(-2,0) \ncoord(X) to[R=\Rb] ++(-2,0) node[ground]{}
+		(opampA.out)  -- ++(2,0) node(nX){} \ncoord(Y) to[R=\Rc] ++(2,0) \ncoord(YY) to[R=\Rh] ++(2,0) node[op amp,anchor=-](opampB){}
+		(X) -- ++(0,1.5) node(nY){} to[R=\Rd] (nY -|  nX) node(nQ){} \ncoord(Q) -| (Y) %to[R=\Ri] ++(0,-2) node[ground]{}
+		(opampB.+) to[R=\Ra] ++(-2,0) \ncoord(XX)
+		(opampB.out) -- ++ (2,0) \ncoord(nZ) -- ++(1.5,0) node[ocirc]{} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
 		(YY)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (nZ)
-		(nC -| nXb) \coord(Z) -- (XX)
+		(nC -| nXb) \ncoord(Z) -- (XX)
 		(Z) -- ++(-1,0) to[R=\Rf] ++(0,-2) node[ground]{}
 %		(Z) to[R=\Rg] ++(0,-2) node[ground]{}
-    (XX) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) \coord(zz) -- (nZ)
+    (XX) -- ++(0,-1) node(nXc){} to[R=\Rg] (nXc -| nZ) \ncoord(zz) -- (nZ)
 		%(zz) to[R=\Ri] ++(0,-2) node[ground]{}
 		(Q) to[R=\Rd] (nQ -| nZ) -| (nZ)
 		 ;
@@ -458,13 +702,13 @@
 
 \defQuestion{E.I:1a:Q3i}{%
     \draw
-    (0,0) node[ground]{} \coord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+    (0,0) node[ground]{} \ncoord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
     (opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
     (opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
     (opampA.-) -- ++(0,1) node(nY){} to[R=\Rd] (nY -|  nX) -- (opampA.out)
     (opampB.out) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
     (opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| nZ) -- (opampB.out)
-%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \coord(Z) -- (opampB.+)
+%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
     (opampB.+) to[R=\Rg] ++(0,-2) node[ground]{}
     ;
 }
@@ -472,14 +716,14 @@
 
 \defQuestion{E.I:1a:Q3j}{%
     \draw
-    (0,0) node[ground]{} \coord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){op1}
+    (0,0) node[ground]{} \ncoord(A) to[V=\Vi] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){op1}
     (C) to[R=\Rj] (C -| opampA.out) -- (opampA.out)
     (opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
     (opampA.out) to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){op2}
     (opampA.-) -- ++(0,1) node(nY){} -- (nY -|  opampA.out) -- (opampA.out)
     (opampA.-) -- ++(0,2) node(nYY){} to[R=\Rd] (nYY -|  opampB.out) -- (opampB.out)
     (opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| opampB.out) -- (opampB.out)
-%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \coord(Z) -- (opampB.+)
+%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
     (opampB.+) to[R=\Rg] ++(0,-2) node[ground]{}
     (opampB.out) to[R=\Rf] ++(2,0) node[op amp,anchor=-](opampC){op3}
     (opampC.-) -- ++(0,1) node(S){} to[R=\Rh] (S -| opampC.out) -- (opampC.out)
@@ -490,13 +734,13 @@
 
 \defQuestion{E.I:1a:Q3k}{%
     \draw
-    (0,0) node[ground]{} \coord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){op1}
+    (0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){op1}
     (C) to[R=\Rj] (C -| opampA.out) -- (opampA.out)
     (opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
     (opampA.out) to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){op2}
     (opampA.-) -- ++(0,1) node(nY){} -- (nY -|  opampA.out) -- (opampA.out)
     (opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| opampB.out) -- (opampB.out)
-%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \coord(Z) -- (opampB.+)
+%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
     (opampB.+) to[R=\Rg] ++(0,-2) node[ground]{}
     (opampB.out) to[R=\Rf] ++(2,0) node[op amp,anchor=-](opampC){op3}
     (opampC.-) -- ++(0,1) node(S){} to[R=\Rh] (S -| opampC.out) -- (opampC.out)
@@ -506,41 +750,95 @@
     ;
 }
 
+\defQuestion{E.I:1a:Q3m}{
+  \draw 
+    (0,0) node[ground]{} \ncoord(A) to [V=\Vi,invert] ++(0,2) to[R=\Ra] ++(2,0) \ncoord(B) -- ++(1,0) node[op amp,anchor=-](opampA){op1}
+    (opampA.+) -- ++(0,-1) node[ground]{}
+    (B) -- ++(0,3) to[R=\Rb] ++(3,0) \ncoord(C) to[R,l_=\Rc] ++(0,-2) node[ground]{}
+    (C) -- ++(1,0) to[R=\Rd] ++(2,0) \ncoord(D)
+    (opampA.- -| opampA.out) ++(2,1) node[op amp,anchor=-, noinv input up](opampB){op2}
+    (opampA.out) -- ++(0.5,0) |- (opampB.+)
+    (opampB.-)  ++(-0.5,-1) \ncoord(E) to[R=\Re] ++(0,-2) node[ground]{}
+    (E) |- (opampB.-)
+    (E) to[R,l_=\Rf] ++(2,0) -| (opampB.out) |- (D)
+    (opampB.out) -- ++(1,0) \ncoord(F) node[ocirc]{} (F |- A) ++(0,1) node[ocirc]{} \ncoord(G) -- ++(0,-1) node[ground]{}
+    (F) to[open,v=\Vo] (G)
+    
+    ;
+}
+
+\defQuestion{E.I:1a:Q3ma}{ %to[V=\Vi,invert]
+  \draw 
+    (0,0) node[ground]{} \ncoord(A) -- ++(0,2) to[R=\Ra] ++(2,0) \ncoord(B) -- ++(1,0) node[op amp,anchor=-](opampA){op1}
+    (opampA.+) to[V=\Vi] (opampA.+ -| A)
+    (B) -- ++(0,3) \ncoord(X) to[R=\Rb] ++(3,0) \ncoord(C) 
+    to[R,l_=\Rc] ++(0,-2) node[ground]{}
+    (C) -- ++(1,0) to[R=\Rd] ++(2,0) \ncoord(D)
+    (opampA.- -| opampA.out) ++(2,1) node[op amp,anchor=-, noinv input up](opampB){op2}
+    (opampA.out) -- ++(0.5,0) |- (opampB.+)
+    (opampB.-)  ++(-0.5,-1) \ncoord(E) to[R=\Re] ++(0,-2) node[ground]{}
+    (E) |- (opampB.-)
+    (E) to[R,l_=\Rf] ++(2,0) -| (opampB.out) |- (D)
+    (opampB.out) -- ++(1,0) \ncoord(F) node[ocirc]{} (F |- A) ++(0,1) node[ocirc]{} \ncoord(G) -- ++(0,-1) node[ground]{}
+    (F) to[open,v=\Vo] (G)
+    (X) -- ++(0,1.5) \ncoord(Y) to[D] ++(2,0) to[V=\Va] (Y -| opampB.out) -- (opampB.out)
+    
+    ;
+}
 
 
-\defQuestionAlias{QBBa}{E.I:2a:Q1}
+\defQuestion{E.I:1a:Q3l}{%
+    \draw
+    (0,0) node[ground]{} \ncoord(A) to[V=\Vi,invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){op1}
+    (C) to[R=\Rj] (C -| opampA.out) -- (opampA.out)
+    (opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
+    (opampA.out) to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){op2}
+    (opampA.-) -- ++(0,1.5) \ncoord(Y) to[R=\Rk] (nY -|  opampA.out) -- (opampA.out)
+    (opampB.-)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| opampB.out) -- (opampB.out)
+%    (C) node(nC){} to[R=\Rf]  (nC -| nXb) \ncoord(Z) -- (opampB.+)
+    (opampB.+) to[R=\Rg] ++(0,-2) node[ground]{}
+    (opampB.out) to[R=\Rf] ++(2,0) node[op amp,anchor=-](opampC){op3}
+    (opampC.-) -- ++(0,1) node(S){} to[R=\Rh] (S -| opampC.out) -- (opampC.out)
+    (opampC.out) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+    (opampC.+) to[R=\Ri] ++(0,-2) node[ground]{}
+    (opampA.out) -- (nY -|  opampA.out) node(nYY){} to[R=\Rd] (nYY -|  opampC.out) -- (opampC.out)
+    ;
+}
+
+
 \defQuestion{E.I:2a:Q1}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,5) -- ++(1.5,0) \coord(Aa) to[R=\Ra] ++(0,-2.5) \coord(B) to[R=\Rb] ++(0,-2.5) \coord(C)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,5) -- ++(1.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
 		(B) -- ++(1,0) node[nmos,anchor=G] (T1){}
 		(T1.S) to[R=\Rs] (T1.S |- A) -- (A)
 		(T1.D) to[R,l_=\Rd] (T1.D |- Aa) -- (Aa)
 		 ;
 }
+\defQuestionAlias{QBBa}{E.I:2a:Q1}
 
-\defQuestionAlias{QBBaa}{E.I:2a:Q1a}
 \defQuestion{E.I:2a:Q1a}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \coord(Aa) to[R=\Ra] ++(0,-2.5) \coord(B) to[R=\Rb] ++(0,-2.5) \coord(C)
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
 		(B) -- ++(1,0) node[nmos,anchor=G] (T1){}
 		(T1.S) to[R=\Rs] (T1.S |- A) -- (A)
 		(T1.D) to[R,l_=\Rd] (T1.D |- Aa) -- (Aa)
 		(B) to[C,l=\Ci] ++(-2,0) to[R,l=\Ri] ++(-2,0) to[V,l=\Vi] ++(0,-2.5)
-		(T1.S |- A) -- ++(1,0) node[ocirc]{} \coord(X)
+		(T1.S |- A) -- ++(1,0) node[ocirc]{} \ncoord(X)
 		(T1.D) -- ++(1,0) node[ocirc]{} to[open,v^=$V_0(t)$] (X)
 
 		 ;
 }
+\defQuestionAlias{QBBaa}{E.I:2a:Q1a}
 
 
 \defQuestion{E.I:2a:Q1b}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \coord(Aa) to[R=\Ra] ++(0,-2.5) \coord(B) to[R=\Rb] ++(0,-2.5) \coord(C)
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
 		(B) -- ++(1,0) node[pmos,anchor=G] (T1){}
 		(T1.D) to[R,l_=\Rd] (T1.D |- A) -- (A)
 		(T1.S) to[R,l_=\Rs] (T1.S |- Aa) -- (Aa)
 		(B) to[C,l=\Ci] ++(-2,0) to[R,l=\Ri] ++(-2,0) to[V,l=\Vi] ++(0,-2.5)
-		(T1.D |- A) -- ++(1,0) node[ocirc]{} \coord(X)
+		(T1.D |- A) -- ++(1,0) node[ocirc]{} \ncoord(X)
 		(T1.D) -- ++(1,0) node[ocirc]{} to[open,v^=$V_0(t)$] (X)
 
 		 ;
@@ -549,7 +847,7 @@
 
 \defQuestion{E.I:2a:Q1c}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \coord(Aa) to[R=\Ra] ++(0,-2.5) \coord(B) to[R=\Rb] ++(0,-2.5) \coord(C)
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
 		(B) -- ++(1,0) node[pmos,anchor=G] (T1){T1}
 		(T1.D) to[R,l_=\Rd] (T1.D |- A) -- (A)
 		(T1.S) to[R,l_=\Rs] (T1.S |- Aa) -- (Aa)
@@ -557,7 +855,7 @@
 		(T1.D) -- ++(1,0) node[nmos,anchor=G] (T2){T2}
 		(T2.S) |- (C)
 		(T2.D) to[R=\Rc] (T2.D |- Aa) -- (Aa)
-		(T2.S |- A) -- ++(1,0) node[ocirc]{} \coord(X)
+		(T2.S |- A) -- ++(1,0) node[ocirc]{} \ncoord(X)
 		(T2.D) -- ++(1,0) node[ocirc]{} to[open,v^=$V_0(t)$] (X)
 
 		 ;
@@ -565,12 +863,26 @@
 
 \defQuestion{E.I:2a:Q1d}{%
     \draw
-    (0,0) \coord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \coord(Aa) to[R=\Ra] ++(0,-2.5) \coord(B) to[R=\Rb] ++(0,-2.5) \coord(C)
+    (0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
     (B) -- ++(1,0) node[nmos,anchor=G] (T1){T1}
     (T1.S) -- (T1.D |- A) -- (A)
     (T1.D) to[R,l_=\Rs] (T1.S |- Aa) -- (Aa)
     (B) to[C,l=\Ci] ++(-2,0) to[R,l=\Ri] ++(-2,0) to[V,l=\Vi] ++(0,-2.5)
-    (T1.D |- A) -- ++(1,0) node[ocirc]{} \coord(X)
+    (T1.D |- A) -- ++(1,0) node[ocirc]{} \ncoord(X)
+    (T1.D) -- ++(1,0) node[ocirc]{} to[open,v^=$V_0(t)$] (X)
+
+    ;
+}
+
+
+\defQuestion{E.I:2a:Q1e}{%
+    \draw
+    (0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,5) -- ++(5.5,0) \ncoord(Aa) to[R=\Ra] ++(0,-2.5) \ncoord(B) to[R=\Rb] ++(0,-2.5) \ncoord(C)
+    (B) -- ++(1,0) node[pmos,anchor=G] (T1){T1}
+    (T1.S) -- (T1.D |- Aa) -- (Aa)
+    (T1.D) to[R,l_=\Rs] (T1.S |- A) -- (A)
+    (B) to[C,l=\Ci] ++(-2,0) to[R,l=\Ri] ++(-2,0) to[V,l=\Vi] ++(0,-2.5)
+    (T1.D |- A) -- ++(1,0) node[ocirc]{} \ncoord(X)
     (T1.D) -- ++(1,0) node[ocirc]{} to[open,v^=$V_0(t)$] (X)
 
     ;
@@ -578,8 +890,8 @@
 
 \defQuestion{E.I:2a:Q3}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) to[R=\Ra] ++(0,-2) \coord(B)
-		      node[nmos,anchor=D] (T1){} (T1) node(){T1}
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \ncoord(Aa) to[R=\Ra] ++(0,-2) \ncoord(B)
+		      node[nmos,anchor=D,xscale=-1] (T1){} (T1) node(){T1}
 		(T1.D) -|  (T1.G) node[nmos,anchor=G] (T2){T2}
 		(T1.S) |- (A)
 		(T2.S) |- (A)
@@ -592,9 +904,9 @@
 
 \defQuestion{E.I:2a:Q3b}{%
 		\draw
-%		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) to[R=\Ra] ++(0,-2) \coord(B)
+%		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \ncoord(Aa) to[R=\Ra] ++(0,-2) \ncoord(B)
 %		      node[nmos,invert,anchor=D] (T1){} (T1) node(){T1}
-		(0,0) \coord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \coord(Aa) node[pmos,anchor=S] (T1){}
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \ncoord(Aa) node[pmos,anchor=S,xscale=-1] (T1){}
 		(A) -- (A -| T1.D) to[R=\Ra] (T1.D)
 		(T1) node(){T1\ \ \ \ \ \ }
 		(T1.D) -|  (T1.G) node[pmos,anchor=G] (T2){T2}
@@ -607,145 +919,179 @@
 		 ;
 }
 
+\defQuestion{E.I:2a:Q3c}{%
+		\draw
+		(0,0) \ncoord(A) to[V,invert,l=\Vd] ++(0,4) -- ++(2,0) \ncoord(Aa) to[R,l_=\Ra] ++(0,-2) \ncoord(B) 
+		      node[nmos,anchor=D,xscale=-1] (T1){} (T1) node(){T1}
+		%(T1.D) -|  
+        (B) to[R=\Rc] (B -| T1.G) -- (T1.G)
+%        (T1.G) to[R=\Rc] (T1.G |- nAa)
+        (T1.G) node[nmos,anchor=G] (T2){T2}
+		(T1.S) |- (A)
+		(T2.S) |- (A)
+		(Aa) -- (Aa -| T2.S) to[R=\Rb] (T2.D)
+		(T2.D) -- ++(1,0) node[ocirc] (x){}
+		(T2.S) -- ++(1,0) node[ocirc] (y){}
+		(x) to[open,v^=$V_0$] (y)
+		 ;
+}
 
-\defQuestionAlias{QBBb}{E.I:2a:Q2}
+
 \defQuestion{E.I:2a:Q2}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
 		node[npn,anchor=B] (T1){}
-		(A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
 		(T1.E) to[R,l=\Rc] (T1.E |- A)
 		(T1.C) to[R,l_=\Rd] (T1.C |- C)
 		(T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
 		(T2.C) to[R,l_=\Re] (T2.C |- A) -- (A)
 		(T2.E) to[R=\Rf] (T2.E |- C) -- (C)
-		(A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-		(T2.C) -- ++(1,0) \coord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 
 		 ;
 }
+\defQuestionAlias{QBBb}{E.I:2a:Q2}
 
-\defQuestionAlias{QBBba}{E.I:2a:Q2a}
 \defQuestion{E.I:2a:Q2a}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
 		node[npn,anchor=B] (T1){}
-		(A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
 		(T1.E) to[R,l=\Rc] (T1.E |- A)
 		(T1.C) to[R,l_=\Rd] (T1.C |- C)
 		(T1.C) -- ++(1.5,0) node[npn,anchor=B](T2){}
 		(T2.E) to[R=\Re] (T2.E |- A) -- (A)
 		(T2.C) to[R=\Rf] (T2.C |- C) -- (C)
-		(A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-		(T2.C) -- ++(1,0) \coord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 
 		 ;
 }
+\defQuestionAlias{QBBba}{E.I:2a:Q2a}
 
-\defQuestionAlias{QBBbb}{E.I:2a:Q2b}
 \defQuestion{E.I:2a:Q2b}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
 		node[pnp,anchor=B] (T1){}
-		(A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
 		(T1.C) to[R,l=\Rc] (T1.C |- A)
 		(T1.E) to[R,l_=\Rd] (T1.E |- C)
 		(T1.C) -- ++(1.5,0) node[npn,anchor=B](T2){}
 		(T2.E) to[R=\Re] (T2.E |- A) -- (A)
 		(T2.C) to[R=\Rf] (T2.C |- C) -- (C)
-		(A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-		(T2.C) -- ++(1,0) \coord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 
 		 ;
 }
+\defQuestionAlias{QBBbb}{E.I:2a:Q2b}
 
 \defQuestion{E.I:2a:Q2c}{%
 		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
 		node[pnp,anchor=B] (T1){}
-		(A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
 		(T1.C) to[R,l=\Rc] (T1.C |- A)
 		(T1.E) to[R,l_=\Rd] (T1.E |- C)
 		(T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
 		(T2.E) to[R=\Re] (T2.E |- C) -- (C)
-		(T2.C) to[R=\Rf] (T2.C |- A) -- (A)
-		(A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-		(T2.C) -- ++(1,0) \coord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
+		(T2.C) to[R,l_=\Rf] (T2.C |- A) -- (A)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 
 		 ;
 }
 
-
-\defQuestion{E.I:2a:Q2d}{%
-		\draw
-		(0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
-		node[npn,anchor=B] (T1){}
-		(A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
-		(T1.E) to[R,l=\Rc] (T1.E |- A)
-		(T1.C) to[R,l_=\Rd] (T1.C |- C)
-		(T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
-		(T2.C) to[R,l_=\Re] (T2.C |- A) -- (A)
-		(T2.E) to[R=\Rf] (T2.E |- C) -- (C)
-		(A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-		(T2.C) -- ++(1,0) node[npn,anchor=B](T3){}
-		(T3.E) to[R,l_=\Rh] (T3.E |- A)
-		(T3.C) -- (T3.C |- C) -- (C)
-		(T3.E) -- ++(1,0) \coord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
-
-
-		 ;
-}
 
 \defQuestion{E.I:2a:Q2e}{%
     \draw
-    (0,0) \coord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \coord(B)
+    (0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
     node[npn,anchor=B] (T1){}
-    (A) -- (A -| B) \coord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \coord(C)
+    (A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
     (T1.E) to[R,l=\Rc] (T1.E |- A)
     (T1.C) to[R,l_=\Rd] (T1.C |- C)
     (T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
     (T2.C) to[R,l_=\Re] (T2.C |- A) -- (A)
     (T2.E) to[R=\Rf] (T2.E |- C) -- (C)
-    (A) -- (-1.5,0) \coord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
-    (T2.C) -- ++(1,0)  \coord(ca) node[ocirc]{} to[open,v^=$v_0(t)$] (ca |- A) node[ocirc]{}-- (A)
+    (A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+    (T2.C) -- ++(1,0)  \ncoord(ca) node[ocirc]{} to[open,v^=$v_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 
 
     ;
 }
 
 
-
-\defQuestionAlias{QBCa}{E.I:ext:Q1}
-\defQuestion{E.I:ext:Q1}{%
+\defQuestion{E.I:2a:Q2f}{%
 		\draw
-		(0,0) node[ground]{} \coord(A) to[V=\Vi, invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \coord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
-		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
-%		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
-		(opampA.-) -- ++(0,2.5)  to[R=\Rd] ++(2,0) \coord(D) to[R=\Rh] ++(0,-2) node[ground]{}
-		(D) to[R=\Ri] ++(2,0) node(nY){} -- (nY |- opampA.out) \coord(E) -- (opampA.out)
-		(E) -- ++(1,0) node[op amp, anchor=+, yscale=-1](opampB){}
-		(opampB.out)  -- ++(1,0) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
-		%(opampB.+)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| opampB.out) -- (opampB.out)
-		(C) node(nC){} to[R=\Rf]  (nC -| opampB.+) \coord(Z) -- (opampB.-)
-		(Z) -- ++(0,-1) \coord(Zz) to[R=\Rg] ++(2,0) -- (Zz -| opampB.out) -- (opampB.out)
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
+		node[npn,anchor=B] (T1){}
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
+		(T1.E) to[R,l=\Rc] (T1.E |- A)
+		(T1.C) to[R,l_=\Rd] (T1.C |- C)
+		(T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
+		(T2.C) to[R,l_=\Re] (T2.C |- A) -- (A)
+		(T2.E) to[R=\Rf] (T2.E |- C) -- (C)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) node[npn,anchor=B](T3){}
+		(T3.E) to[R,l_=\Rh] (T3.E |- A)
+		(T3.C) -- (T3.C |- C) -- (C)
+		(T3.E) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{}-- (A)
 		 ;
 }
 
-\defQuestionAlias{QBCb}{E.I:ext:Q2}
+\defQuestion{E.I:2a:Q2g}{%
+		\draw
+		(0,0) \ncoord(A) to[V,invert,l=\Vi] ++(0,3) to[R=\Ra] ++(1.5,0) to[C] ++(1.5,0) \ncoord(B)
+		node[npn,anchor=B] (T1){}
+		(A) -- (A -| B) \ncoord(Ba) to[R=\Rb] (T1.B) to[R=\Rg] ++(0,3) \ncoord(C)
+		(T1.E) to[R,l=\Rc] (T1.E |- A)
+		(T1.C) to[R,l_=\Rd] (T1.C |- C)
+		(T1.C) -- ++(1.5,0) node[pnp,anchor=B](T2){}
+		(T2.C) to[R,l_=\Re] (T2.C |- A) -- (A)
+		(T2.E) to[R=\Rf] (T2.E |- C) -- (C)
+		(A) -- (-1.5,0) \ncoord(a) to[V,invert,l=\Vb] (a |- C) -- (C)
+		(T2.C) -- ++(1,0) node[pnp,anchor=B](T3){}
+
+		(T3.E) to[R,l_=\Rh] (T3.E |- C) --  (C)
+		(T3.C) -- (T3.C |- A) -- (A)
+		(T3.E) -- ++(1,0) \ncoord(ca) node[ocirc]{} to[open,v^=$V_0(t)$] (ca |- A) node[ocirc]{} -- (A)
+		 ;
+}
+
+
+
+\defQuestion{E.I:ext:Q1}{%
+		\draw
+		(0,0) node[ground]{} \ncoord(A) to[V=\Vi, invert] ++(0,2) node(nB){}  to[R=\Ra] ++(2,0) \ncoord(C) -- ++(0,+1) node[op amp,anchor=+](opampA){}
+		(opampA.-) to[R=\Rb] ++(-2,0) node[ground]{}
+%		(opampA.out) node(nX){} to[R=\Rc] ++(2,0) node[op amp,anchor=-](opampB){}
+		(opampA.-) -- ++(0,2.5)  to[R=\Rd] ++(2,0) \ncoord(D) to[R=\Rh] ++(0,-2) node[ground]{}
+		(D) to[R=\Ri] ++(2,0) node(nY){} -- (nY |- opampA.out) \ncoord(E) -- (opampA.out)
+		(E) -- ++(1,0) node[op amp, anchor=+, yscale=-1](opampB){}
+		(opampB.out)  -- ++(1,0) node[ocirc](nZ){} to[open,v=$V_o$] ++(0,-2) node[ocirc](nG){} node[ground]{}
+		%(opampB.+)  -- ++(0,1) node(nXb){} to[R=\Re] (nXb -| opampB.out) -- (opampB.out)
+		(C) node(nC){} to[R=\Rf]  (nC -| opampB.+) \ncoord(Z) -- (opampB.-)
+		(Z) -- ++(0,-1) \ncoord(Zz) to[R=\Rg] ++(2,0) -- (Zz -| opampB.out) -- (opampB.out)
+		 ;
+}
+\defQuestionAlias{QBCa}{E.I:ext:Q1}
+
 \defQuestion{E.I:ext:Q2}{%
 		\draw
 		(0,0) node[pnp,anchor=B](pnpB){}
-		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-		(pnpB.B) -- ++(-0.5,0) node(nB){} \coord(B) node[npn,anchor=C](npnA){}
+		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \ncoord(X)
+		(pnpB.B) -- ++(-0.5,0) node(nB){} \ncoord(B) node[npn,anchor=C](npnA){}
 		(npnA) node{\Ta}
-		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \coord(G)
-		(pnpB.C) -- ++(0.5,0) \coord(BC) to[zD,invert,mirror] ++(0,-2) -- (nX |- nG) \coord(DG)
+		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \ncoord(G)
+		(pnpB.C) -- ++(0.5,0) \ncoord(BC) to[zD,invert,mirror] ++(0,-2) -- (nX |- nG) \ncoord(DG)
 		(pnpB) node{\Tb}
 %
 %		(nB |- nG)
 		(B) to[zD] (nX -| nB)
-		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \coord(CX) -- (X)
-		(npnA.B) -- ++(-0.5,0) node(nAB){} \coord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
+		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \ncoord(CX) -- (X)
+		(npnA.B) -- ++(-0.5,0) node(nAB){} \ncoord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
 		(AB) to[R=\Rc] ++(0,2) -- (nAB |- nX)
 
 		(BC) -- ++(2,0) node(nBC){} -- (nBC |- pnpB.E) -- ++(0,1) node[npn,anchor=B,rotate=90](npnC){}
@@ -756,14 +1102,14 @@
 
 
 
-		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \coord(XX) to[C=\Cb] (nXX |- nG) \coord(GG) -- (DG)
-		(XX) -- (nXX |- npnD.C) \coord(T) -- (npnD.C)
+		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \ncoord(XX) to[C=\Cb] (nXX |- nG) \ncoord(GG) -- (DG)
+		(XX) -- (nXX |- npnD.C) \ncoord(T) -- (npnD.C)
 
-		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
-		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
+		(T) to[D,invert] ++(-2,0) node(nYY){} \ncoord(YY)
+		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \ncoord(ZZ)
 
 		(GG) to[D] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
-		(GG) ++(0,+1) to[D] ++(-2,0) \coord(ZX)
+		(GG) ++(0,+1) to[D] ++(-2,0) \ncoord(ZX)
 		(ZZ) ++(0,-1) -- (ZX)
 		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
 %		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
@@ -777,6 +1123,7 @@
 		;
 
 }
+\defQuestionAlias{QBCb}{E.I:ext:Q2}
 
 
 
@@ -785,17 +1132,17 @@
 %
 %		\draw
 %		(0,0) node[pnp,anchor=B](pnpB){}
-%		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \coord(X)
-%		(pnpB.B) -- ++(-0.5,0) node(nB){} \coord(B) node[npn,anchor=C](npnA){}
+%		(pnpB.E) -- ++(0.5,0) to[R=\Rb] ++(0,2) node(nX){} \ncoord(X)
+%		(pnpB.B) -- ++(-0.5,0) node(nB){} \ncoord(B) node[npn,anchor=C](npnA){}
 %		(npnA) node{\Ta}
-%		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \coord(G)
-%		(pnpB.C) -- ++(1.5,0) \coord(BC) node(nBC){} to[zD,invert,mirror] ++(0,-2) -- (nBC |- nG) \coord(DG)
+%		(npnA.E) to[R=\Ra] ++(0,-2) node(nG){} \ncoord(G)
+%		(pnpB.C) -- ++(1.5,0) \ncoord(BC) node(nBC){} to[zD,invert,mirror] ++(0,-2) -- (nBC |- nG) \ncoord(DG)
 %		(pnpB) node{\Tb}
 %%
 %%		(nB |- nG)
 %		(B) to[zD] (nX -| nB)
-%		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \coord(CX) -- (X)
-%		(npnA.B) -- ++(-0.5,0) node(nAB){} \coord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
+%		(G) -- ++(-3,0) node(nZ){} to[C=\Ca] (nZ |- nX) node(nCX){} \ncoord(CX) -- (X)
+%		(npnA.B) -- ++(-0.5,0) node(nAB){} \ncoord(AB) to[zD,invert,mirror] ++(0,-2) -- (nAB |- nZ)
 %		(AB) to[R=\Rc] ++(0,2) -- (nAB |- nX)
 %
 %		(BC) -- ++(2,0) node(nBC){} -- (nBC |- pnpB.E) -- ++(0,1) node[npn,anchor=B,rotate=90](npnC){}
@@ -806,14 +1153,14 @@
 %
 %
 %
-%		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \coord(XX) to[C=\Cb] (nXX |- nG) \coord(GG) -- (DG)
-%		(XX) -- (nXX |- npnD.C) \coord(T) -- (npnD.C)
+%		(CX) to[D,invert] ++(-2.5,0) node(nXX){} \ncoord(XX) to[C=\Cb] (nXX |- nG) \ncoord(GG) -- (DG)
+%		(XX) -- (nXX |- npnD.C) \ncoord(T) -- (npnD.C)
 %
-%		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
-%		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
+%		(T) to[D,invert] ++(-2,0) node(nYY){} \ncoord(YY)
+%		(T) ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \ncoord(ZZ)
 %
 %		(GG) to[D] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
-%		(GG) ++(0,+1) to[D] ++(-2,0) \coord(ZX)
+%		(GG) ++(0,+1) to[D] ++(-2,0) \ncoord(ZX)
 %		(ZZ) ++(0,-1) -- (ZX)
 %		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
 %%		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
@@ -834,17 +1181,16 @@
 %
 
 
-\defQuestionAlias{QBCbx}{E.I:ext:Q2.errata}
 \defQuestion{E.I:ext:Q2.errata}{%
 
 		\draw
-		(0,0) \coord(T)
-		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
-		(T) -- ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
-		(T) ++(0,-8) \coord(GG)
+		(0,0) \ncoord(T)
+		(T) to[D,invert] ++(-2,0) node(nYY){} \ncoord(YY)
+		(T) -- ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \ncoord(ZZ)
+		(T) ++(0,-8) \ncoord(GG)
 
 		(GG) to[D,invert] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
-		(GG) -- ++(0,+1) to[D,invert] ++(-2,0) \coord(ZX)
+		(GG) -- ++(0,+1) to[D,invert] ++(-2,0) \ncoord(ZX)
 		(ZZ) ++(0,-1) -- (ZX)
 		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
 %		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
@@ -857,13 +1203,13 @@
 		(-4,0) -- (0,-8);
 
 		\draw
-		(8,0) \coord(T)
-		(T) to[D,invert] ++(-2,0) node(nYY){} \coord(YY)
-		(T) -- ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \coord(ZZ)
-		(T) ++(0,-8) \coord(GG)
+		(8,0) \ncoord(T)
+		(T) to[D,invert] ++(-2,0) node(nYY){} \ncoord(YY)
+		(T) -- ++(0,-1) to[D,invert] ++(-2,0) node(nZZ){} \ncoord(ZZ)
+		(T) ++(0,-8) \ncoord(GG)
 
 		(GG) to[D] ++(-2,0) -- ++(-2,0) node(nV){} to[V=\Vi,invert] (nV |- nYY) -- (YY)
-		(GG) -- ++(0,+1) to[D] ++(-2,0) \coord(ZX)
+		(GG) -- ++(0,+1) to[D] ++(-2,0) \ncoord(ZX)
 		(ZZ) ++(0,-1) -- (ZX)
 		(ZZ) ++(0,-1) -- ++(-0.5,0) arc[start angle=0,end angle=180,x radius=0.5,y radius=0.3] -- ++(-0.5,0)
 %		(ZX) -- ++(-1,0) ++(0,1) -- (ZZ)
@@ -874,6 +1220,7 @@
 
 
 }
+\defQuestionAlias{QBCbx}{E.I:ext:Q2.errata}
 
 
 

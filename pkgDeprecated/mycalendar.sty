@@ -8,6 +8,11 @@
 \RequirePackage{etoolbox}
 \RequirePackage{anyfontsize}
 
+
+%% Termine Kalendar --- Deadlines calendar
+%% Terminkalender --  appointment calendar
+%% package name: tikzdeadlines
+
 \makeatletter
 		
 \def\cal@FirstDraw{1}
@@ -21,6 +26,8 @@
 \def\cal@AcadWeekEnd{2000-09-07}
 \def\cal@RecessBegin{2000-01-01}
 \def\cal@RecessEnd{2000-01-02}
+\def\cal@RecessBeginB{2000-01-01}
+\def\cal@RecessEndB{2000-01-02}
 
 
 \def\cal@FirstSemColor{green!40!black}
@@ -86,6 +93,9 @@
   },%
 		academic recess/.code 2 args={%
 		\edef\cal@RecessBegin{\cal@dateexpand{#1}}\edef\cal@RecessEnd{\cal@dateexpand{#2}}%
+  },%
+		academic recess 2/.code 2 args={%
+		\edef\cal@RecessBeginB{\cal@dateexpand{#1}}\edef\cal@RecessEndB{\cal@dateexpand{#2}}%
   },%
 	extra dates color/.code={%
 		\def\cal@ExtraDatesColor{#1}%
@@ -181,13 +191,13 @@
 	\pgfkeysdefargs{/tikz/calcmarksUP/date}{#1:#2}{\cal@markdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
 	\pgfkeysdefargs{/tikz/calcmarksUP/dates}{#1:#2:#3}{\cal@boxdrawNote{rounded corners=\cal@mark@radius}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
 	\cal@markstyle{calcmarksUP}%
-	\newcommand{\calcmarks}{\calcmarksUP}		%
+\newcommand{\calcmarks}{\calcmarksUP}		%
 
 \newcommand{\calrmarksUP}[1]{\pgfkeys{/tikz/calrmarksUP/.cd,defaultcolor,defaultline,#1}}
 	\pgfkeysdefargs{/tikz/calrmarksUP/date}{#1:#2}{\cal@markdrawNote{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshift}{\cal@mark@TYshift}{south}}%
 	\pgfkeysdefargs{/tikz/calrmarksUP/dates}{#1:#2:#3}{\cal@boxdrawNote{}{cal-\cal@dateexpand{#1}}{cal-\cal@dateexpand{#2}}{#3}{\cal@mark@TXshift}{\cal@mark@TYshift}{south}}%
 	\cal@markstyle{calrmarksUP}%
-	\newcommand{\calrmarks}{\calrmarksUP}%
+\newcommand{\calrmarks}{\calrmarksUP}%
 		
 \newcommand{\calnotesUP}[1]{\pgfkeys{/tikz/calnotesUP/.cd,defaultcolor,defaultline,#1}}%
 	\pgfkeysdefargs{/tikz/calnotesUP/date}{#1:#2}{\cal@Note{}{cal-\cal@dateexpand{#1}}{#2}{\cal@mark@TXshiftB}{\cal@mark@TYshift}{south}}%
@@ -268,10 +278,13 @@
     \ifdate{between=#1+-3 and #2}{%
 			\ifdate{between=\cal@AcadWeekBegin+-1 and \cal@AcadWeekEnd}{}{%
 			  \ifdate{between=\cal@RecessBegin+-1 and \cal@RecessEnd}{}{%
-					\stepcounter{cal@cntweek}%
-					\def\cal@weekcolor{\color{#3}}%
-					\def\cal@week{{\thecal@cntweek}}%
-				}%
+  			  \ifdate{between=\cal@RecessBeginB+-1 and \cal@RecessEndB}{}{%
+  					\stepcounter{cal@cntweek}%
+  					\def\cal@weekcolor{\color{#3}}%
+  					\def\cal@week{{\thecal@cntweek}}%
+  
+  				}%
+        }%
 			}%
 		}{}%
 	}{}%
@@ -285,6 +298,7 @@
 		if={(equals=\cal@SecondSemEnd) [color=\cal@SecondSemColor,thick]},%
 		if={(between=\cal@AcadWeekBegin and \cal@AcadWeekEnd) [color=\cal@ExtraDatesColor]},%
 		if={(between=\cal@RecessBegin and \cal@RecessEnd) [color=\cal@RecessColor]},%
+		if={(between=\cal@RecessBeginB and \cal@RecessEndB) [color=\cal@RecessColor]},%
 	},%
     % New style for drawing the year, it is always drawn
     % for January and the "first month drawn"
